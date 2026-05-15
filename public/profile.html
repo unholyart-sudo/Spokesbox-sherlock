@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Newsletter Profile — Spokesbox</title>
+  <meta name="description" content="Review and update your Spokesbox newsletter preferences.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #1a2744;
+      --navy2:  #243255;
+      --teal:   #00b4d8;
+      --teal2:  #0096b7;
+      --gold:   #ffd166;
+      --white:  #ffffff;
+      --gray:   #6b7280;
+      --gray-lt:#f0f4f8;
+      --border: #e5e7eb;
+      --green:  #10b981;
+      --red:    #ef4444;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--navy);
+      min-height: 100vh;
+      color: var(--navy);
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--navy);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .topbar-logo {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .topbar-logo img { height: 28px; width: auto; }
+    .topbar-brand { color: var(--teal); font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+    .topbar-title { color: rgba(255,255,255,0.45); font-size: 13px; font-weight: 500; margin-left: 8px; }
+    .topbar-divider { color: rgba(255,255,255,0.2); }
+
+    /* ── MAIN CONTENT ── */
+    .page-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+    .page-header p {
+      color: rgba(255,255,255,0.5);
+      font-size: 15px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gray);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title .icon { font-size: 16px; }
+
+    /* ── PREVIEW IFRAME ── */
+    .preview-label {
+      background: linear-gradient(135deg, var(--teal), var(--teal2));
+      color: white;
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .preview-label .emoji { font-size: 24px; }
+    .preview-label h3 { font-size: 16px; font-weight: 700; }
+    .preview-label p { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+    .preview-frame-wrap {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f8f9ff;
+      height: 520px;
+      position: relative;
+    }
+    .preview-frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .preview-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8f9ff;
+      z-index: 2;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--gray);
+      font-size: 14px;
+    }
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+    .section-block { margin-bottom: 28px; }
+    .section-block:last-child { margin-bottom: 0; }
+
+    /* ── PILL TOGGLES (topics) ── */
+    .pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .pill {
+      padding: 9px 18px;
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      background: var(--white);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--navy);
+      user-select: none;
+    }
+    .pill:hover { border-color: var(--teal); background: rgba(0,180,216,0.05); }
+    .pill.active {
+      background: rgba(0,180,216,0.1);
+      border-color: var(--teal);
+      color: var(--navy);
+      transform: scale(1.03);
+    }
+
+    /* ── RADIO CARDS (tone) ── */
+    .radio-group { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .radio-card {
+      flex: 1;
+      min-width: 130px;
+      padding: 16px 18px;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+    .radio-card .radio-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .radio-card .card-text { font-size: 14px; font-weight: 500; color: var(--navy); }
+    .radio-card .card-sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+    .radio-card:hover { border-color: var(--teal); background: rgba(0,180,216,0.04); }
+    .radio-card.active { border-color: var(--teal); background: rgba(0,180,216,0.08); }
+    .radio-card.active .radio-dot {
+      background: var(--teal);
+      border-color: var(--teal);
+      box-shadow: inset 0 0 0 3px white;
+    }
+
+    /* ── LENGTH CARDS ── */
+    .length-group { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .length-card {
+      flex: 1;
+      min-width: 100px;
+      padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+    .length-card .len-label { font-size: 15px; font-weight: 700; color: var(--navy); }
+    .length-card .len-sub { font-size: 12px; color: var(--gray); margin-top: 3px; }
+    .length-card:hover { border-color: var(--teal); background: rgba(0,180,216,0.04); }
+    .length-card.active { border-color: var(--teal); background: rgba(0,180,216,0.1); }
+
+    /* ── TIME PICKER ── */
+    .time-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+    .time-input {
+      padding: 12px 18px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--white);
+    }
+    .time-input:focus { border-color: var(--teal); }
+    .time-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .time-chip {
+      padding: 7px 14px;
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--white);
+      color: var(--navy);
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .time-chip:hover { border-color: var(--teal); background: rgba(0,180,216,0.05); }
+    .time-chip.active { background: var(--teal); border-color: var(--teal); color: white; }
+
+    /* ── TEXT INPUTS (social) ── */
+    .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+    @media (max-width: 600px) { .social-grid { grid-template-columns: 1fr; } }
+    .social-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .social-field input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--white);
+    }
+    .social-field input:focus { border-color: var(--teal); }
+    .social-field input::placeholder { color: #b0b8c8; }
+
+    /* ── OPTIONAL BADGE ── */
+    .optional-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,209,102,0.15);
+      border: 1px solid rgba(255,209,102,0.5);
+      color: #795900;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 50px;
+      margin-bottom: 16px;
+    }
+
+    /* ── INFERRED INTERESTS ── */
+    .inferred-box {
+      background: #f0fdf4;
+      border: 1.5px solid #10b981;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-top: 14px;
+      display: none;
+    }
+    .inferred-box.visible { display: block; }
+    .inferred-title { font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 8px; }
+    .inferred-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .inferred-pill {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: #047857;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 50px;
+    }
+
+    /* ── SAVE BUTTON ── */
+    .save-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .save-btn {
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 11px 28px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .save-btn:hover { background: var(--teal2); transform: translateY(-1px); }
+    .save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .save-btn-outline {
+      background: transparent;
+      color: var(--teal);
+      border: 2px solid var(--teal);
+    }
+    .save-btn-outline:hover { background: rgba(0,180,216,0.08); }
+
+    .saved-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16,185,129,0.1);
+      border: 1.5px solid rgba(16,185,129,0.3);
+      color: #059669;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 50px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .saved-badge.show { opacity: 1; }
+
+    /* ── ANALYZE BTN ── */
+    .analyze-btn {
+      background: linear-gradient(135deg, #7c3aed, #5b21b6);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 11px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .analyze-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    /* ── DANGER ZONE ── */
+    .danger-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      border: 2px solid #fee2e2;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    }
+    .danger-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--red);
+      margin-bottom: 12px;
+    }
+    .danger-card p { font-size: 14px; color: var(--gray); margin-bottom: 16px; line-height: 1.6; }
+    .unsub-btn {
+      background: transparent;
+      color: var(--red);
+      border: 2px solid #fca5a5;
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .unsub-btn:hover { background: #fef2f2; border-color: var(--red); }
+
+    /* ── ERROR STATE ── */
+    .error-state {
+      text-align: center;
+      padding: 60px 24px;
+      color: rgba(255,255,255,0.7);
+    }
+    .error-state .emoji { font-size: 48px; margin-bottom: 16px; }
+    .error-state h2 { font-size: 22px; font-weight: 700; color: white; margin-bottom: 8px; }
+    .error-state p { font-size: 15px; }
+
+    /* ── LOADING SKELETON ── */
+    .skeleton-card {
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .skeleton-line {
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      height: 16px;
+      margin-bottom: 10px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .skeleton-line.short { width: 40%; }
+    .skeleton-line.med { width: 70%; }
+    @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+    /* ── TEMPLATE STYLE PICKER ── */
+    .style-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .style-scroll::-webkit-scrollbar { height: 4px; }
+    .style-scroll::-webkit-scrollbar-track { background: transparent; }
+    .style-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .style-card {
+      flex: 0 0 140px;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--white);
+      text-align: center;
+      user-select: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .style-card:hover { border-color: var(--teal); background: rgba(0,180,216,0.04); }
+    .style-card.active { border-color: var(--teal); background: rgba(0,180,216,0.1); }
+    .style-card .style-icon { font-size: 28px; margin-bottom: 6px; }
+    .style-card .style-name { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .style-card .style-desc { font-size: 11px; color: var(--gray); line-height: 1.4; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .page-wrap { padding: 24px 16px 60px; }
+      .card { padding: 24px 20px; }
+      .page-header h1 { font-size: 24px; }
+      .radio-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <nav class="topbar">
+    <a href="/" class="topbar-logo">
+      <span class="topbar-brand">📬 Spokesbox</span>
+    </a>
+    <span class="topbar-divider">·</span>
+    <span class="topbar-title">Your Newsletter Profile</span>
+  </nav>
+
+  <!-- LOADING STATE (shown while fetching) -->
+  <div class="page-wrap" id="loading-state">
+    <div class="page-header">
+      <h1>Your Newsletter Profile</h1>
+      <p>Loading your preferences…</p>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-line short"></div>
+      <div class="skeleton-line med"></div>
+      <div class="skeleton-line"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-line short"></div>
+      <div class="skeleton-line med"></div>
+    </div>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div class="page-wrap" id="error-state" style="display:none;">
+    <div class="error-state">
+      <div class="emoji">🔒</div>
+      <h2>Invalid or expired link</h2>
+      <p>This profile link doesn't look right. Please use the link from your newsletter email.</p>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT (shown after load) -->
+  <div class="page-wrap" id="main-content" style="display:none;">
+
+    <div class="page-header">
+      <h1>Your Newsletter Profile</h1>
+      <p id="profile-subtitle">Customize how your daily brief looks and feels.</p>
+    </div>
+
+    <!-- NEWSLETTER PREVIEW -->
+    <div class="card">
+      <div class="preview-label">
+        <span class="emoji">📰</span>
+        <div>
+          <h3>Your current brief looks like this</h3>
+          <p>Live preview based on your current settings</p>
+        </div>
+      </div>
+      <div class="preview-frame-wrap">
+        <div class="preview-loading" id="preview-loading">
+          <div class="spinner"></div>
+          <span>Generating your preview…</span>
+        </div>
+        <iframe id="preview-iframe" src="about:blank" title="Newsletter preview" onload="onPreviewLoad()"></iframe>
+      </div>
+    </div>
+
+    <!-- TEMPLATE STYLE PICKER -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎨</span> Newsletter Style</div>
+      <div class="section-block">
+        <div class="section-label">Choose how your newsletter looks</div>
+        <div class="style-scroll" id="style-picker">
+          <div class="style-card" data-style="modern" onclick="selectStyle(this)">
+            <div class="style-icon">📧</div>
+            <div class="style-name">Modern</div>
+            <div class="style-desc">Clean & contemporary with teal accents</div>
+          </div>
+          <div class="style-card" data-style="newspaper" onclick="selectStyle(this)">
+            <div class="style-icon">📰</div>
+            <div class="style-name">Newspaper</div>
+            <div class="style-desc">Classic broadsheet, serif typography</div>
+          </div>
+          <div class="style-card" data-style="magazine" onclick="selectStyle(this)">
+            <div class="style-icon">📓</div>
+            <div class="style-name">Magazine</div>
+            <div class="style-desc">Editorial with navy, gold & cyan</div>
+          </div>
+          <div class="style-card" data-style="comic" onclick="selectStyle(this)">
+            <div class="style-icon">💥</div>
+            <div class="style-name">Comic</div>
+            <div class="style-desc">Superhero panels with bold energy</div>
+          </div>
+          <div class="style-card" data-style="minimal" onclick="selectStyle(this)">
+            <div class="style-icon">✉️</div>
+            <div class="style-name">Minimal</div>
+            <div class="style-desc">Plain text, like a smart friend’s email</div>
+          </div>
+        </div>
+        <div class="save-row">
+          <span class="saved-badge" id="saved-template_style">✓ Style saved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOPICS -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🏷️</span> Topics</div>
+      <div class="section-block">
+        <div class="section-label">Select the topics you want in every brief</div>
+        <div class="pill-grid" id="topics-grid">
+          <!-- pills injected by JS -->
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveField('topics')">Save Topics</button>
+          <span class="saved-badge" id="saved-topics">✓ Saved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TONE -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎨</span> Tone</div>
+      <div class="section-block">
+        <div class="section-label">How should your newsletter sound?</div>
+        <div class="radio-group" id="tone-group">
+          <div class="radio-card" data-value="warm" onclick="selectTone(this)">
+            <span class="radio-dot"></span>
+            <div>
+              <div class="card-text">Warm &amp; Friendly</div>
+              <div class="card-sub">Approachable, conversational</div>
+            </div>
+          </div>
+          <div class="radio-card" data-value="informative" onclick="selectTone(this)">
+            <span class="radio-dot"></span>
+            <div>
+              <div class="card-text">Informative &amp; Clean</div>
+              <div class="card-sub">Clear, professional</div>
+            </div>
+          </div>
+          <div class="radio-card" data-value="upbeat" onclick="selectTone(this)">
+            <span class="radio-dot"></span>
+            <div>
+              <div class="card-text">Upbeat &amp; Fun</div>
+              <div class="card-sub">Energetic, playful</div>
+            </div>
+          </div>
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveField('tone')">Save Tone</button>
+          <span class="saved-badge" id="saved-tone">✓ Saved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELIVERY TIME -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⏰</span> Delivery Time</div>
+      <div class="section-block">
+        <div class="section-label">When should your newsletter arrive?</div>
+        <div class="time-row">
+          <input type="time" class="time-input" id="delivery-time-input" value="07:00">
+        </div>
+        <div class="time-chips">
+          <button class="time-chip" onclick="setTime('06:00')">6am</button>
+          <button class="time-chip" onclick="setTime('07:00')">7am</button>
+          <button class="time-chip" onclick="setTime('08:00')">8am</button>
+          <button class="time-chip" onclick="setTime('09:00')">9am</button>
+          <button class="time-chip" onclick="setTime('10:00')">10am</button>
+          <button class="time-chip" onclick="setTime('12:00')">Noon</button>
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveField('delivery_time')">Save Time</button>
+          <span class="saved-badge" id="saved-delivery_time">✓ Saved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER LENGTH -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📏</span> Newsletter Length</div>
+      <div class="section-block">
+        <div class="section-label">How much content do you want each day?</div>
+        <div class="length-group" id="length-group">
+          <div class="length-card" data-value="short" onclick="selectLength(this)">
+            <div class="len-label">Short</div>
+            <div class="len-sub">~2 min read</div>
+          </div>
+          <div class="length-card" data-value="medium" onclick="selectLength(this)">
+            <div class="len-label">Medium</div>
+            <div class="len-sub">~5 min read</div>
+          </div>
+          <div class="length-card" data-value="long" onclick="selectLength(this)">
+            <div class="len-label">Full</div>
+            <div class="len-sub">~10 min read</div>
+          </div>
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveField('newsletter_length')">Save Length</button>
+          <span class="saved-badge" id="saved-newsletter_length">✓ Saved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOCIAL PROFILES -->
+    <div class="card">
+      <div class="card-title"><span class="icon">✨</span> Social Profiles</div>
+      <div class="optional-badge">✨ Optional — helps us personalize further</div>
+      <p style="font-size:14px;color:var(--gray);margin-bottom:18px;line-height:1.6;">
+        Share your public profiles and we'll infer your interests automatically.
+        No login required — we only read public info.
+      </p>
+      <div class="social-grid">
+        <div class="social-field">
+          <label>LinkedIn</label>
+          <input type="url" id="social-linkedin" placeholder="https://linkedin.com/in/yourname">
+        </div>
+        <div class="social-field">
+          <label>Instagram</label>
+          <input type="url" id="social-instagram" placeholder="https://instagram.com/yourname">
+        </div>
+        <div class="social-field">
+          <label>Twitter / X</label>
+          <input type="url" id="social-twitter" placeholder="https://x.com/yourname">
+        </div>
+        <div class="social-field">
+          <label>Reddit</label>
+          <input type="url" id="social-reddit" placeholder="https://reddit.com/user/yourname">
+        </div>
+      </div>
+      <div class="save-row" style="flex-wrap:wrap;gap:10px;">
+        <button class="save-btn save-btn-outline" onclick="saveSocials()">Save Profiles</button>
+        <button class="analyze-btn" id="analyze-btn" onclick="analyzeSocials()">
+          <span>✨</span> Analyze my profiles →
+        </button>
+        <span class="saved-badge" id="saved-socials">✓ Saved</span>
+      </div>
+      <div class="inferred-box" id="inferred-box">
+        <div class="inferred-title">🎯 Interests detected from your profiles:</div>
+        <div class="inferred-pills" id="inferred-pills"></div>
+        <p style="font-size:12px;color:var(--gray);margin-top:10px;">
+          These have been added to your topics. Adjust them above and hit Save Topics to confirm.
+        </p>
+      </div>
+    </div>
+
+    <!-- DEMOGRAPHICS (optional) -->
+    <div class="card">
+      <div class="card-title"><span class="icon">👤</span> About You <span style="font-size:12px;font-weight:400;color:var(--gray);margin-left:8px;">optional — helps us personalize further</span></div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;">Age Range</label>
+          <select id="pref-age_range" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;">
+            <option value="">Prefer not to say</option>
+            <option value="Under 18">Under 18</option>
+            <option value="18–34">18–34</option>
+            <option value="35–54">35–54</option>
+            <option value="55–69">55–69</option>
+            <option value="70+">70+</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;">Gender Identity</label>
+          <select id="pref-gender_identity" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;">
+            <option value="">Prefer not to say</option>
+            <option value="Man">Man</option>
+            <option value="Woman">Woman</option>
+            <option value="Non-binary">Non-binary</option>
+            <option value="Prefer to self-describe">Prefer to self-describe</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;">Cultural Background</label>
+          <input type="text" id="pref-cultural_background" placeholder="e.g. Jewish, Latino, South Asian, LGBTQ+, Christian..." style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;">
+        </div>
+      </div>
+      <div class="save-row" style="margin-top:16px;">
+        <button class="save-btn" onclick="saveDemographics()">Save</button>
+        <span class="saved-badge" id="saved-demographics">✓ Saved</span>
+      </div>
+    </div>
+
+    <!-- PREFERENCES -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⚙️</span> Preferences</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;">Newsletter Length</label>
+          <select id="pref-newsletter_length" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;">
+            <option value="Short (2 min read)">Short (2 min read)</option>
+            <option value="Medium (5 min)">Medium (5 min)</option>
+            <option value="Long (10 min)">Long (10 min)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;">Tone</label>
+          <select id="pref-tone" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;">
+            <option value="Warm &amp; friendly">Warm &amp; friendly</option>
+            <option value="Informative &amp; clean">Informative &amp; clean</option>
+            <option value="Upbeat &amp; fun">Upbeat &amp; fun</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;">Delivery Time</label>
+          <select id="pref-delivery_time" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;">
+            <option value="6am">6am</option>
+            <option value="7am">7am</option>
+            <option value="8am">8am</option>
+            <option value="9am">9am</option>
+            <option value="10am">10am</option>
+            <option value="Noon">Noon</option>
+          </select>
+        </div>
+      </div>
+      <div class="save-row" style="margin-top:16px;">
+        <button class="save-btn" onclick="savePreferences()">Save Preferences</button>
+        <span class="saved-badge" id="saved-preferences">✓ Saved</span>
+      </div>
+    </div>
+
+    <!-- PERSONALIZATION -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> Personalization</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;">Who to Watch <span style="font-weight:400;">(people, brands, companies)</span></label>
+          <textarea id="pref-watchlist" rows="4" placeholder="e.g. Elon Musk, Apple, NBA, Paul Graham..." style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;resize:vertical;"></textarea>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;">Include Jokes &amp; Fun Facts?</label>
+          <select id="pref-include_joke" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;">
+            <option value="Yes, give me both!">Yes, give me both!</option>
+            <option value="Just the joke">Just the joke</option>
+            <option value="Just the fun fact">Just the fun fact</option>
+            <option value="No thanks">No thanks</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;">Topics to Exclude</label>
+          <input type="text" id="pref-exclude" placeholder="e.g. politics, sports" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;">
+        </div>
+      </div>
+      <div class="save-row" style="margin-top:16px;">
+        <button class="save-btn" onclick="savePersonalization()">Save</button>
+        <span class="saved-badge" id="saved-personalization">✓ Saved</span>
+      </div>
+    </div>
+
+    <!-- DEEP INTERESTS (shown based on selected topics) -->
+    <div class="card" id="deep-interests-card" style="display:none;">
+      <div class="card-title"><span class="icon">🔬</span> Deep Interests</div>
+      <p style="font-size:14px;color:var(--gray);margin-bottom:18px;">Fine-tune content for your selected topics.</p>
+      <div id="deep-interests-fields" style="display:flex;flex-direction:column;gap:16px;"></div>
+      <div class="save-row" style="margin-top:16px;">
+        <button class="save-btn" onclick="saveDeepInterests()">Save</button>
+        <span class="saved-badge" id="saved-deep-interests">✓ Saved</span>
+      </div>
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div class="danger-card">
+      <div class="danger-title">⚠️ Danger Zone</div>
+      <p>Unsubscribing will remove you from all Spokesbox newsletters. This can't be undone.</p>
+      <a id="unsub-link" href="#" class="unsub-btn">Unsubscribe from Spokesbox</a>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <script>
+    // ── State ──────────────────────────────────────────────────────────
+    const TOPICS = [
+      'Local News', 'Weather', 'Health Tips', 'Entertainment', 'Sports',
+      'Finance', 'Food & Recipes', 'Travel', 'Books & Reading', 'Humor/Jokes',
+      'Technology', 'Politics', 'Local Events', 'Fitness', 'Parenting',
+      'Pets', 'Career Tips', 'History'
+    ];
+
+    let profileData = {};
+    let selectedTopics = new Set();
+    let selectedTone = 'warm';
+    let selectedLength = 'medium';
+    let profileEmail = '';
+    let profileToken = '';
+    let previewLoaded = false;
+
+    // ── Init ──────────────────────────────────────────────────────────
+    (async function init() {
+      const params = new URLSearchParams(window.location.search);
+      profileEmail = params.get('email') || '';
+      // Prefer token from sessionStorage (set by newsletter-preview page).
+      // Fall back to URL param for direct links / email CTAs.
+      // Never store a token in the URL when coming from the onboarding flow.
+      try {
+        const stored = JSON.parse(sessionStorage.getItem('sb_auth') || 'null');
+        if (stored && stored.email === profileEmail && stored.token) {
+          profileToken = stored.token;
+          sessionStorage.removeItem('sb_auth'); // consume once
+        }
+      } catch (_) {}
+      if (!profileToken) profileToken = params.get('token') || '';
+
+      if (!profileEmail || !profileToken) {
+        showError();
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/profile?email=${encodeURIComponent(profileEmail)}&token=${encodeURIComponent(profileToken)}`);
+        if (!res.ok) { showError(); return; }
+        profileData = await res.json();
+        renderProfile();
+      } catch (e) {
+        showError();
+      }
+    })();
+
+    function showError() {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('error-state').style.display = 'block';
+    }
+
+    // ── Render ────────────────────────────────────────────────────────
+    function renderProfile() {
+      // Update subtitle
+      if (profileData.name) {
+        document.getElementById('profile-subtitle').textContent =
+          `Hey ${profileData.name}! Customize how your daily brief looks and feels.`;
+      }
+
+      // Topics
+      selectedTopics = new Set(profileData.topics || []);
+      renderTopicPills();
+
+      // Tone
+      selectedTone = profileData.tone || 'warm';
+      document.querySelectorAll('#tone-group .radio-card').forEach(card => {
+        card.classList.toggle('active', card.dataset.value === selectedTone);
+      });
+
+      // Length
+      selectedLength = profileData.newsletter_length || 'medium';
+      document.querySelectorAll('#length-group .length-card').forEach(card => {
+        card.classList.toggle('active', card.dataset.value === selectedLength);
+      });
+
+      // Delivery time
+      const dt = profileData.delivery_time || '07:00';
+      document.getElementById('delivery-time-input').value = dt;
+      highlightTimeChip(dt);
+
+      // Social profiles
+      if (profileData.social_linkedin) document.getElementById('social-linkedin').value = profileData.social_linkedin;
+      if (profileData.social_instagram) document.getElementById('social-instagram').value = profileData.social_instagram;
+      if (profileData.social_twitter) document.getElementById('social-twitter').value = profileData.social_twitter;
+      if (profileData.social_reddit) document.getElementById('social-reddit').value = profileData.social_reddit;
+
+      // Demographics
+      if (profileData.age_range) {
+        const el = document.getElementById('pref-age_range');
+        if (el) el.value = profileData.age_range;
+      }
+      if (profileData.gender_identity) {
+        const el = document.getElementById('pref-gender_identity');
+        if (el) el.value = profileData.gender_identity;
+      }
+      if (profileData.cultural_background !== undefined) {
+        const el = document.getElementById('pref-cultural_background');
+        if (el) el.value = profileData.cultural_background;
+      }
+
+      // Preferences (new selects)
+      if (profileData.newsletter_length) {
+        const el = document.getElementById('pref-newsletter_length');
+        if (el) el.value = profileData.newsletter_length;
+      }
+      if (profileData.tone) {
+        const el = document.getElementById('pref-tone');
+        // Convert stored short form back to display form
+        const toneMap = { 'warm': 'Warm & friendly', 'informative': 'Informative & clean', 'upbeat': 'Upbeat & fun' };
+        if (el) el.value = toneMap[profileData.tone] || profileData.tone;
+      }
+      if (profileData.delivery_time) {
+        const el = document.getElementById('pref-delivery_time');
+        if (el) {
+          // Convert '07:00' to '7am'
+          const dtMap = { '06:00': '6am', '07:00': '7am', '08:00': '8am', '09:00': '9am', '10:00': '10am', '12:00': 'Noon' };
+          el.value = dtMap[profileData.delivery_time] || profileData.delivery_time;
+        }
+      }
+
+      // Personalization
+      if (profileData.watchlist !== undefined) {
+        const el = document.getElementById('pref-watchlist');
+        if (el) el.value = profileData.watchlist;
+      }
+      if (profileData.include_joke) {
+        const el = document.getElementById('pref-include_joke');
+        if (el) el.value = profileData.include_joke;
+      }
+      if (profileData.exclude !== undefined) {
+        const el = document.getElementById('pref-exclude');
+        if (el) el.value = profileData.exclude;
+      }
+
+      // Deep interests (shown based on topics)
+      renderDeepInterests();
+
+      // Unsubscribe link
+      document.getElementById('unsub-link').href =
+        `/unsubscribe?email=${encodeURIComponent(profileEmail)}&token=${encodeURIComponent(profileToken)}`;
+
+      // Load preview
+      loadPreview();
+
+      // Show main content
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+    }
+
+    function renderTopicPills() {
+      const grid = document.getElementById('topics-grid');
+      grid.innerHTML = '';
+      TOPICS.forEach(topic => {
+        const pill = document.createElement('button');
+        pill.className = 'pill' + (selectedTopics.has(topic) ? ' active' : '');
+        pill.textContent = topic;
+        pill.onclick = () => toggleTopic(pill, topic);
+        grid.appendChild(pill);
+      });
+    }
+
+    function toggleTopic(pill, topic) {
+      if (selectedTopics.has(topic)) {
+        selectedTopics.delete(topic);
+        pill.classList.remove('active');
+      } else {
+        selectedTopics.add(topic);
+        pill.classList.add('active');
+      }
+    }
+
+    function selectTone(card) {
+      document.querySelectorAll('#tone-group .radio-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      selectedTone = card.dataset.value;
+    }
+
+    function selectLength(card) {
+      document.querySelectorAll('#length-group .length-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      selectedLength = card.dataset.value;
+    }
+
+    function setTime(val) {
+      document.getElementById('delivery-time-input').value = val;
+      highlightTimeChip(val);
+    }
+
+    function highlightTimeChip(val) {
+      document.querySelectorAll('.time-chip').forEach(chip => {
+        const chipTime = chip.textContent.toLowerCase().replace('am', '').replace('noon', '').trim();
+        const chipVal = chip.textContent.toLowerCase() === 'noon' ? '12:00'
+          : `${String(parseInt(chipTime)).padStart(2, '0')}:00`;
+        chip.classList.toggle('active', chipVal === val);
+      });
+    }
+
+    // ── Preview ───────────────────────────────────────────────────────
+    function loadPreview() {
+      const iframe = document.getElementById('preview-iframe');
+      document.getElementById('preview-loading').style.display = 'flex';
+      iframe.src = `/api/profile/preview?email=${encodeURIComponent(profileEmail)}&token=${encodeURIComponent(profileToken)}`;
+    }
+
+    function onPreviewLoad() {
+      const iframe = document.getElementById('preview-iframe');
+      // Don't hide spinner on about:blank initial load
+      if (iframe.src === 'about:blank' || iframe.src === window.location.origin + '/') return;
+      document.getElementById('preview-loading').style.display = 'none';
+    }
+
+    // ── Save ──────────────────────────────────────────────────────────
+    async function saveField(field) {
+      let value;
+      if (field === 'topics') {
+        value = Array.from(selectedTopics);
+      } else if (field === 'tone') {
+        value = selectedTone;
+      } else if (field === 'newsletter_length') {
+        value = selectedLength;
+      } else if (field === 'delivery_time') {
+        value = document.getElementById('delivery-time-input').value;
+      }
+
+      await doSave(field, value, `saved-${field}`);
+
+      // Reload preview after any preference change
+      setTimeout(() => loadPreview(), 300);
+    }
+
+    async function saveSocials() {
+      const fields = ['linkedin', 'instagram', 'twitter', 'reddit'];
+      for (const f of fields) {
+        const val = document.getElementById(`social-${f}`).value.trim();
+        await doSave(`social_${f}`, val, null);
+      }
+      showSaved('saved-socials');
+    }
+
+    async function doSave(field, value, badgeId) {
+      try {
+        const res = await fetch('/api/profile/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: profileEmail, token: profileToken, field, value })
+        });
+        if (res.ok && badgeId) showSaved(badgeId);
+      } catch (e) {
+        console.error('Save failed:', e);
+      }
+    }
+
+    function showSaved(badgeId) {
+      const badge = document.getElementById(badgeId);
+      if (!badge) return;
+      badge.classList.add('show');
+      setTimeout(() => badge.classList.remove('show'), 2500);
+    }
+
+    // ── Style Picker ───────────────────────────────────────────────
+    async function selectStyle(card) {
+      document.querySelectorAll('#style-picker .style-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      selectedStyleVal = card.dataset.style;
+      await doSave('template_style', selectedStyleVal, 'saved-template_style');
+      setTimeout(() => loadPreview(), 300);
+    }
+
+    // ── Analyze Socials ───────────────────────────────────────────────
+    async function analyzeSocials() {
+      const urls = [
+        document.getElementById('social-linkedin').value.trim(),
+        document.getElementById('social-instagram').value.trim(),
+        document.getElementById('social-twitter').value.trim(),
+        document.getElementById('social-reddit').value.trim(),
+      ].filter(Boolean);
+
+      if (urls.length === 0) {
+        alert('Please enter at least one profile URL first.');
+        return;
+      }
+
+      const btn = document.getElementById('analyze-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Analyzing…';
+
+      try {
+        // We'll call the wizard infer-interests endpoint with a temp session
+        // but since profile doesn't have a session_id, we'll use a direct approach
+        const res = await fetch('/api/profile/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: profileEmail, token: profileToken, urls })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.inferred && data.inferred.length > 0) {
+            // Add inferred topics to selection
+            data.inferred.forEach(t => selectedTopics.add(t));
+            renderTopicPills();
+
+            // Show inferred box
+            const box = document.getElementById('inferred-box');
+            const pillsEl = document.getElementById('inferred-pills');
+            pillsEl.innerHTML = data.inferred.map(t =>
+              `<span class="inferred-pill">${t}</span>`
+            ).join('');
+            box.classList.add('visible');
+          } else {
+            alert('No clear interests detected from those profiles. Try adding more profile links.');
+          }
+        }
+      } catch (e) {
+        console.error('Analyze failed:', e);
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<span>✨</span> Analyze my profiles →';
+    }
+
+    // Listen for time input changes
+    document.addEventListener('DOMContentLoaded', () => {
+      const timeInput = document.getElementById('delivery-time-input');
+      if (timeInput) {
+        timeInput.addEventListener('change', (e) => highlightTimeChip(e.target.value));
+      }
+    });
+
+    // ── Deep Interests (──────────────────────────────────────────────────────────
+    const BRANCH_CONFIG = [
+      { key: 'sports_detail',    topics: ['Sports'],         label: 'Sports / Teams',            type: 'text',     placeholder: 'e.g. NBA, Cowboys, F1...' },
+      { key: 'finance_detail',   topics: ['Finance'],        label: 'Stocks / Crypto / Sectors',  type: 'text',     placeholder: 'e.g. NVDA, Bitcoin, healthcare...' },
+      { key: 'tech_focus',       topics: ['Technology'],     label: 'Tech Focus',                 type: 'text',     placeholder: 'e.g. AI, Startups, Cybersecurity...' },
+      { key: 'health_focus',     topics: ['Health Tips','Fitness'], label: 'Health Focus',        type: 'text',     placeholder: 'e.g. running, nutrition, mental health...' },
+      { key: 'career_focus',     topics: ['Career Tips'],    label: 'Industry / Role',            type: 'text',     placeholder: 'e.g. software engineer, real estate...' },
+      { key: 'music_detail',     topics: ['Music'],          label: 'Music Genres',               type: 'text',     placeholder: 'e.g. Rock, Hip-Hop, Jazz...' },
+      { key: 'movies_tv_detail', topics: ['Movies & TV'],    label: 'Favorite Genres',            type: 'text',     placeholder: 'e.g. Sci-Fi, Drama, Comedy...' },
+      { key: 'book_genres',      topics: ['Books & Reading'],'label': 'Book Genres',              type: 'text',     placeholder: 'e.g. Fiction, Mystery, Non-fiction...' },
+      { key: 'college_sports',   topics: ['College Sports'], label: 'College Team',               type: 'text',     placeholder: 'e.g. Duke, Texas Longhorns, Michigan...' },
+      { key: 'local_showtimes',  topics: ['Movies & TV'],    label: 'Local Movie Showtimes?',     type: 'select',   options: ['','Yes, include showtimes!','No thanks'] },
+    ];
+
+    function renderDeepInterests() {
+      const topics = Array.from(selectedTopics);
+      const card   = document.getElementById('deep-interests-card');
+      const fields = document.getElementById('deep-interests-fields');
+      if (!card || !fields) return;
+
+      const relevantBranches = BRANCH_CONFIG.filter(b => b.topics.some(t => topics.includes(t)));
+      if (relevantBranches.length === 0) { card.style.display = 'none'; return; }
+
+      card.style.display = '';
+      fields.innerHTML = '';
+
+      const seen = new Set();
+      relevantBranches.forEach(b => {
+        if (seen.has(b.key)) return;
+        seen.add(b.key);
+
+        const wrap = document.createElement('div');
+        const lbl = document.createElement('label');
+        lbl.style.cssText = 'font-size:13px;font-weight:600;color:var(--gray);display:block;margin-bottom:6px;';
+        lbl.textContent = b.label;
+        wrap.appendChild(lbl);
+
+        let input;
+        if (b.type === 'select') {
+          input = document.createElement('select');
+          input.style.cssText = 'width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;';
+          b.options.forEach(opt => {
+            const o = document.createElement('option');
+            o.value = opt; o.textContent = opt || 'Choose...';
+            input.appendChild(o);
+          });
+        } else {
+          input = document.createElement('input');
+          input.type = 'text';
+          input.style.cssText = 'width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;';
+          input.placeholder = b.placeholder || '';
+        }
+        input.id = 'deep-' + b.key;
+        // Pre-fill from loaded profile data
+        if (profileData[b.key] !== undefined) input.value = profileData[b.key];
+        wrap.appendChild(input);
+        fields.appendChild(wrap);
+      });
+    }
+
+    // ── New save functions ──────────────────────────────────────────────────────────
+    async function saveDemographics() {
+      await doSave('age_range',           document.getElementById('pref-age_range')?.value           || '', null);
+      await doSave('gender_identity',     document.getElementById('pref-gender_identity')?.value     || '', null);
+      await doSave('cultural_background', document.getElementById('pref-cultural_background')?.value || '', null);
+      showSaved('saved-demographics');
+      setTimeout(() => loadPreview(), 300);
+    }
+
+    async function savePreferences() {
+      await doSave('newsletter_length', document.getElementById('pref-newsletter_length')?.value || '', null);
+      await doSave('tone',              document.getElementById('pref-tone')?.value              || '', null);
+      await doSave('delivery_time',     document.getElementById('pref-delivery_time')?.value     || '', null);
+      showSaved('saved-preferences');
+      setTimeout(() => loadPreview(), 300);
+    }
+
+    async function savePersonalization() {
+      await doSave('watchlist',     document.getElementById('pref-watchlist')?.value     || '', null);
+      await doSave('include_joke',  document.getElementById('pref-include_joke')?.value  || '', null);
+      await doSave('exclude',       document.getElementById('pref-exclude')?.value       || '', null);
+      showSaved('saved-personalization');
+      setTimeout(() => loadPreview(), 300);
+    }
+
+    async function saveDeepInterests() {
+      const keys = BRANCH_CONFIG.map(b => b.key);
+      for (const key of [...new Set(keys)]) {
+        const el = document.getElementById('deep-' + key);
+        if (el) await doSave(key, el.value || '', null);
+      }
+      showSaved('saved-deep-interests');
+      setTimeout(() => loadPreview(), 300);
+    }
+
+    // Re-render deep interests when topic selection changes
+    const originalToggleTopic = window.toggleTopic;
+    function toggleTopic(pill, topic) {
+      if (selectedTopics.has(topic)) {
+        selectedTopics.delete(topic);
+        pill.classList.remove('active');
+      } else {
+        selectedTopics.add(topic);
+        pill.classList.add('active');
+      }
+      renderDeepInterests();
+    }
+
+  </script>
+</body>
+</html>

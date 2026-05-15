@@ -1,0 +1,3186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Your Newsletter - Spokesbox</title>
+  <meta name="description" content="Personalize your Spokesbox newsletter. Pick topics, set your tone, and watch your daily newsletter come to life in real-time.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #1a2744;
+      --navy2:  #243255;
+      --teal:   #00B4D8;
+      --teal2:  #0096b7;
+      --gold:   #ffd166;
+      --gold2:  #e6b800;
+      --white:  #ffffff;
+      --gray:   #6b7280;
+      --gray-lt:#f0f4f8;
+      --border: #e5e7eb;
+      --green:  #10b981;
+      --red:    #ef4444;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--gray-lt);
+      min-height: 100vh;
+      color: var(--navy);
+    }
+
+    /* ── TOP BAR ─────────────────────────────── */
+    .topbar {
+      background: var(--navy);
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    }
+    .topbar-logo {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    .topbar-divider { color: rgba(255,255,255,0.2); margin: 0 4px; }
+    .topbar-title   { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; }
+    .topbar-step    {
+      margin-left: auto;
+      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── SPLIT LAYOUT ────────────────────────── */
+    .split {
+      display: grid;
+      grid-template-columns: 60% 40%;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* ── LEFT PANEL ──────────────────────────── */
+    .left-panel {
+      background: var(--white);
+      padding: 48px 48px 40px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* ── RIGHT PANEL ─────────────────────────── */
+    .right-panel {
+      background: #f0f4f8;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+    }
+
+    /* ── PROGRESS BAR ────────────────────────── */
+    .progress-bar-wrap {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 36px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #00b4d8;
+      border-radius: 2px;
+      transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .progress-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray);
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── QUESTION AREA ───────────────────────── */
+    .question-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .question-wrap.entering {
+      animation: stepIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .step-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+    .step-question {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+    .step-sub {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.65;
+      margin-top: -8px;
+    }
+
+    /* ── EMAIL / TEXT / TEXTAREA INPUTS ──────── */
+    .text-input,
+    .email-input,
+    .textarea-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: 'Inter', sans-serif;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: var(--white);
+    }
+    .text-input:focus,
+    .email-input:focus,
+    .textarea-input:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(26,39,68,0.08);
+    }
+    .text-input.error,
+    .email-input.error { border-color: var(--red); }
+    .textarea-input {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* ── CHOICE (RADIO) BUTTONS ──────────────── */
+    .choice-group { display: flex; flex-direction: column; gap: 10px; }
+    .choice-btn {
+      padding: 16px 20px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--white);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: 'Inter', sans-serif;
+    }
+    .choice-btn .radio-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .choice-btn:hover  { border-color: #00b4d8; background: rgba(0,180,216,0.05); }
+    .choice-btn.active { border-color: #00b4d8; background: rgba(0,180,216,0.08); }
+    .choice-btn.active .radio-dot {
+      background: #00b4d8;
+      border-color: #00b4d8;
+      box-shadow: inset 0 0 0 3px white;
+    }
+
+    /* ── MULTI-SELECT PILLS ──────────────────── */
+    .multi-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .multi-btn {
+      padding: 10px 18px;
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      background: var(--white);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--navy);
+      font-family: 'Inter', sans-serif;
+    }
+    .multi-btn:hover  { border-color: #00b4d8; background: rgba(0,180,216,0.05); }
+    .multi-btn.active {
+      background: rgba(0,180,216,0.08);
+      border-color: #00b4d8;
+      color: #1a2744;
+      transform: scale(1.03);
+    }
+
+    /* ── TIME PICKER ─────────────────────────── */
+    .time-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .time-input {
+      padding: 14px 18px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--white);
+    }
+    .time-input:focus { border-color: var(--navy); }
+    .time-quick { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .time-chip {
+      padding: 8px 14px;
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--white);
+      color: var(--navy);
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .time-chip:hover  { border-color: var(--navy); }
+    .time-chip.active { background: var(--navy); border-color: var(--navy); color: white; }
+
+    /* ── NAV BUTTONS ─────────────────────────── */
+    .step-nav {
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 36px;
+      align-items: center;
+    }
+    .btn-next {
+      background: #ffd166;
+      color: #1a2744;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-next:hover:not(:disabled) { background: #e6b800; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,209,102,0.35); }
+    .btn-next:active { transform: translateY(0); }
+    .btn-next:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-skip {
+      background: transparent;
+      color: var(--gray);
+      padding: 14px 20px;
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-skip:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* ── ERROR / INLINE NOTICE ───────────────── */
+    .inline-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .inline-error.show { display: flex; }
+    .inline-error .retry-btn {
+      margin-left: auto;
+      background: var(--red);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── LOADING STATE ───────────────────────── */
+    .loading-spinner {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      color: var(--gray);
+      font-size: 14px;
+      padding: 20px 0;
+    }
+    .loading-spinner.show { display: flex; }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 3px solid var(--border);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PRE-START (email capture) ───────────── */
+    #preStart {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      flex: 1;
+      animation: stepIn 0.35s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    /* ── SUCCESS STEP ────────────────────────── */
+    /* ── MEET SAM SCREEN ───────────────────── */
+    #meetSam {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      flex: 1;
+      animation: stepIn 0.35s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .sam-avatar {
+      width: 52px; height: 52px;
+      background: var(--navy);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .sam-intro-row { display: flex; align-items: center; gap: 14px; }
+    .sam-intro-text .sam-name {
+      font-size: 13px; font-weight: 700;
+      color: var(--teal); letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .sam-intro-text .sam-tagline {
+      font-size: 14px; color: var(--gray); margin-top: 2px; line-height: 1.5;
+    }
+    #samTextarea {
+      width: 100%; min-height: 140px;
+      border: 1.5px solid var(--border); border-radius: 14px;
+      padding: 14px 16px; font-size: 15px; font-family: inherit;
+      color: var(--navy); background: #fff; resize: vertical;
+      transition: border-color 0.2s; line-height: 1.6;
+    }
+    #samTextarea:focus { outline: none; border-color: var(--teal); }
+    #samTextarea.error { border-color: var(--red); }
+    #samTextarea::placeholder { color: #9ca3af; }
+    .sam-char-hint { font-size: 12px; color: var(--gray); text-align: right; margin-top: -10px; }
+    .sam-skip { text-align: center; font-size: 13px; color: var(--gray); margin-top: 4px; }
+    .sam-skip a { color: var(--gray); text-decoration: underline; cursor: pointer; }
+    .sam-skip a:hover { color: var(--navy); }
+
+    /* Voice dictation */
+    .sam-voice-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: -6px;
+    }
+    .sam-mic-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 50px;
+      border: 1.5px solid var(--border); background: #fff;
+      font-size: 13px; font-weight: 600; color: var(--gray);
+      cursor: pointer; transition: all 0.18s; white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .sam-mic-btn:hover:not(:disabled) {
+      border-color: var(--teal); color: var(--teal); background: #f0fdfc;
+    }
+    .sam-mic-btn.recording {
+      border-color: #ef4444; color: #ef4444; background: #fff5f5;
+      animation: micPulse 1.4s ease-in-out infinite;
+    }
+    .sam-mic-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+    @keyframes micPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.25); }
+      50%       { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+    }
+    .sam-voice-status {
+      font-size: 12px; color: var(--gray); flex: 1;
+      transition: color 0.2s;
+    }
+    .sam-voice-status.listening { color: #ef4444; font-weight: 600; }
+    .sam-voice-status.error     { color: #dc2626; }
+    .sam-voice-unsupported {
+      font-size: 12px; color: var(--gray);
+      margin-top: -8px; font-style: italic;
+    }
+
+    .success-step {
+      text-align: center;
+      padding: 40px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+      justify-content: center;
+    }
+    .success-step .s-icon { font-size: 72px; animation: popIn 0.5s cubic-bezier(0.36,0.07,0.19,0.97); }
+    @keyframes popIn { 0%{transform:scale(0);opacity:0} 70%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+    .success-step h2 { font-size: 32px; font-weight: 800; }
+    .success-step p  { font-size: 15px; color: var(--gray); line-height: 1.7; max-width: 380px; }
+    .success-step .home-btn {
+      display: inline-block;
+      background: var(--navy);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .success-step .home-btn:hover { background: var(--navy2); transform: translateY(-2px); }
+
+    /* ── PREVIEW PANEL ───────────────────────── */
+    .preview-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 16px;
+      align-self: flex-start;
+    }
+
+    .preview-device {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 420px;
+      max-height: calc(100vh - 160px);
+    }
+
+    /* Email template */
+    .pe-header {
+      background: #1a2744;
+      padding: 22px 26px;
+    }
+    .pe-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .pe-brand-text {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      font-family: 'Inter', sans-serif;
+    }
+    .pe-greeting {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+      transition: opacity 0.3s;
+    }
+    .pe-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 6px;
+      transition: opacity 0.3s;
+    }
+
+    .pe-body { min-height: 120px; }
+    .pe-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .pe-badge { display: none; font-family: 'Inter', sans-serif; font-size: 10px; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.75); border-radius: 50px; padding: 3px 10px; }
+    @keyframes previewFlash { 0% { box-shadow: 0 0 0 0 rgba(0,200,180,0.4); } 60% { box-shadow: 0 0 0 8px rgba(0,200,180,0); } 100% { box-shadow: none; } }
+    .preview-flash { animation: previewFlash 0.6s ease-out; }
+
+    /* Sections */
+    .pe-section {
+      padding: 14px 26px;
+      border-bottom: 1px solid #f0f2f5;
+      transition: all 0.35s ease;
+      overflow: hidden;
+    }
+    .pe-section.entering {
+      animation: sectionDrop 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .pe-section.exiting {
+      animation: sectionFade 0.3s ease forwards;
+    }
+    @keyframes sectionDrop {
+      from { opacity: 0; transform: translateY(-10px); max-height: 0; }
+      to   { opacity: 1; transform: translateY(0);     max-height: 200px; }
+    }
+    @keyframes sectionFade {
+      from { opacity: 1; max-height: 200px; }
+      to   { opacity: 0; max-height: 0; padding: 0 26px; }
+    }
+
+    .pe-sec-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .pe-sec-emoji { font-size: 14px; }
+    .pe-sec-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #1a2744;
+      font-family: 'Inter', sans-serif;
+    }
+    .pe-sec-content {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 12.5px;
+      color: #333;
+      line-height: 1.65;
+    }
+    .pe-sec-content.typing { border-right: 2px solid #1a2744; }
+
+    /* Empty state */
+    .pe-empty {
+      padding: 36px 26px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+    .pe-empty-icon { font-size: 36px; margin-bottom: 12px; }
+    .pe-empty-text { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+    /* Success state */
+    .pe-success {
+      padding: 36px 26px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+    .pe-success-icon { font-size: 48px; margin-bottom: 14px; }
+    .pe-success h3 { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .pe-success p  { font-size: 13px; color: var(--gray); line-height: 1.65; }
+    .pe-success .delivery-time {
+      display: inline-block;
+      background: #e8f9fd;
+      color: var(--teal2);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 50px;
+      margin-top: 10px;
+    }
+
+    .pe-footer {
+      background: #f8f9fb;
+      padding: 10px 26px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      color: #9ca3af;
+      line-height: 1.6;
+    }
+
+    /* ── PREVIEW IFRAME ──────────────────────── */
+    .pe-body iframe {
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 960px) {
+      .split { grid-template-columns: 1fr; }
+      .right-panel {
+        position: static;
+        height: auto;
+        order: 2;
+        padding: 24px 20px;
+      }
+      .left-panel { order: 1; min-height: auto; }
+    }
+    @media (max-width: 640px) {
+      .left-panel    { padding: 28px 20px 32px; }
+      .step-question { font-size: 22px; }
+      .topbar        { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<header class="topbar">
+  <a href="/" class="topbar-logo">
+    <img src="/spokesbox-logo.png" alt="Spokesbox" style="height:36px;width:auto;display:block;">
+  </a>
+  <span class="topbar-divider">·</span>
+  <span class="topbar-title">Build your newsletter</span>
+  <span class="topbar-step" id="stepIndicator"></span>
+</header>
+
+<div class="split">
+
+  <!-- ════════════════════════════════
+       LEFT: WIZARD
+  ════════════════════════════════ -->
+  <div class="left-panel" id="leftPanel">
+
+    <!-- Loading spinner (shown before first question loads) -->
+    <div class="loading-spinner show" id="globalLoader">
+      <div class="spinner"></div>
+      <span>Setting things up...</span>
+    </div>
+
+    <!-- Pre-start: email capture (shown only if no email in URL) -->
+    <div id="preStart" style="display:none">
+      <div class="step-eyebrow">Get started</div>
+      <h2 class="step-question">Where should we send your newsletter? 📬</h2>
+      <p class="step-sub">Free forever - no credit card needed. Your first newsletter arrives tomorrow.</p>
+      <input type="email" class="email-input" id="startEmail"
+             placeholder="you@example.com" autocomplete="email">
+      <div class="inline-error" id="startEmailError">
+        <span>Please enter a valid email address.</span>
+      </div>
+      <div class="step-nav">
+        <button class="btn-next" id="startBtn" onclick="handleStart()">Get started →</button>
+      </div>
+    </div>
+
+    <!-- Meet Sam screen — shown after email_and_name step, before Wizard questions -->
+    <div id="meetSam" style="display:none">
+      <div class="sam-intro-row">
+        <div class="sam-avatar">✍️</div>
+        <div class="sam-intro-text">
+          <div class="sam-name">Meet Sam</div>
+          <div class="sam-tagline">Your personal editor — building your brief from scratch.</div>
+        </div>
+      </div>
+      <h2 class="step-question" style="font-size:20px;line-height:1.4;">What do you want Sam to know about you?</h2>
+      <p class="step-sub">Tell Sam what you care about — your work, your interests, what you read, what you're trying to stay on top of. Your words, your way. Sam uses this to write your brief.</p>
+      <textarea id="samTextarea"
+        placeholder="E.g. I work in early-stage VC and follow AI infrastructure closely. I read The Information and Matt Levine. I'm also into NBA basketball and I want dry, specific takes — no filler..."
+        rows="6" maxlength="5000"></textarea>
+
+      <!-- Voice dictation row (hidden until JS confirms support) -->
+      <div class="sam-voice-row" id="samVoiceRow" style="display:none">
+        <button class="sam-mic-btn" id="samMicBtn" type="button"
+                onclick="toggleVoiceDictation()" aria-label="Record voice input">
+          🎙 Speak
+        </button>
+        <span class="sam-voice-status" id="samVoiceStatus"></span>
+      </div>
+      <!-- Shown only on unsupported browsers -->
+      <p class="sam-voice-unsupported" id="samVoiceUnsupported" style="display:none">
+        Voice input is not supported in this browser. You can type your response instead.
+      </p>
+
+      <div class="sam-char-hint"><span id="samCharCount">0</span> / 5000</div>
+      <div class="inline-error" id="samError"></div>
+      <div class="step-nav">
+        <button class="btn-next" id="samSubmitBtn" onclick="handleSamSubmit()">Tell Sam →</button>
+      </div>
+      <div class="sam-skip">
+        <a onclick="skipSam()">Skip for now — continue without a Sam brief</a>
+      </div>
+    </div>
+
+    <!-- Dynamic question area (populated by API) -->
+    <div id="questionArea" style="display:none"></div>
+
+    <!-- Success step (shown when done) -->
+    <!-- successStep removed - completion now redirects to /newsletter-preview?session_id=... -->
+
+  </div><!-- /left-panel -->
+
+  <!-- ════════════════════════════════
+       RIGHT: LIVE PREVIEW
+  ════════════════════════════════ -->
+  <div class="right-panel">
+    <div class="preview-label">✉️ Newsletter Preview</div>
+
+    <div class="preview-device">
+
+      <!-- Email header -->
+      <div class="pe-header">
+        <div class="pe-brand">
+          <img src="/spokesbox-logo-cropped.jpg" alt="Spokesbox" style="height:40px;width:auto;display:block;margin:0 auto;background:#1a2744;">
+        </div>
+        <div class="pe-greeting" id="peGreeting">Good morning! ☀️</div>
+        <div class="pe-meta" id="peMeta">Ready at 7:00 AM</div>
+        <div class="pe-badges">
+          <span class="pe-badge" id="peLocationBadge"></span>
+          <span class="pe-badge" id="peLengthBadge"></span>
+        </div>
+      </div>
+
+      <!-- Email body: sections injected here -->
+      <div class="pe-body" id="peBody">
+        <div class="pe-empty">
+          <div class="pe-empty-icon">✨</div>
+          <div class="pe-empty-text">Answer a few questions to see<br>your newsletter take shape</div>
+        </div>
+      </div>
+
+      <!-- Email footer -->
+      <div class="pe-footer">
+        © 2026 Spokesbox &nbsp;·&nbsp; Unsubscribe &nbsp;·&nbsp; Update preferences<br>
+        <em>This is a preview - your real newsletter will be personalized daily.</em>
+      </div>
+
+    </div><!-- /preview-device -->
+  </div><!-- /right-panel -->
+
+</div><!-- /split -->
+
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════════════════════
+const W = {
+  session_id:      null,
+  email:           '',
+  currentQ:        null,   // current question object from server
+  vs:              0,      // virtual step
+  vt:              12,     // virtual total
+  answers:         {},     // key → value, for preview updates
+  multiSelected:        [],     // for multi-select questions
+  timeValue:            '07:00', // for time questions
+  pendingAnswer:        null,   // holds answer while submitting
+  pendingSocialInsights: null,  // social analysis results shown on next step
+  derived: { custom_profile: null } // parsed free-text personalization
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PREVIEW CONTENT (sample data per topic key)
+// ══════════════════════════════════════════════════════════════════════════════
+// Static fallbacks - used only when no personalization data available yet
+const TOPIC_PREVIEW = {
+  'Sports':                  { emoji: '🏆', label: 'Sports',            text: 'Your teams\' latest scores, standings & news - tailored to who you actually follow.' },
+  'Finance':                 { emoji: '📈', label: 'Finance & Markets',  text: 'Market movers, your watchlist stocks, and the macro headlines that matter today.' },
+  'Politics':                { emoji: '🏛️', label: 'Politics',           text: 'Senate passes infrastructure amendment 67-32. Bipartisan border deal talks resume.' },
+  'Technology':              { emoji: '💻', label: 'Tech',               text: 'The tech stories shaping your industry - filtered to what you actually care about.' },
+  'Health Tips':             { emoji: '🏃', label: 'Health',             text: 'Evidence-based health insights tailored to your goals and age.' },
+  'Fitness':                 { emoji: '💪', label: 'Fitness',            text: 'New meta-analysis: strength training twice per week reduces all-cause mortality by 34%.' },
+  'Humor/Jokes':             { emoji: '😂', label: 'Daily Humor',        text: "Why don't scientists trust atoms? Because they make up everything. 😄" },
+  'Local News':              { emoji: '📰', label: 'Local News',         text: 'Top stories from your city - hyperlocal, up to 48 hours fresh.' },
+  'Weather':                 { emoji: '🌤️', label: 'Weather',            text: 'Your local forecast - highs, lows, and weekend outlook.' },
+  'Entertainment':           { emoji: '🎬', label: 'Entertainment',      text: 'Netflix drops Stranger Things final season trailer. Dune 3 greenlit by Legendary Pictures.' },
+  'Food & Recipes':          { emoji: '🍳', label: 'Food & Recipes',     text: "Today's quick recipe: 20-minute sheet-pan lemon chicken with roasted vegetables." },
+  'Travel':                  { emoji: '✈️', label: 'Travel',             text: 'TSA wait times hit 2-year low at major airports. Best time to book summer flights: now.' },
+  'Books & Reading':         { emoji: '📚', label: 'Books',              text: 'This week\'s pick: "The Covenant of Water" by Abraham Verghese - a multigenerational epic.' },
+  'Local Events':            { emoji: '📅', label: 'Local Events',       text: 'Community events, concerts, and things to do near you this week.' },
+  'Parenting':               { emoji: '👨👧', label: 'Parenting',        text: 'Screen time study: Outdoor play for 60 min/day counteracts negative effects of device use.' },
+  'Pets':                    { emoji: '🐾', label: 'Pets',               text: 'Vet tip: Spring means flea & tick season - updated prevention starts now.' },
+  'Career Tips':             { emoji: '💼', label: 'Career',             text: 'Jobs and news in your field - not generic LinkedIn tips.' },
+  'History':                 { emoji: '🏺', label: 'History',            text: 'On this day in 1945: The United Nations charter was signed in San Francisco by 50 nations.' },
+  'College Sports':          { emoji: '🎓', label: 'College Sports',     text: 'Scores, rankings, recruiting news, and rivalry updates for your team.' },
+  'Local Services Directory':{ emoji: '🏠', label: 'Local Services',     text: 'Top-rated local plumber, electrician, HVAC near you - real businesses, no Angi.' },
+  'Career & Opportunities':  { emoji: '💼', label: 'Career & Jobs',      text: 'Open roles and news in your industry - personalized to your career field.' },
+  'Music':       { emoji: '🎵', label: 'Music',        text: 'Your genres and artists - new releases, tour dates, and the stories behind the songs.' },
+  'Movies & TV': { emoji: '🎬', label: 'Movies & TV',  text: 'New releases, critic picks, streaming drops, and entertainment news tailored to your taste.' },
+};
+
+// Build personalized preview text for a topic using current wizard answers
+function getPersonalizedText(topic, answers) {
+  const a = answers || W.answers || {};
+  const city  = a.city  || null;
+  const state = a.state || null;
+  const zip   = a.zip_code || null;
+  const cityStr = city ? (state ? city + ', ' + state : city) : (zip || null);
+
+  switch (topic) {
+    case 'Sports': {
+      const teams = a.sports_detail;
+      if (teams && teams.trim()) {
+        const list = teams.split(/[,&]+/).map(t => t.trim()).filter(Boolean).slice(0, 3);
+        return 'Covering ' + list.join(', ') + ' - scores, standings, injuries & news every day.';
+      }
+      return TOPIC_PREVIEW['Sports'].text;
+    }
+    case 'College Sports': {
+      const team = a.college_sports;
+      if (team && team.trim()) return team.trim() + ' scores, rankings, recruiting news & rivalry updates - every game day.';
+      return TOPIC_PREVIEW['College Sports'].text;
+    }
+    case 'Finance': {
+      const cp = W.derived && W.derived.custom_profile;
+      const tickers = a.finance_detail;
+      const watchNames = (a.watchlist || '').split(/[\n,]+/).map(s => s.trim()).filter(Boolean).slice(0, 3);
+      // Custom profile has specific phrases — prefer specificInterests over generic
+      if (cp && (cp.specificInterests.length || cp.industries.length)) {
+        const fins = [...cp.specificInterests, ...cp.industries].filter(t =>
+          /invest|equity|fund|market|crypto|fintech|venture|portfolio|market structure|advisory/i.test(t)
+        ).slice(0, 2);
+        if (fins.length) return `Covering ${fins.join(', ')}${tickers ? ' · tracking ' + tickers.split(/[,\s]+/).filter(t=>t.length<=6).slice(0,3).join(', ') : ''}.`;
+      }
+      if (tickers && tickers.trim()) {
+        const list = tickers.split(/[,\s]+/).filter(t => t.length >= 1 && t.length <= 6).slice(0, 4);
+        if (list.length > 0) {
+          const watchSuffix = watchNames.length ? ` · watching ${watchNames.slice(0,2).join(', ')}` : '';
+          return `Tracking ${list.join(', ')} + broader market movers and macro headlines${watchSuffix}.`;
+        }
+      }
+      if (watchNames.length) return `Market movers, macro headlines, and signals from ${watchNames.slice(0,2).join(' & ')}.`;
+      return TOPIC_PREVIEW['Finance'].text;
+    }
+    case 'Technology': {
+      const cp = W.derived && W.derived.custom_profile;
+      if (cp && cp.specificInterests.length) {
+        const techTopics = cp.specificInterests.filter(t =>
+          /ai|infra|robot|autonomous|inference|chip|stack|machine learning|deep tech|saas|b2b/i.test(t)
+        ).slice(0, 2);
+        if (techTopics.length) return techTopics.join(' + ') + ' — signal-filtered, no fluff.';
+      }
+      const focus = a.tech_focus;
+      if (focus && focus.trim()) return focus.trim() + ' news and breakthroughs - the stories that matter in your corner of tech.';
+      return TOPIC_PREVIEW['Technology'].text;
+    }
+    case 'Health Tips': {
+      const focus = a.health_focus;
+      if (focus && focus.trim()) return focus.trim() + ' insights backed by research - personalized for your health goals.';
+      return TOPIC_PREVIEW['Health Tips'].text;
+    }
+    case 'Local News':
+      if (cityStr) return 'Top stories from ' + cityStr + ' - hyperlocal, up to 48 hours fresh, no national filler.';
+      return TOPIC_PREVIEW['Local News'].text;
+    case 'Local Events':
+      if (cityStr) return 'Things to do in ' + cityStr + ' this week - concerts, markets, community events.';
+      return TOPIC_PREVIEW['Local Events'].text;
+    case 'Local Services Directory':
+      if (cityStr) return 'Top-rated plumbers, electricians & HVAC in ' + cityStr + ' - real businesses, no Angi.';
+      return TOPIC_PREVIEW['Local Services Directory'].text;
+    case 'Weather':
+      if (cityStr) return 'Your ' + cityStr + ' forecast - today\'s highs/lows, feels-like, precip chance & weekend outlook.';
+      if (zip)     return 'Your local forecast for ' + zip + ' - highs, lows, precip & weekend outlook.';
+      return TOPIC_PREVIEW['Weather'].text;
+    case 'Career Tips':
+    case 'Career & Opportunities': {
+      const field = a.career_focus;
+      if (field && field.trim()) return field.trim() + ' job openings and industry news - filtered to your career, not generic tips.';
+      return (TOPIC_PREVIEW[topic] || {}).text || 'Job opportunities and career news in your field.';
+    }
+    case 'Music': {
+      const genres = a.music_detail;
+      if (genres && genres.length) {
+        const list = Array.isArray(genres) ? genres.slice(0,3).join(', ') : genres;
+        return `${list} news - new albums, tour dates, artist stories, and playlist picks.`;
+      }
+      return TOPIC_PREVIEW['Music'].text;
+    }
+    case 'Movies & TV': {
+      const genres = a.movies_tv_detail;
+      if (genres && genres.length) {
+        const list = Array.isArray(genres) ? genres.slice(0,3).join(', ') : genres;
+        return `${list} picks - new releases, streaming drops, reviews, and what to watch next.`;
+      }
+      return TOPIC_PREVIEW['Movies & TV'].text;
+    }
+    default:
+      return (TOPIC_PREVIEW[topic] || {}).text || ('Your personalized ' + topic + ' content, curated daily.');
+  }
+}
+
+// Tone-label to internal key
+const TONE_MAP = {
+  'Warm & friendly':    'casual',
+  'Informative & clean':'professional',
+  'Upbeat & fun':       'casual'
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════════════════════════════════════
+// Failsafe: force-clear spinner after 4s no matter what
+setTimeout(() => {
+  const loader = document.getElementById('globalLoader');
+  if (loader && loader.style.display !== 'none') {
+    loader.style.display = 'none';
+    const preStart = document.getElementById('preStart');
+    if (preStart && preStart.style.display === 'none') {
+      preStart.style.display = '';
+    }
+  }
+}, 4000);
+
+(async function boot() {
+  try {
+    const emailParam = new URLSearchParams(location.search).get('email') || '';
+    W.email = emailParam;
+
+    if (emailParam) {
+      await startWizard(emailParam);
+    } else {
+      // Show email capture form
+      hide('globalLoader');
+
+      // Check localStorage for a saved session (resume-later feature)
+      const saved = JSON.parse(localStorage.getItem('sb_session') || 'null');
+      const RESUME_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
+      if (saved && saved.session_id && saved.email && (Date.now() - saved.savedAt) < RESUME_MAX_AGE) {
+        const resumeBanner = document.createElement('div');
+        resumeBanner.style.cssText = 'background:#f0f9ff;border:1.5px solid #00B4D8;border-radius:10px;padding:16px 20px;margin-bottom:20px;';
+        resumeBanner.innerHTML = `
+          <div style="font-size:0.9rem;font-weight:600;color:#0369a1;margin-bottom:6px;">👋 Welcome back!</div>
+          <div style="font-size:0.85rem;color:#374151;margin-bottom:12px;">You were on step ${saved.step} of your setup for <strong>${esc(saved.email)}</strong>.</div>
+          <div style="display:flex;gap:10px;">
+            <button onclick="resumeSession()" style="background:#1A2744;color:white;border:none;padding:8px 16px;border-radius:6px;font-size:0.85rem;cursor:pointer;">Continue where I left off</button>
+            <button onclick="this.closest('div').remove();localStorage.removeItem('sb_session');" style="background:none;border:1px solid #d1d5db;padding:8px 16px;border-radius:6px;font-size:0.85rem;cursor:pointer;color:#6b7280;">Start fresh</button>
+          </div>
+        `;
+        document.getElementById('preStart').prepend(resumeBanner);
+      }
+
+      show('preStart');
+      const startEmailEl = document.getElementById('startEmail');
+      if (startEmailEl) {
+        startEmailEl.focus();
+        startEmailEl.addEventListener('keydown', e => {
+          if (e.key === 'Enter') handleStart();
+        });
+      }
+    }
+
+    renderHeader();
+  } catch(bootErr) {
+    console.error('Boot error:', bootErr);
+    hide('globalLoader');
+    show('preStart');
+  }
+})();
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PRE-START: email capture
+// ══════════════════════════════════════════════════════════════════════════════
+async function handleStart() {
+  const emailEl = document.getElementById('startEmail');
+  const errEl   = document.getElementById('startEmailError');
+  const email   = emailEl.value.trim();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(email)) {
+    emailEl.classList.add('error');
+    errEl.classList.add('show');
+    emailEl.focus();
+    return;
+  }
+  emailEl.classList.remove('error');
+  errEl.classList.remove('show');
+  W.email = email;
+
+  document.getElementById('startBtn').textContent = 'Starting...';
+  document.getElementById('startBtn').disabled = true;
+
+  await startWizard(email);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  WIZARD START
+// ══════════════════════════════════════════════════════════════════════════════
+async function startWizard(email) {
+  try {
+    const res  = await fetch('/wizard/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || 'Failed to start');
+
+    W.session_id = data.session_id;
+    W.vs = data.step || 1;
+    W.vt = data.total || 4;
+
+    hide('globalLoader');
+    hide('preStart');
+    show('questionArea');
+
+    renderQuestion(data);
+  } catch (err) {
+    hide('globalLoader');
+    const startBtn = document.getElementById('startBtn');
+    if (startBtn) {
+      startBtn.textContent = 'Try again';
+      startBtn.disabled = false;
+    }
+    show('preStart');
+    const errEl = document.getElementById('startEmailError');
+    errEl.innerHTML = `<span>Could not connect to server: ${esc(err.message)}</span>
+      <button class="retry-btn" onclick="handleStart()">Retry</button>`;
+    errEl.classList.add('show');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  TILE GRID — TOPIC PICKER
+// ══════════════════════════════════════════════════════════════════════════════
+const TILE_ICONS = {
+  'Local News':      '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>',
+  'World News':      '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+  'Politics':        '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>',
+  'Weather':         '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
+  'Sports':          '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>',
+  'Finance':         '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+  'Technology':      '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>',
+  'Health Tips':     '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>',
+  'Food & Recipes':  '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" x2="18" y1="17" y2="17"/></svg>',
+  'Travel':          '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4s-2 1-3.5 2.5L11 10 2.8 8.2c-.5-.1-.9.4-.8.9l.8 2.2 7 1.5 1.5 7 2.2.8c.5.1 1-.3.9-.8Z"/></svg>',
+  'Books & Reading': '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+  'Music':           '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+  'Movies & TV':     '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" x2="7" y1="2" y2="22"/><line x1="17" x2="17" y1="2" y2="22"/><line x1="2" x2="22" y1="12" y2="12"/><line x1="2" x2="7" y1="7" y2="7"/><line x1="2" x2="7" y1="17" y2="17"/><line x1="17" x2="22" y1="17" y2="17"/><line x1="17" x2="22" y1="7" y2="7"/></svg>',
+  'Career Tips':     '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+  'Humor/Jokes':     '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>',
+  'Fun Facts':       '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>',
+  'Pets':            '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12.7A5 5 0 1 0 7.7 9"/><path d="m2 16 4.286 4.286a1 1 0 0 0 1.428 0L9 19"/><path d="m22 16-4.286 4.286a1 1 0 0 1-1.428 0L15 19"/><path d="m2 16 1-1 3 3 1-1"/><path d="m22 16-1-1-3 3-1-1"/></svg>',
+  'History':         '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>',
+};
+function defaultTileIcon() {
+  return '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="4"/></svg>';
+}
+
+const TILE_GRID_CSS = `
+.tile-grid-wrap { padding-bottom: 88px; }
+.tile-group { margin-bottom: 28px; }
+.tile-group-label {
+  font-size: 12px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; color: #6b7280;
+  margin-bottom: 12px; padding: 8px 0 4px;
+  position: sticky; top: 0; background: #fff;
+  box-shadow: 0 2px 4px -2px rgba(0,0,0,0.06);
+  z-index: 2;
+}
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+@media (max-width: 767px) {
+  .tile-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+}
+.tile-btn {
+  aspect-ratio: 1;
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px; padding: 12px 8px;
+  cursor: pointer; position: relative;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.tile-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.tile-btn:active { transform: scale(0.95); }
+.tile-btn[aria-pressed="true"] {
+  border: 3px solid #00B4D8;
+  background: #f0fdff;
+}
+.tile-btn:focus-visible {
+  outline: 3px solid #00B4D8; outline-offset: 2px;
+}
+.tile-btn .tile-check {
+  display: none; position: absolute; top: 6px; right: 6px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #00B4D8; align-items: center; justify-content: center;
+}
+.tile-btn[aria-pressed="true"] .tile-check { display: flex; }
+.tile-btn .tile-label {
+  font-size: 13px; font-weight: 600; color: #1a2744;
+  text-align: center; line-height: 1.2;
+  pointer-events: none;
+}
+.tile-btn .tile-icon svg { pointer-events: none; }
+.tile-btn[aria-pressed="true"] .tile-icon svg { stroke: #00B4D8; }
+.tile-continue-btn {
+  position: fixed; bottom: 16px;
+  left: 50%; transform: translateX(-50%);
+  width: calc(100% - 32px); max-width: 580px;
+  height: 56px; background: #00B4D8; color: #fff;
+  font-size: 16px; font-weight: 600; border: none;
+  border-radius: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; z-index: 100;
+  transition: opacity 0.2s ease;
+}
+.tile-continue-btn:disabled { opacity: 0.5; pointer-events: none; }
+.tile-continue-btn .tile-arrow { display: inline-block; }
+.tile-continue-btn:not(:disabled) .tile-arrow {
+  animation: arrow-pulse 1.2s ease-in-out infinite;
+}
+@keyframes arrow-pulse {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+.tile-count-badge {
+  font-size: 12px; font-weight: 700;
+  background: rgba(255,255,255,0.25);
+  border-radius: 50px; padding: 2px 10px;
+  margin-left: 8px;
+}
+`;
+
+function renderTopicTiles(q, inputWrap, currentSelected) {
+  // Inject CSS once
+  if (!document.getElementById('tile-grid-styles')) {
+    const style = document.createElement('style');
+    style.id = 'tile-grid-styles';
+    style.textContent = TILE_GRID_CSS;
+    document.head.appendChild(style);
+  }
+
+  const selected = new Set(currentSelected || []);
+  const wrap = document.createElement('div');
+  wrap.className = 'tile-grid-wrap';
+
+  // Build groups
+  (q.groups || []).forEach(group => {
+    const section = document.createElement('div');
+    section.className = 'tile-group';
+
+    const label = document.createElement('div');
+    label.className = 'tile-group-label';
+    label.setAttribute('role', 'heading');
+    label.setAttribute('aria-level', '3');
+    label.textContent = group.label;
+    section.appendChild(label);
+
+    const grid = document.createElement('div');
+    grid.className = 'tile-grid';
+
+    group.topics.forEach(topic => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tile-btn';
+      btn.setAttribute('aria-label', topic);
+      btn.setAttribute('aria-pressed', selected.has(topic) ? 'true' : 'false');
+      btn.dataset.topic = topic;
+
+      // Check badge
+      const check = document.createElement('span');
+      check.className = 'tile-check';
+      check.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      btn.appendChild(check);
+
+      // Icon
+      const iconWrap = document.createElement('div');
+      iconWrap.className = 'tile-icon';
+      iconWrap.innerHTML = TILE_ICONS[topic] || defaultTileIcon();
+      btn.appendChild(iconWrap);
+
+      // Label
+      const lbl = document.createElement('span');
+      lbl.className = 'tile-label';
+      lbl.textContent = topic;
+      btn.appendChild(lbl);
+
+      btn.addEventListener('click', () => {
+        const nowSelected = btn.getAttribute('aria-pressed') === 'true';
+        if (nowSelected) {
+          selected.delete(topic);
+          btn.setAttribute('aria-pressed', 'false');
+        } else {
+          selected.add(topic);
+          btn.setAttribute('aria-pressed', 'true');
+        }
+        updateContinueBtn();
+      });
+
+      grid.appendChild(btn);
+    });
+    section.appendChild(grid);
+    wrap.appendChild(section);
+  });
+
+  inputWrap.appendChild(wrap);
+
+  // Sticky continue button
+  const continueBtn = document.createElement('button');
+  continueBtn.type = 'button';
+  continueBtn.className = 'tile-continue-btn';
+  continueBtn.id = 'tileContinueBtn';
+  document.body.appendChild(continueBtn);
+
+  function updateContinueBtn() {
+    const count = selected.size;
+    const min = q.min_selections || 3;
+    const remaining = min - count;
+    let btnText, disabled;
+    if (count >= min) {
+      btnText = 'Looks good \u2014 continue';
+      disabled = false;
+      if (count === min) {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }
+    } else if (remaining === 1) {
+      btnText = 'Pick 1 more';
+      disabled = true;
+    } else {
+      btnText = `Pick at least ${min} topics`;
+      disabled = true;
+    }
+    continueBtn.disabled = disabled;
+    continueBtn.innerHTML = `${btnText} <span class="tile-arrow">\u2192</span><span class="tile-count-badge">${count} selected</span>`;
+  }
+
+  continueBtn.addEventListener('click', () => {
+    continueBtn.remove();
+    W.multiSelected = Array.from(selected);
+    W.pendingAnswer = W.multiSelected;
+    submitAnswer();
+  });
+
+  updateContinueBtn();
+
+  // Return cleanup function for nav transitions
+  return () => { continueBtn.remove(); };
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  RENDER QUESTION
+// ══════════════════════════════════════════════════════════════════════════════
+function renderQuestion(q) {
+  W.currentQ     = q;
+  W.multiSelected = [];
+  // Ensure custom profile survives step navigation
+  setTimeout(rehydrateCustomProfile, 0);
+  // Clean up tile continue button from prior question
+  W._tileCleanup?.();
+  W._tileCleanup = null;
+  W.pendingAnswer = null;
+
+  // Update progress
+  updateProgress(W.vs, W.vt);
+
+  const area = document.getElementById('questionArea');
+  area.innerHTML = '';
+
+  // Inject social insights banner in left panel if present
+  if (W.pendingSocialInsights) {
+    const si = W.pendingSocialInsights;
+    const banner = document.createElement('div');
+    banner.style.cssText = 'margin-bottom:18px;';
+    const topicEmojis = {
+      'Sports':'🏆','Finance':'📈','Technology':'💻','Politics':'🏛️',
+      'Local News':'📰','Health & Fitness':'💪','Books & Reading':'📚',
+      'Weather':'⛅','Health Tips':'💪','Fitness':'🏃','Entertainment':'🎬',
+      'Food & Recipes':'🍳','Travel':'✈️','Humor/Jokes':'😄','Parenting':'👨‍👧',
+      'Pets':'🐾','Career Tips':'💼','History':'🏺','Local Events':'📍',
+      'College Sports':'🎓','Local Services Directory':'🏠'
+    };
+    let entityHtml = '';
+    if (si.college) entityHtml += `<div style="font-size:12px;color:#c2410c;font-weight:600;margin-bottom:4px;">🎓 ${esc(si.college)} detected - college sports added</div>`;
+    if (si.career)  entityHtml += `<div style="font-size:12px;color:#15803d;font-weight:600;margin-bottom:4px;">💼 ${esc(si.career)} - career & job news added</div>`;
+    const chips = si.topics && si.topics.length
+      ? si.topics.map(t => `<span style="display:inline-flex;align-items:center;gap:4px;background:#e0f2fe;border-radius:50px;padding:3px 10px;font-size:11px;font-weight:600;color:#0369a1;margin:2px;">${topicEmojis[t]||'📌'} ${esc(t)}</span>`).join('')
+      : '';
+    const noResults = !si.topics || si.topics.length === 0;
+    banner.innerHTML = `
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:14px 16px;">
+        <div style="font-size:12px;font-weight:700;color:#0369a1;margin-bottom:8px;">🔍 Profile analysis complete</div>
+        ${entityHtml}
+        ${noResults
+          ? `<div style="font-size:12px;color:#6b7280;">Profiles were private or couldn't be read - select your topics below.</div>`
+          : `<div style="line-height:1.8;">${chips}</div>
+             <div style="font-size:10px;color:#9ca3af;margin-top:6px;">Pre-selected below - edit freely</div>`
+        }
+      </div>`;
+    area.appendChild(banner);
+    W.pendingSocialInsights = null;
+  }
+
+  const wrap = document.createElement('div');
+  wrap.className = 'question-wrap entering';
+  setTimeout(() => wrap.classList.remove('entering'), 400);
+
+  // Eyebrow
+  const eyebrow = el('div', 'step-eyebrow', `Step ${W.vs} of ${W.vt}`);
+  wrap.appendChild(eyebrow);
+
+  // Question text
+  const qText = el('h2', 'step-question', q.question);
+  wrap.appendChild(qText);
+
+  // Sub-label / subtitle
+  const sublabel = q.sublabel || q.sub || null;
+  if (sublabel) {
+    const sub = el('p', 'step-sub', sublabel);
+    sub.style.whiteSpace = 'pre-wrap';
+    wrap.appendChild(sub);
+  }
+
+  // Error area
+  const errDiv = document.createElement('div');
+  errDiv.className = 'inline-error';
+  errDiv.id = 'qError';
+  wrap.appendChild(errDiv);
+
+  // Input area
+  const inputWrap = document.createElement('div');
+  inputWrap.id = 'inputArea';
+
+  if (q.type === 'text' || q.type === 'email') {
+    const input = document.createElement('input');
+    input.type  = q.type === 'email' ? 'email' : 'text';
+    input.className = q.type === 'email' ? 'email-input' : 'text-input';
+    input.id = 'qInput';
+    input.placeholder = q.placeholder || '';
+    input.autocomplete = q.key === 'name' ? 'given-name' : (q.type === 'email' ? 'email' : 'off');
+    inputWrap.appendChild(input);
+    setTimeout(() => input.focus(), 100);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') submitAnswer(); });
+    // Live preview update while typing
+    if (q.key === 'name') {
+      input.addEventListener('input', () => {
+        W.answers.name = input.value.trim();
+        renderHeader();
+      });
+    }
+    if (q.key === 'zip_code') {
+      input.addEventListener('input', () => {
+        W.answers.zip_code = input.value.trim();
+        updatePreviewFromAnswer('zip_code', input.value.trim());
+      });
+    }
+  }
+
+  else if (q.type === 'textarea') {
+    const ta = document.createElement('textarea');
+    ta.className   = 'textarea-input';
+    ta.id          = 'qInput';
+    ta.placeholder = q.placeholder || '';
+    // Live preview wiring: update preview on every keystroke
+    ta.addEventListener('input', () => {
+      const val = ta.value.trim();
+      W.answers[q.key] = val;
+      updatePreviewFromAnswer(q.key, val);
+    });
+    inputWrap.appendChild(ta);
+    setTimeout(() => ta.focus(), 100);
+  }
+
+  else if (q.type === 'choice') {
+    const group = document.createElement('div');
+    group.className = 'choice-group';
+    (q.options || []).forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = `<span class="radio-dot"></span><span>${esc(opt)}</span>`;
+      btn.dataset.value = opt;
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        W.pendingAnswer = opt;
+        // Auto-advance on selection
+        setTimeout(() => submitAnswer(), 300);
+      });
+      group.appendChild(btn);
+    });
+    inputWrap.appendChild(group);
+  }
+
+  else if (q.type === 'multi') {
+    if (q.display === 'tile_grid') {
+      // Tile grid renderer for topics question
+      const preselected = q.preselected || W.answers?.topics_preselected || [];
+      // Also merge any client-side social picks
+      const clientPicks = W.socialUserPicks ? Array.from(W.socialUserPicks) : [];
+      const allPreselected = Array.from(new Set([...preselected, ...clientPicks]));
+      // Seed W.multiSelected for submitAnswer fallback
+      W.multiSelected = allPreselected.slice();
+      const cleanup = renderTopicTiles(q, inputWrap, allPreselected);
+      W._tileCleanup = cleanup;
+      // Don't render checkbox grid; tile continue button handles submission
+    } else {
+      // Existing checkbox multi-select (backward-compat fallback)
+      const grid = document.createElement('div');
+      grid.className = 'multi-grid';
+      (q.options || []).forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'multi-btn';
+        btn.textContent = opt;
+        btn.dataset.value = opt;
+        // Pre-select: server-inferred topics OR topics the user toggled on the social step
+        const clientPicks = W.socialUserPicks || new Set();
+        const serverPicks = q.preselected || [];
+        if (serverPicks.includes(opt) || clientPicks.has(opt)) {
+          btn.classList.add('active');
+          if (!W.multiSelected.includes(opt)) W.multiSelected.push(opt);
+        }
+        btn.addEventListener('click', () => {
+          btn.classList.toggle('active');
+          const idx = W.multiSelected.indexOf(opt);
+          if (idx === -1) W.multiSelected.push(opt);
+          else W.multiSelected.splice(idx, 1);
+          // Update preview live for topics
+          if (q.key === 'topics') renderTopicSections(W.multiSelected);
+        });
+        grid.appendChild(btn);
+      });
+      // If topics were pre-selected (server or client), update preview immediately
+      if (q.key === 'topics' && W.multiSelected.length > 0) {
+        renderTopicSections(W.multiSelected);
+      }
+      inputWrap.appendChild(grid);
+    }
+  }
+
+  else if (q.type === 'email_and_name') {
+    // Two stacked inputs: email + first name
+    const emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.id = 'qEmailInput';
+    emailInput.className = 'email-input';
+    emailInput.placeholder = q.placeholder_email || 'your@email.com';
+    emailInput.autocomplete = 'email';
+    emailInput.style.marginBottom = '12px';
+    // Pre-fill from start screen if available
+    if (W.email) emailInput.value = W.email;
+    emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') { nameInput.focus(); } });
+    inputWrap.appendChild(emailInput);
+
+    const nameInput = document.createElement('input');
+    nameInput.type = 'text';
+    nameInput.id = 'qNameInput';
+    nameInput.className = 'text-input';
+    nameInput.placeholder = q.placeholder_name || 'First name';
+    nameInput.autocomplete = 'given-name';
+    nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitAnswer(); });
+    nameInput.addEventListener('input', () => {
+      W.answers.name = nameInput.value.trim();
+      renderHeader();
+    });
+    inputWrap.appendChild(nameInput);
+    setTimeout(() => emailInput.focus(), 100);
+  }
+
+  else if (q.type === 'zip_code_with_social') {
+    // ZIP code input (required)
+    const zipInput = document.createElement('input');
+    zipInput.type = 'text';
+    zipInput.id = 'qZipInput';
+    zipInput.className = 'text-input';
+    zipInput.placeholder = q.placeholder || 'e.g. 10001';
+    zipInput.maxLength = 10;
+    zipInput.autocomplete = 'postal-code';
+    zipInput.style.marginBottom = '16px';
+    zipInput.addEventListener('input', () => {
+      W.answers.zip_code = zipInput.value.trim();
+      updatePreviewFromAnswer('zip_code', zipInput.value.trim());
+    });
+    zipInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitAnswer(); });
+    inputWrap.appendChild(zipInput);
+    setTimeout(() => zipInput.focus(), 100);
+
+    // Collapsible social URL section
+    const socialToggle = document.createElement('div');
+    socialToggle.style.cssText = 'cursor:pointer;color:#0096b7;font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;';
+    socialToggle.innerHTML = '<span id="socialToggleIcon">▶</span> Add a profile URL to personalize your topics';
+    const socialExpand = document.createElement('div');
+    socialExpand.id = 'socialExpandArea';
+    socialExpand.style.display = 'none';
+
+    const socialInput = document.createElement('input');
+    socialInput.type = 'url';
+    socialInput.id = 'qSocialInput';
+    socialInput.className = 'text-input';
+    socialInput.placeholder = q.social_placeholder || 'LinkedIn or other profile URL (optional)';
+    socialExpand.appendChild(socialInput);
+
+    socialToggle.addEventListener('click', () => {
+      const expanded = socialExpand.style.display !== 'none';
+      socialExpand.style.display = expanded ? 'none' : '';
+      document.getElementById('socialToggleIcon').textContent = expanded ? '▶' : '▼';
+      if (!expanded) setTimeout(() => socialInput.focus(), 50);
+    });
+
+    inputWrap.appendChild(socialToggle);
+    inputWrap.appendChild(socialExpand);
+  }
+
+  else if (q.type === 'preview') {
+    // Keep the live client-side preview - don't replace it with server HTML.
+    refreshTopicTexts();
+    flashPreview();
+
+    // Editable chips for delivery_time and tone (if server returned editable_fields)
+    if (q.editable_fields) {
+      const chipsWrap = document.createElement('div');
+      chipsWrap.id = 'editableChipsWrap';
+      chipsWrap.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;';
+
+      const dtOptions  = ['6am','7am','8am','9am','10am','Noon'];
+      const toneOptions = ['Warm & friendly','Informative & clean','Upbeat & fun'];
+
+      function makeChip(label, value, options, onSelect) {
+        const chip = document.createElement('div');
+        chip.style.cssText = 'position:relative;display:inline-block;';
+        const btn = document.createElement('button');
+        btn.style.cssText = 'background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:50px;padding:6px 14px;font-size:13px;font-weight:600;color:#0369a1;cursor:pointer;display:flex;align-items:center;gap:6px;';
+        btn.innerHTML = label + ' <span style="opacity:0.6">▾</span>';
+
+        const dropdown = document.createElement('div');
+        dropdown.style.cssText = 'display:none;position:absolute;top:110%;left:0;background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:50;min-width:160px;';
+        options.forEach(opt => {
+          const item = document.createElement('div');
+          item.style.cssText = 'padding:8px 14px;font-size:13px;cursor:pointer;' + (opt === value ? 'font-weight:700;color:#0369a1;background:#f0f9ff;' : 'color:#374151;');
+          item.textContent = opt;
+          item.addEventListener('click', async () => {
+            dropdown.style.display = 'none';
+            await onSelect(opt);
+          });
+          dropdown.appendChild(item);
+        });
+
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdown.style.display = dropdown.style.display === 'none' ? '' : 'none';
+        });
+        document.addEventListener('click', () => { dropdown.style.display = 'none'; }, { once: false });
+
+        chip.appendChild(btn);
+        chip.appendChild(dropdown);
+        return chip;
+      }
+
+      const dtChip = makeChip('⏰ ' + (q.editable_fields.delivery_time || '7am'), q.editable_fields.delivery_time, dtOptions, async (opt) => {
+        dtChip.querySelector('button').innerHTML = '⏰ ' + opt + ' <span style="opacity:0.6">▾</span>';
+        try {
+          const r = await fetch('/api/wizard/update-preview-fields', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ session_id: W.session_id, delivery_time: opt })
+          });
+          const d = await r.json();
+          if (d.preview_html) updateServerPreviewPanel(d.preview_html);
+        } catch(e) { console.warn('chip update failed', e); }
+      });
+
+      const toneChip = makeChip('🎨 ' + (q.editable_fields.tone || 'Warm & friendly'), q.editable_fields.tone, toneOptions, async (opt) => {
+        toneChip.querySelector('button').innerHTML = '🎨 ' + opt + ' <span style="opacity:0.6">▾</span>';
+        try {
+          const r = await fetch('/api/wizard/update-preview-fields', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ session_id: W.session_id, tone: opt })
+          });
+          const d = await r.json();
+          if (d.preview_html) updateServerPreviewPanel(d.preview_html);
+        } catch(e) { console.warn('chip update failed', e); }
+      });
+
+      chipsWrap.appendChild(dtChip);
+      chipsWrap.appendChild(toneChip);
+      inputWrap.appendChild(chipsWrap);
+    }
+
+    const notice = el('p', 'step-sub', 'This is a preview of your newsletter — adjust delivery time and tone above, then continue.');
+    inputWrap.appendChild(notice);
+  }
+
+  else if (q.type === 'social') {
+    const badge = document.createElement('div');
+    badge.style.cssText = 'background:#e0f7ff;color:#0096b7;border-radius:50px;padding:6px 16px;font-size:12px;font-weight:700;display:inline-block;margin-bottom:20px;';
+    badge.textContent = '✨ Optional - skip anytime';
+    inputWrap.appendChild(badge);
+
+    const socialNote = document.createElement('p');
+    socialNote.style.cssText = 'font-size:13px;color:#6b7280;margin-bottom:16px;line-height:1.5;';
+    socialNote.textContent = 'Private beta: your publicly available social profile data may be analyzed by AI to suggest newsletter topics. Insights appear on the next step — nothing updates while you type. Skip anytime.';
+    socialNote.style.borderLeft = '3px solid #8b5cf6';
+    socialNote.style.paddingLeft = '10px';
+    inputWrap.appendChild(socialNote);
+
+    const socialFields = [
+      { id: 'social_linkedin',  label: 'LinkedIn URL',     prefill: 'https://linkedin.com/in/', placeholder: 'yourname',   ftype: 'url',  site: 'https://linkedin.com/in/' },
+      { id: 'social_facebook',  label: 'Facebook URL',     prefill: 'https://facebook.com/',    placeholder: 'yourname',   ftype: 'url',  site: 'https://facebook.com/'    },
+      { id: 'social_instagram', label: 'Instagram URL',    prefill: 'https://instagram.com/',   placeholder: 'yourhandle', ftype: 'url',  site: 'https://instagram.com/'   },
+      { id: 'social_twitter',   label: 'Twitter / X URL',  prefill: 'https://x.com/',           placeholder: 'yourhandle', ftype: 'url',  site: 'https://x.com/'           },
+      { id: 'social_reddit',    label: 'Reddit username',  prefill: 'u/',                       placeholder: 'yourhandle', ftype: 'text', site: 'https://reddit.com/'      },
+    ];
+    socialFields.forEach(({ id, label, prefill, placeholder, ftype, site }) => {
+      const fw = document.createElement('div');
+      fw.style.cssText = 'margin-bottom:14px;';
+      const lblRow = document.createElement('div');
+      lblRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;';
+      const lbl = document.createElement('label');
+      lbl.htmlFor = id;
+      lbl.textContent = label;
+      lbl.style.cssText = 'font-size:13px;font-weight:600;color:#6b7280;';
+      const siteLink = document.createElement('a');
+      siteLink.href = site;
+      siteLink.target = '_blank';
+      siteLink.rel = 'noopener noreferrer';
+      siteLink.textContent = '↗ open site';
+      siteLink.style.cssText = 'font-size:11px;color:#0096b7;text-decoration:none;font-weight:500;';
+      lblRow.appendChild(lbl);
+      lblRow.appendChild(siteLink);
+      fw.appendChild(lblRow);
+      fw.appendChild(lbl);
+      const inp = document.createElement('input');
+      inp.type = ftype;
+      inp.id = id;
+      inp.className = 'text-input';
+      inp.placeholder = placeholder;
+      inp.value = prefill;
+      inp.dataset.prefill = prefill;
+      // Place cursor at end on focus
+      inp.addEventListener('focus', function() {
+        const len = this.value.length;
+        this.setSelectionRange(len, len);
+      });
+      // Prevent deleting into the prefill prefix
+      inp.addEventListener('keydown', function(e) {
+        if ((e.key === 'Backspace' || e.key === 'Delete') && this.value === this.dataset.prefill) {
+          e.preventDefault();
+        }
+      });
+      inp.addEventListener('input', function() {
+        if (!this.value.startsWith(this.dataset.prefill)) {
+          this.value = this.dataset.prefill;
+        }
+      });
+      // Per-field status indicator
+      const statusEl = document.createElement('div');
+      statusEl.id = id + '_status';
+      statusEl.style.cssText = 'font-size:11px;color:#9ca3af;margin-top:3px;min-height:14px;transition:opacity 0.2s;';
+      fw.appendChild(inp);
+      fw.appendChild(statusEl);
+      inputWrap.appendChild(fw);
+    });
+
+    // ── Suggestions panel (shown below fields as user adds URLs) ─────────────
+    const suggestPanel = document.createElement('div');
+    suggestPanel.id = 'socialSuggestPanel';
+    suggestPanel.style.cssText = 'margin-top:20px;display:none;';
+    suggestPanel.innerHTML = `
+      <div style="font-size:12px;font-weight:700;color:#0369a1;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">
+        ✨ AI topic suggestions - tap to add
+      </div>
+      <div id="socialSuggestChips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+      <div style="font-size:11px;color:#9ca3af;margin-top:8px;">These are suggestions based on your public profiles. You can edit your topics on the next step.</div>
+    `;
+    inputWrap.appendChild(suggestPanel);
+
+    // ── Per-field progressive enrichment ─────────────────────────────────────
+    const urlCache  = W.socialUrlCache  || (W.socialUrlCache  = {});   // url → {topics, signals}
+    const userPicks = W.socialUserPicks || (W.socialUserPicks = new Set()); // user-toggled ON
+    let debounceTimer = null;
+
+    function renderSuggestChips() {
+      // Merge all cached results into one deduplicated set
+      const allTopics = new Set();
+      Object.values(urlCache).forEach(r => (r.topics || []).forEach(t => allTopics.add(t)));
+      if (allTopics.size === 0) { suggestPanel.style.display = 'none'; return; }
+      suggestPanel.style.display = '';
+      const chips = document.getElementById('socialSuggestChips');
+      chips.innerHTML = '';
+      allTopics.forEach(topic => {
+        const selected = userPicks.has(topic);
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.dataset.topic = topic;
+        chip.style.cssText = [
+          'display:inline-flex;align-items:center;gap:5px;',
+          'border-radius:50px;padding:6px 14px;font-size:13px;font-weight:600;',
+          'cursor:pointer;border:1.5px solid;transition:all 0.15s;',
+          selected
+            ? 'background:#e0f7ff;color:#0369a1;border-color:#0096b7;'
+            : 'background:#f9fafb;color:#374151;border-color:#e5e7eb;',
+        ].join('');
+        chip.innerHTML = (selected ? '✓ ' : '+ ') + esc(topic);
+        chip.addEventListener('click', () => {
+          if (userPicks.has(topic)) userPicks.delete(topic);
+          else userPicks.add(topic);
+          renderSuggestChips();
+          // Optimistically update preview topic section
+          updatePreviewFromAnswer('topics', Array.from(userPicks).join(','));
+        });
+        chips.appendChild(chip);
+      });
+    }
+
+    async function analyzeUrl(url, statusEl) {
+      if (urlCache[url]) { renderSuggestChips(); return; } // already cached
+      statusEl.textContent = '⧙ Analyzing...';
+      statusEl.style.color = '#0096b7';
+      try {
+        const res = await fetch('/wizard/infer-interests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: W.session_id, urls: [url] })
+        });
+        if (!res.ok) throw new Error('non-ok');
+        const data = await res.json();
+        const topics = data.inferred || [];
+        urlCache[url] = { topics, signals: data.signals || [] };
+        // Auto-select new topics user hasn't explicitly rejected
+        topics.forEach(t => { if (!userPicks.has('__rejected__' + t)) userPicks.add(t); });
+        if (topics.length > 0) {
+          statusEl.textContent = `✓ Found ${topics.length} topic${topics.length !== 1 ? 's' : ''}`;
+          statusEl.style.color = '#15803d';
+        } else {
+          statusEl.textContent = '';
+        }
+        renderSuggestChips();
+        // Mirror to preview panel
+        if (topics.length > 0) {
+          showSocialInsights({
+            topics,
+            signals: data.signals || [],
+            college: null,
+            career:  null
+          });
+        }
+      } catch (_) {
+        statusEl.textContent = ''; // silent fail - never block the wizard
+      }
+    }
+
+    socialFields.forEach(({ id, prefill }) => {
+      const inp = document.getElementById(id);
+      const statusEl = document.getElementById(id + '_status');
+      if (!inp || !statusEl) return;
+      inp.addEventListener('blur', () => {
+        const val = inp.value.trim();
+        if (!val || val === prefill) return;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => analyzeUrl(val, statusEl), 400);
+      });
+    });
+  }
+
+  wrap.appendChild(inputWrap);
+
+  // Nav buttons
+  const nav = document.createElement('div');
+  nav.className = 'step-nav';
+
+  if (q.type === 'multi' || q.type === 'text' || q.type === 'email' || q.type === 'textarea' || q.type === 'social'
+      || q.type === 'email_and_name' || q.type === 'zip_code_with_social') {
+    // For tile_grid multi, the fixed tile-continue-btn handles submission — skip the default Continue button
+    if (!(q.type === 'multi' && q.display === 'tile_grid')) {
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'btn-next';
+      nextBtn.id = 'qNextBtn';
+      nextBtn.textContent = q.type === 'social' ? 'Looks good →' : 'Continue →';
+      nextBtn.addEventListener('click', () => submitAnswer());
+      nav.appendChild(nextBtn);
+    }
+  }
+
+  if (q.type === 'preview') {
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'btn-next';
+    nextBtn.id = 'qNextBtn';
+    nextBtn.textContent = 'Looks great, continue →';
+    nextBtn.addEventListener('click', () => submitAnswer());
+    nav.appendChild(nextBtn);
+  }
+
+  if (q.optional) {
+    if (q.type === 'social') {
+      // Equal visual weight skip for social - not grayed out, no guilt tripping
+      const skipBtn = document.createElement('button');
+      skipBtn.className = 'btn-next';
+      skipBtn.style.cssText = 'background:#f3f4f6;color:#6b7280;margin-top:10px;box-shadow:none;';
+      skipBtn.textContent = 'Skip for now';
+      skipBtn.addEventListener('click', () => {
+        W.pendingAnswer = '';
+        submitAnswer(true);
+      });
+      nav.appendChild(skipBtn);
+      const hint = document.createElement('p');
+      hint.style.cssText = 'font-size:12px;color:#9ca3af;margin-top:8px;text-align:center;margin-bottom:0;';
+      hint.textContent = "We'll ask about your interests instead";
+      nav.appendChild(hint);
+    } else {
+      const skipBtn = document.createElement('button');
+      skipBtn.className = 'btn-skip';
+      skipBtn.textContent = 'Skip';
+      skipBtn.addEventListener('click', () => {
+        W.pendingAnswer = '';
+        submitAnswer(true);
+      });
+      nav.appendChild(skipBtn);
+    }
+  }
+
+  wrap.appendChild(nav);
+  area.appendChild(wrap);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  SUBMIT ANSWER
+// ══════════════════════════════════════════════════════════════════════════════
+async function submitAnswer(isSkip = false) {
+  const q = W.currentQ;
+  if (!q) return;
+
+  let answer;
+
+  if (isSkip) {
+    answer = '';
+  } else if (q.type === 'email_and_name') {
+    const emailInput = document.getElementById('qEmailInput');
+    const nameInput  = document.getElementById('qNameInput');
+    const emailVal = emailInput ? emailInput.value.trim() : (W.email || '');
+    const nameVal  = nameInput  ? nameInput.value.trim()  : '';
+    // HTML5 standard pattern — permissive by design, no false rejects
+    if (!emailVal || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailVal)) {
+      if (emailInput) { emailInput.classList.add('error'); setTimeout(() => emailInput.classList.remove('error'), 1600); emailInput.focus(); }
+      showQError('Please enter a valid email address.');
+      return;
+    }
+    // email_and_name uses flat top-level shape { session_id, email, name }
+    // NOT nested under answer. Set W.emailAndName so the fetch below uses it.
+    W._emailAndNamePayload = { email: emailVal, name: nameVal };
+    answer = null; // sentinel: fetch block checks W._emailAndNamePayload
+    W.email = emailVal;
+    if (nameVal) W.answers.name = nameVal;
+  } else if (q.type === 'zip_code_with_social') {
+    const zipInput    = document.getElementById('qZipInput');
+    const socialInput = document.getElementById('qSocialInput');
+    const zipVal      = zipInput    ? zipInput.value.trim()    : '';
+    const socialUrl   = socialInput ? socialInput.value.trim() : '';
+    if (!zipVal) {
+      if (zipInput) { zipInput.classList.add('error'); setTimeout(() => zipInput.classList.remove('error'), 1600); zipInput.focus(); }
+      showQError('Please enter your ZIP code.');
+      return;
+    }
+    answer = { zip_code: zipVal, social_url: socialUrl };
+    W.answers.zip_code = zipVal;
+  } else if (q.type === 'text' || q.type === 'email' || q.type === 'textarea') {
+    const input = document.getElementById('qInput');
+    answer = input ? input.value.trim() : '';
+
+    // Validation for non-optional
+    if (!q.optional && !answer) {
+      if (input) {
+        input.classList.add('error');
+        setTimeout(() => input.classList.remove('error'), 1600);
+        input.focus();
+      }
+      return;
+    }
+  } else if (q.type === 'multi') {
+    answer = W.multiSelected;
+    const minSel = q.min_selections || 0;
+    if (!q.optional && answer.length < Math.max(1, minSel)) {
+      showQError(minSel > 1 ? `Please select at least ${minSel} options.` : 'Please select at least one option, or click Skip.');
+      return;
+    }
+  } else if (q.type === 'social') {
+    const socialPrefills = {
+      social_linkedin:  'https://linkedin.com/in/',
+      social_facebook:  'https://facebook.com/',
+      social_instagram: 'https://instagram.com/',
+      social_twitter:   'https://x.com/',
+      social_reddit:    'u/',
+    };
+    const urls = Object.entries(socialPrefills).map(([id, base]) => {
+      const val = document.getElementById(id)?.value?.trim() || '';
+      return val === base || val === '' ? '' : val;
+    }).filter(Boolean);
+    answer = JSON.stringify(urls);
+  } else if (q.type === 'choice') {
+    answer = W.pendingAnswer;
+    if (!answer) {
+      showQError('Please select an option.');
+      return;
+    }
+  } else if (q.type === 'preview') {
+    answer = 'acknowledged';
+  } else {
+    answer = '';
+  }
+
+  // Update local state for preview
+  if (q.key) W.answers[q.key] = answer;
+  updatePreviewFromAnswer(q.key, answer);
+
+  // Disable submit while loading
+  const nextBtn = document.getElementById('qNextBtn');
+  const isSocial = q.type === 'social';
+  if (nextBtn) {
+    nextBtn.disabled = true;
+    nextBtn.textContent = isSocial ? '🔍 Analyzing your profiles...' : 'Loading...';
+  }
+
+  try {
+    // email_and_name sends flat {session_id, email, name}; all other steps send {session_id, answer}
+    const fetchBody = W._emailAndNamePayload
+      ? { session_id: W.session_id, ...W._emailAndNamePayload }
+      : { session_id: W.session_id, answer };
+    W._emailAndNamePayload = null; // clear after use
+    const res  = await fetch('/wizard/answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(fetchBody)
+    });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || 'Server error');
+
+    if (data.done) {
+      // Show brief transition while completing onboarding
+      showTransition();
+      try {
+        await fetch('/api/onboarding-complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: W.session_id })
+        });
+      } catch (e) {
+        console.warn('onboarding-complete failed:', e.message);
+      }
+      // Navigate to sample newsletter preview
+      window.location.href = `/newsletter-preview?session_id=${encodeURIComponent(W.session_id)}`;
+      return;
+    }
+
+    // Task 9: Handle preview_loading — enrichment still in progress, start polling
+    if (data.type === 'preview_loading' && data.poll_url) {
+      startPreviewPolling(data.poll_url);
+      return;
+    }
+
+    // Update vs/vt
+    W.vs = data.step  || (W.vs + 1);
+    W.vt = data.total || W.vt;
+
+    // Don't replace live preview with server HTML - client-side preview is more personalized
+
+    // If server returned social insights, show in BOTH panels
+    if (data.socialInsights) {
+      if (data.socialInsights.topics && data.socialInsights.topics.length > 0) {
+        showSocialInsights(data.socialInsights); // right panel
+      }
+      W.pendingSocialInsights = data.socialInsights; // left panel - injected in renderQuestion
+    } else {
+      W.pendingSocialInsights = null;
+    }
+
+    // ── Meet Sam intercept: show Sam onboarding screen after email_and_name ──────
+    if (q && q.type === 'email_and_name') {
+      W.pendingNextQ = data; // hold the next question until Sam onboarding completes
+      showMeetSam();
+      return;
+    }
+
+    renderQuestion(data);
+
+    // Save progress for resume-later feature
+    localStorage.setItem('sb_session', JSON.stringify({
+      session_id: W.session_id,
+      email: W.email,
+      step: W.vs,
+      savedAt: Date.now()
+    }));
+
+  } catch (err) {
+    if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = 'Continue →'; }
+    showQError(`Error: ${esc(err.message)}`, true);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PREVIEW POLLING (Task 9) — handle enrichment in-progress state
+// ══════════════════════════════════════════════════════════════════════════════
+let _previewPollTimer = null;
+let _previewPollStart = 0;
+const PREVIEW_POLL_INTERVAL_MS = 2000;
+const PREVIEW_POLL_TIMEOUT_MS = 30000;
+const PREVIEW_POLL_MESSAGES = [
+  'Reading your profile…',
+  'Matching topics…',
+  'Drafting your brief…'
+];
+
+function showPreviewSpinner() {
+  const leftPanel = document.querySelector('.question-area') || document.getElementById('questionWrap');
+  if (!leftPanel) return;
+
+  // Remove any existing spinner
+  const existing = document.getElementById('previewPollSpinner');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'previewPollSpinner';
+  overlay.style.cssText = 'position:absolute;inset:0;background:rgba(255,255,255,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;border-radius:12px;';
+
+  const spinner = document.createElement('div');
+  spinner.style.cssText = 'width:40px;height:40px;border:4px solid #e5e7eb;border-top-color:#00B4D8;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px;';
+
+  const msg = document.createElement('p');
+  msg.id = 'previewPollMsg';
+  msg.style.cssText = 'font-size:15px;color:#1a2744;font-weight:600;text-align:center;max-width:220px;line-height:1.5;';
+  msg.textContent = PREVIEW_POLL_MESSAGES[0];
+
+  overlay.appendChild(spinner);
+  overlay.appendChild(msg);
+
+  // Ensure parent is relatively positioned
+  if (getComputedStyle(leftPanel).position === 'static') {
+    leftPanel.style.position = 'relative';
+  }
+  leftPanel.appendChild(overlay);
+
+  // Rotate messages every 2.5s
+  let msgIdx = 0;
+  overlay._msgInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % PREVIEW_POLL_MESSAGES.length;
+    msg.textContent = PREVIEW_POLL_MESSAGES[msgIdx];
+  }, 2500);
+}
+
+function hidePreviewSpinner() {
+  const overlay = document.getElementById('previewPollSpinner');
+  if (!overlay) return;
+  if (overlay._msgInterval) clearInterval(overlay._msgInterval);
+  overlay.remove();
+}
+
+function startPreviewPolling(pollUrl) {
+  showPreviewSpinner();
+  _previewPollStart = Date.now();
+
+  function doPoll() {
+    fetch(pollUrl)
+      .then(r => r.json())
+      .then(data => {
+        if (data.status === 'ready') {
+          hidePreviewSpinner();
+          // Inject preview HTML into right panel
+          const previewDevice = document.querySelector('.preview-device');
+          if (previewDevice && data.preview_html) {
+            const iframe = previewDevice.querySelector('iframe');
+            if (iframe) {
+              iframe.srcdoc = data.preview_html;
+            } else {
+              // Fallback: inject into device
+              previewDevice.innerHTML = `<iframe style="width:100%;height:100%;border:none;" srcdoc="${data.preview_html.replace(/"/g,'&quot;')}"></iframe>`;
+            }
+          }
+          // Re-enable next button if present, then advance
+          const nextBtn = document.getElementById('qNextBtn');
+          if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = 'Looks great, continue →'; }
+          _previewPollTimer = null;
+          return;
+        }
+        // Still pending — check timeout
+        if (Date.now() - _previewPollStart >= PREVIEW_POLL_TIMEOUT_MS) {
+          hidePreviewSpinner();
+          // Force re-render via /wizard/answer with acknowledged to get fallback preview
+          fetch('/wizard/answer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: W.session_id, answer: 'acknowledged' })
+          }).then(r => r.json()).then(d => {
+            if (d.type === 'preview' || d.preview_html) {
+              renderQuestion(d);
+            }
+          }).catch(() => {});
+          _previewPollTimer = null;
+          return;
+        }
+        // Schedule next poll
+        _previewPollTimer = setTimeout(doPoll, PREVIEW_POLL_INTERVAL_MS);
+      })
+      .catch(() => {
+        // On network error, retry unless timed out
+        if (Date.now() - _previewPollStart < PREVIEW_POLL_TIMEOUT_MS) {
+          _previewPollTimer = setTimeout(doPoll, PREVIEW_POLL_INTERVAL_MS);
+        } else {
+          hidePreviewSpinner();
+          _previewPollTimer = null;
+        }
+      });
+  }
+
+  _previewPollTimer = setTimeout(doPoll, PREVIEW_POLL_INTERVAL_MS);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PREVIEW: update based on answer key
+// ══════════════════════════════════════════════════════════════════════════════
+function flashPreview() {
+  const device = document.querySelector('.preview-device');
+  if (!device) return;
+  device.classList.remove('preview-flash');
+  void device.offsetWidth; // reflow to restart animation
+  device.classList.add('preview-flash');
+  setTimeout(() => device.classList.remove('preview-flash'), 600);
+}
+
+// Update the right-panel preview with server-rendered HTML from update-preview-fields
+function updateServerPreviewPanel(html) {
+  if (!html) return;
+  // Try to inject into the preview iframe or a dedicated panel if it exists
+  const previewFrame = document.getElementById('previewFrame');
+  if (previewFrame && previewFrame.contentDocument) {
+    previewFrame.contentDocument.open();
+    previewFrame.contentDocument.write(html);
+    previewFrame.contentDocument.close();
+    return;
+  }
+  // Fallback: update any existing server preview container
+  const container = document.getElementById('serverPreviewContainer');
+  if (container) { container.innerHTML = html; }
+  flashPreview();
+}
+
+// Keys that should trigger a live re-render of topic section text
+const PERSONALIZES_TOPICS = new Set([
+  'sports_detail','college_sports','finance_detail','tech_focus',
+  'health_focus','career_focus','zip_code','city','state',
+  'music_detail','movies_tv_detail','watchlist'
+]);
+
+function updatePreviewFromAnswer(key, answer) {
+  if (!key || answer == null) return;
+
+  // Always store so getPersonalizedText can read it
+  W.answers[key] = answer;
+
+  if (key === 'name' && answer) {
+    renderHeader();
+    flashPreview();
+  }
+  if (key === 'delivery_time' && answer) {
+    const timeMap = {
+      '6am': '06:00', '7am': '07:00', '8am': '08:00',
+      '9am': '09:00', '10am': '10:00', 'Noon': '12:00'
+    };
+    W.timeValue = timeMap[answer] || W.timeValue;
+    renderHeader();
+    flashPreview();
+  }
+  if (key === 'newsletter_length' && answer) {
+    const lengthMap = {
+      'Short (2 min read)': '2 min read',
+      'Medium (5 min)': '5 min read',
+      'Long (10 min)': '10 min read'
+    };
+    W.answers.newsletter_length = answer;
+    const badge = document.getElementById('peLengthBadge');
+    if (badge) {
+      badge.textContent = '📖 ' + (lengthMap[answer] || answer);
+      badge.style.display = 'inline-block';
+    }
+    flashPreview();
+  }
+  if (key === 'zip_code' && answer && answer.length >= 3) {
+    const badge = document.getElementById('peLocationBadge');
+    if (badge) {
+      badge.textContent = '📍 ' + answer;
+      badge.style.display = 'inline-block';
+    }
+    refreshTopicTexts();
+    flashPreview();
+  }
+  if (key === 'topics' && Array.isArray(answer)) {
+    renderTopicSections(answer);
+    flashPreview();
+  }
+  if (key === 'tone' && answer) {
+    const topics = Array.isArray(W.answers.topics) ? W.answers.topics : [];
+    renderTopicSections(topics, answer);
+    flashPreview();
+  }
+  // Detail fields - update visible sections with personalized text
+  // watchlist: show/update the dedicated "Following" preview section
+  if (key === 'watchlist') {
+    renderFollowingSection(answer);
+    refreshTopicTexts();
+    flashPreview();
+    return;
+  }
+  if (PERSONALIZES_TOPICS.has(key)) {
+    refreshTopicTexts();
+    flashPreview();
+  }
+}
+
+// Render (or remove) the "Following" section based on watchlist content
+function renderFollowingSection(watchlist) {
+  const body = document.getElementById('peBody');
+  if (!body) return;
+  const FOLLOWING_ID = '__following__';
+  let el = body.querySelector(`.pe-section[data-topic="${FOLLOWING_ID}"]`);
+
+  const entries = (watchlist || '')
+    .split(/[\n,]+/)
+    .map(s => s.trim())
+    .filter(Boolean)
+    .slice(0, 6);
+
+  if (entries.length === 0) {
+    // Remove section if watchlist is cleared
+    if (el) {
+      el.className = 'pe-section exiting';
+      setTimeout(() => el && el.remove(), 350);
+    }
+    return;
+  }
+
+  const preview = entries.slice(0, 4).join(', ') + (entries.length > 4 ? ` and ${entries.length - 4} more` : '');
+  const html = `<div class="pe-sec-head">
+      <span class="pe-sec-emoji">👁</span>
+      <span class="pe-sec-label">Following</span>
+    </div>
+    <div class="pe-sec-content">Watching ${esc(preview)} — alerts when they publish, get quoted, or make a move.</div>`;
+
+  if (el) {
+    el.querySelector('.pe-sec-content').textContent =
+      `Watching ${preview} — alerts when they publish, get quoted, or make a move.`;
+  } else {
+    el = document.createElement('div');
+    el.className = 'pe-section entering';
+    el.dataset.topic = FOLLOWING_ID;
+    el.innerHTML = html;
+    // Insert after the last .pe-section, or at top of body if none
+    const sections = [...body.querySelectorAll('.pe-section')];
+    if (sections.length > 0) {
+      sections[sections.length - 1].insertAdjacentElement('afterend', el);
+    } else {
+      const empty = body.querySelector('.pe-empty');
+      if (empty) empty.replaceWith(el);
+      else body.prepend(el);
+    }
+    setTimeout(() => { if (el) el.classList.remove('entering'); }, 420);
+  }
+}
+
+// Re-render text of all visible topic sections with latest personalized content
+function refreshTopicTexts() {
+  const body = document.getElementById('peBody');
+  if (!body) return;
+  body.querySelectorAll('.pe-section').forEach(el => {
+    const topic = el.dataset.topic;
+    if (!topic) return;
+    const newText = getPersonalizedText(topic, W.answers);
+    const contentEl = el.querySelector('.pe-sec-content');
+    if (contentEl && contentEl.textContent !== newText) {
+      typewrite(contentEl, newText, topic + '_refresh');
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  RENDER: Header
+// ══════════════════════════════════════════════════════════════════════════════
+function renderHeader() {
+  const name = W.answers.name || 'there';
+  const timeStr = W.timeValue || '07:00';
+  const [hh, mm] = timeStr.split(':').map(Number);
+  const tod = hh < 12 ? 'morning' : hh < 17 ? 'afternoon' : 'evening';
+  const h12 = hh === 0 ? 12 : hh > 12 ? hh - 12 : hh;
+  const ampm = hh >= 12 ? 'PM' : 'AM';
+  const ftStr = `${h12}:${String(mm).padStart(2,'0')} ${ampm}`;
+
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+  });
+
+  document.getElementById('peGreeting').textContent = `Good ${tod}, ${name}! ☀️`;
+  document.getElementById('peMeta').textContent     = `${dateStr} · Ready at ${ftStr}`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  RENDER: Topic Sections
+// ══════════════════════════════════════════════════════════════════════════════
+const _tw = {};
+
+function renderTopicSections(topics, toneLabel) {
+  const body = document.getElementById('peBody');
+
+  if (!topics || topics.length === 0) {
+    body.innerHTML = `
+      <div class="pe-empty">
+        <div class="pe-empty-icon">✨</div>
+        <div class="pe-empty-text">Pick topics on the left to see<br>your newsletter take shape</div>
+      </div>`;
+    return;
+  }
+
+  const tone = toneLabel || W.answers.tone || '';
+  const usePro = TONE_MAP[tone] === 'professional';
+
+  const existingIds = new Set(
+    [...body.querySelectorAll('.pe-section')].map(el => el.dataset.topic)
+  );
+  const wantedIds = new Set(topics);
+
+  // Remove unwanted
+  existingIds.forEach(id => {
+    if (!wantedIds.has(id)) {
+      const el = body.querySelector(`.pe-section[data-topic="${CSS.escape(id)}"]`);
+      if (el) { el.classList.add('exiting'); setTimeout(() => el.remove(), 320); }
+    }
+  });
+
+  // Add / update
+  topics.forEach((topic, idx) => {
+    const c = TOPIC_PREVIEW[topic];
+    if (!c) return;
+
+    let el = body.querySelector(`.pe-section[data-topic="${CSS.escape(topic)}"]`);
+
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'pe-section entering';
+      el.dataset.topic = topic;
+      el.innerHTML = `
+        <div class="pe-sec-head">
+          <span class="pe-sec-emoji">${c.emoji}</span>
+          <span class="pe-sec-label">${esc(c.label)}</span>
+        </div>
+        <div class="pe-sec-content">${esc(getPersonalizedText(topic, W.answers))}</div>`;
+
+      const sections = [...body.querySelectorAll('.pe-section')];
+      const insertBefore = sections.find(s =>
+        topics.indexOf(s.dataset.topic) > idx
+      );
+      insertBefore ? body.insertBefore(el, insertBefore) : body.appendChild(el);
+      setTimeout(() => el.classList.remove('entering'), 450);
+    } else {
+      // Always refresh with latest personalized text
+      const contentEl = el.querySelector('.pe-sec-content');
+      const newText = getPersonalizedText(topic, W.answers);
+      if (contentEl && contentEl.textContent !== newText) {
+        typewrite(contentEl, newText, topic);
+      }
+    }
+  });
+  // Re-apply custom profile section after topic rebuild (preserves derived personalization)
+  if (typeof rehydrateCustomProfile === 'function') rehydrateCustomProfile();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  TYPEWRITER
+// ══════════════════════════════════════════════════════════════════════════════
+function typewrite(el, text, tid) {
+  clearTimeout(_tw[tid]);
+  el.textContent = '';
+  el.classList.add('typing');
+  let i = 0;
+  function tick() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      _tw[tid] = setTimeout(tick, 14);
+    } else {
+      el.classList.remove('typing');
+    }
+  }
+  tick();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  SHOW PREVIEW HTML (from server)
+// ══════════════════════════════════════════════════════════════════════════════
+function showSocialInsights(insights) {
+  const topicEmojis = {
+    'Sports': '🏆', 'Finance': '📈', 'Technology': '💻', 'Politics': '🏛️',
+    'Local News': '📰', 'Health & Fitness': '💪', 'Books & Reading': '📚',
+    'Weather': '⛅', 'Health Tips': '💪', 'Fitness': '🏃', 'Entertainment': '🎬',
+    'Food & Recipes': '🍳', 'Travel': '✈️', 'Humor/Jokes': '😄',
+    'Parenting': '👨‍👧', 'Pets': '🐾', 'Career Tips': '💼',
+    'History': '🏺', 'Local Events': '📍', 'Local Services Directory': '🏠',
+    'College Sports': '🎓', 'College Sports': '🎓'
+  };
+
+  // Build extracted entity highlights
+  let entityRows = '';
+  if (insights.college) {
+    entityRows += `<div style="display:flex;align-items:center;gap:8px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:8px 12px;margin-bottom:8px;">
+      <span style="font-size:16px;">🎓</span>
+      <div><div style="font-size:12px;font-weight:700;color:#c2410c;">College Team Detected</div>
+      <div style="font-size:11px;color:#7c3aed;">${esc(insights.college)} - scores, rankings &amp; recruiting will be in your newsletter</div></div>
+    </div>`;
+  }
+  if (insights.career) {
+    entityRows += `<div style="display:flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;margin-bottom:8px;">
+      <span style="font-size:16px;">💼</span>
+      <div><div style="font-size:12px;font-weight:700;color:#15803d;">Career Field Detected</div>
+      <div style="font-size:11px;color:#166534;">${esc(insights.career)} - job opportunities &amp; industry news added</div></div>
+    </div>`;
+  }
+
+  const body = document.getElementById('peBody');
+  const card = document.createElement('div');
+  card.style.cssText = 'padding:20px 18px;';
+  card.innerHTML = `
+    <div style="background:linear-gradient(135deg,#e0f7ff,#f0f9ff);border:1px solid #bae6fd;border-radius:14px;padding:20px 22px;">
+      <div style="font-size:13px;font-weight:700;color:#0369a1;margin-bottom:12px;letter-spacing:0.03em;">🔍 Here's what we picked up from your profiles</div>
+      ${entityRows}
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;">
+        ${insights.topics.map(t => `
+          <span style="display:inline-flex;align-items:center;gap:5px;background:white;border:1px solid #bae6fd;border-radius:50px;padding:5px 13px;font-size:12px;font-weight:600;color:#0369a1;">
+            ${topicEmojis[t] || '📌'} ${esc(t)}
+          </span>`).join('')}
+      </div>
+      ${insights.signals && insights.signals.length > 0
+        ? `<div style="font-size:10px;color:#9ca3af;margin-bottom:10px;">Signals: ${insights.signals.slice(0,6).map(s => esc(s)).join(' · ')}</div>`
+        : ''}
+      <div style="font-size:11px;color:#6b7280;font-style:italic;">These will be pre-selected as your topics - adjust anything you like on the next step.</div>
+    </div>`;
+  body.innerHTML = '';
+  body.appendChild(card);
+  flashPreview();
+}
+
+function showPreviewHtml(html) {
+  const body = document.getElementById('peBody');
+  // Use srcdoc iframe to safely render server HTML
+  const iframe = document.createElement('iframe');
+  iframe.srcdoc = html;
+  iframe.style.cssText = 'width:100%;border:none;min-height:300px;';
+  iframe.onload = () => {
+    // Auto-size to content
+    try {
+      const h = iframe.contentDocument.documentElement.scrollHeight;
+      iframe.style.height = h + 'px';
+    } catch(e) {}
+  };
+  body.innerHTML = '';
+  body.appendChild(iframe);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PROGRESS BAR
+// ══════════════════════════════════════════════════════════════════════════════
+function updateProgress(vs, vt) {
+  let barWrap = document.getElementById('progressBarWrap');
+  if (!barWrap) {
+    barWrap = document.createElement('div');
+    barWrap.id = 'progressBarWrap';
+    barWrap.innerHTML = `
+      <div class="progress-label" id="progressLabel"></div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+      </div>`;
+    document.getElementById('questionArea').before(barWrap);
+  }
+
+  const pct = vt > 0 ? Math.round((vs / vt) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Step ${vs} of ${vt}`;
+  document.getElementById('stepIndicator').textContent = `Step ${vs} of ${vt}`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  SUCCESS
+// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+//  RESUME SESSION
+// ══════════════════════════════════════════════════════════════════════════════
+async function resumeSession() {
+  const saved = JSON.parse(localStorage.getItem('sb_session') || 'null');
+  if (!saved) return;
+  W.session_id = saved.session_id;
+  W.email = saved.email;
+  try {
+    const res = await fetch('/wizard/resume', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ session_id: saved.session_id })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error('Session expired');
+    W.vs = data.step || saved.step;
+    W.vt = data.total || 4;
+    hide('preStart');
+    show('questionArea');
+    renderQuestion(data);
+  } catch(e) {
+    localStorage.removeItem('sb_session');
+    alert('Your session expired - please start fresh.');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════════════════════
+//  MEET SAM SCREEN
+// ════════════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  CUSTOM PROFILE ENGINE — durable, two-layer, phrase-specific personalization
+//
+//  Output shape (W.derived.custom_profile):
+//    specificInterests[] — preserved multi-word phrases; used for visible chips
+//    topicBuckets[]      — broad routing buckets; used only for section routing
+//    industries[]        — professional context phrases
+//    tone[]              — exact style preferences
+//    format{}            — format cues as boolean flags
+//    exclusions[]        — things the user explicitly said to skip
+//    people[]            — named persons / publications (tightened extraction)
+//    searchTerms[]       — specificInterests + industries, for brief generation
+//
+//  The preview and the generated brief both read from this SAME object.
+//  It is stored in W.derived (survives renderQuestion) and W.answers (survives
+//  server round-trips). parseFreeText is the single source of truth.
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Phrase dictionary ─────────────────────────────────────────────────────────
+// Each entry maps to a specificInterests phrase.
+// Entries are checked in ORDER; first match per phrase wins.
+// Multi-word / specific phrases appear BEFORE broad single-word fallbacks.
+const SPECIFIC_PHRASES = [
+  // Deep-tech / AI / infra — specific first
+  { phrase:'AI infrastructure',          terms:['ai infrastructure','ai infra'] },
+  { phrase:'inference-layer companies',  terms:['inference layer','inference-layer'] },
+  { phrase:'chip stack',                 terms:['chip stack'] },
+  { phrase:'humanoid robotics',          terms:['humanoid robot','humanoid robotic'] },
+  { phrase:'autonomous vehicles',        terms:['self-driving','autonomous vehicle','autonomous driving'] },
+  { phrase:'autonomous tech',            terms:['autonomous tech'] },
+  { phrase:'decentralized inference',    terms:['decentralized inference'] },
+  { phrase:'machine learning ops',       terms:['mlops','ml ops','model deployment'] },
+  // Crypto / finance — specific first
+  { phrase:'crypto market structure',    terms:['crypto market structure'] },
+  { phrase:'regulatory & institutional flow', terms:['regulatory and institutional','institutional flow','regulatory flow'] },
+  { phrase:'data center buildout',       terms:['data center buildout','datacenter buildout'] },
+  { phrase:'energy infrastructure',      terms:['energy infrastructure'] },
+  { phrase:'early-stage venture',        terms:['early-stage vc','early stage venture','pre-seed','seed stage'] },
+  { phrase:'private equity',             terms:['private equity','buyout','leveraged buyout'] },
+  // Sports / front-office — specific first
+  { phrase:'front-office strategy',      terms:['front office','front-office strategy','front-office'] },
+  { phrase:'sports analytics',           terms:['sports analytic','sports data','sabermetric'] },
+  { phrase:'NBA analytics',              terms:['nba analytic','basketball analytic'] },
+  // Media / publishing
+  { phrase:'long-form journalism',       terms:['long-form','long form journalism','long-form journalism'] },
+  { phrase:'think pieces',               terms:['think piece','think pieces','one longer'] },
+  // Broad fallbacks — only if no specific phrase above matched
+  { phrase:'AI / LLMs',                  terms:['\\bllm\\b','\\bgpt\\b','claude','openai','anthropic','transformer','\\brag\\b','\\bagent\\b'] },
+  { phrase:'robotics',                   terms:['\\brobotics\\b','\\brobot\\b'] },
+  { phrase:'crypto',                     terms:['bitcoin','ethereum','\\bdefi\\b','web3','\\bnft\\b','\\btoken\\b','blockchain','onchain'] },
+  { phrase:'investing',                  terms:['\\bventure\\b','\\bvc\\b','investing','\\bequity\\b','\\bfund\\b','\\bportfolio\\b','\\bangel\\b','\\blp\\b','\\bcarry\\b','\\birr\\b','\\bmoic\\b','deal flow','cap table'] },
+  { phrase:'macro & markets',            terms:['\\bmarkets\\b','\\bstocks\\b','\\bbonds\\b','\\bmacro\\b','\\brates\\b','\\bearnings\\b','\\bgdp\\b'] },
+  { phrase:'fintech',                    terms:['\\bfintech\\b','\\bpayments\\b','\\binsurtech\\b','\\bwealthtech\\b'] },
+  { phrase:'space & aerospace',          terms:['\\bspace\\b','\\bnasa\\b','\\bspacex\\b','\\brocket\\b','\\bsatellite\\b','\\baerospace\\b','\\bstarship\\b'] },
+  { phrase:'NBA / basketball',           terms:['\\bnba\\b','\\bbasketball\\b'] },
+  { phrase:'NFL / football',             terms:['\\bnfl\\b','football season','\\bgridiron\\b'] },
+  { phrase:'healthcare & biotech',       terms:['\\bhealthcare\\b','\\bbiotech\\b','\\bpharma\\b','\\bclinical\\b','\\bfda\\b','\\btherapeutics\\b'] },
+  { phrase:'deep tech',                  terms:['deep tech','\\bquantum\\b','nuclear fusion','advanced materials'] },
+  { phrase:'defense tech',               terms:['\\bdefense\\b','\\bmilitary\\b','\\bpentagon\\b','national security','\\banduril\\b','\\bpalantir\\b'] },
+];
+
+// Bucket routing: specific phrases map to broad buckets for section routing only
+const BUCKET_MAP = [
+  { bucket:'Technology', test: /ai infra|inference|chip stack|humanoid|autonomous|robotics|machine learning|llm|gpt|deep tech|enterprise software|saas|b2b/i },
+  { bucket:'Finance',    test: /invest|equity|crypto|market|venture|portfolio|fintech|advisory|private equity|macro|stocks|bonds|rates/i },
+  { bucket:'Sports',     test: /nba|front-office|sports analytic|basketball|football|nfl/i },
+  { bucket:'Space',      test: /space|aerospace|satellite|rocket/i },
+  { bucket:'Health Tips',test: /healthcare|biotech|pharma|clinical/i },
+  { bucket:'Career Tips',test: /leadership|management|ceo|cto|executive|hiring|recruiting/i },
+  { bucket:'Politics',   test: /policy|regulation|geopolitics|national security|congress|senate/i },
+];
+
+// Industry/professional context — separate from topic routing
+const INDUSTRY_PHRASES = [
+  { phrase:'investment advisory',    terms:['investment advisory','wealth management','financial advisor'] },
+  { phrase:'venture capital firm',   terms:['venture capital firm','vc firm','venture firm'] },
+  { phrase:'tech startup',           terms:['tech startup','startup founder','\\bfounder\\b.*\\bstartup|startup.*\\bfounder\\b'] },
+  { phrase:'enterprise software',    terms:['enterprise software','enterprise tech','b2b saas'] },
+  { phrase:'media / journalism',     terms:['journalist','reporter','editor','media company','publication','newsletter'] },
+];
+
+// Tone — exact phrases preserved, not flattened
+const TONE_PHRASES = [
+  { phrase:'dry',             terms:['\\bdry\\b','no filler','no fluff','no hype','zero filler'] },
+  { phrase:'direct',          terms:['\\bdirect\\b','\\bblunt\\b','\\bterse\\b','get to the point','no nonsense','no-nonsense'] },
+  { phrase:'data-driven',     terms:['data-driven','data driven','\\banalytical\\b','specific.*number','numbers.*deals','companies.*numbers','specific companies'] },
+  { phrase:'concise',         terms:['\\bconcise\\b','keep it brief','\\bskimmable\\b','4 items','4 items max'] },
+  { phrase:'professional',    terms:['\\bprofessional\\b','\\bexecutive\\b','\\bformal\\b','\\bpolished\\b'] },
+  { phrase:'casual',          terms:['\\bcasual\\b','\\bconversational\\b','\\bfriendly\\b','\\bapproachable\\b'] },
+];
+
+// Format cues
+const FORMAT_PHRASES = [
+  { phrase:'morning read',        terms:['morning','start my day','first thing','wake up','breakfast'] },
+  { phrase:'evening read',        terms:['\\bevening\\b','after work','end of day'] },
+  { phrase:'long-form',           terms:['long-form','long form','deep dive','in-depth','full analysis','think piece'] },
+  { phrase:'no emoji',            terms:['no emoji','no emojis'] },
+  { phrase:'no exclamation marks',terms:['no exclamation','no !','no exclamation points'] },
+  { phrase:'bullet format',       terms:['\\bbullets\\b','bullet points','listicle','\\bnumbered\\b'] },
+];
+
+// ── Entity extraction — tightened to reduce title-case false positives ─────────
+// Allowlisted entity words that are genuine named entities, not sentence starters
+const ENTITY_STOP_WORDS = new Set([
+  'The','A','An','In','At','For','And','But','Or','So','If','To','My','Your','Our',
+  'We','They','He','She','It','I','This','That','These','Those','With','From','By',
+  'On','Of','As','Be','Is','Are','Was','Were','Has','Have','Had','Will','Would',
+  'Could','Should','May','Might','Do','Does','Did','San','New','South','North',
+  'East','West','Late','Early','First','Last','Next','Each','Every','Some','Any',
+  'All','Both','More','Most','Other','Such','Very','Just','Even','Only','Still',
+]);
+
+// Geographic terms that commonly appear capitalized but are not named entities
+const GEO_BLOCKLIST = new Set([
+  'San Francisco','New York','New York City','Los Angeles','San Jose','San Diego',
+  'San Antonio','Las Vegas','Fort Worth','Long Beach','Salt Lake','Kansas City',
+  'North Carolina','South Carolina','North Dakota','South Dakota','West Virginia',
+  'Washington DC','Washington State','United States','United Kingdom',
+]);
+
+function extractNamedEntities(text) {
+  const entities = [];
+  const mwRe = /\b([A-Z][a-z]{1,}(?:\s+[A-Z][a-z]{1,})+)\b/g;
+  let m;
+  while ((m = mwRe.exec(text)) !== null) {
+    const phrase = m[1];
+    if (GEO_BLOCKLIST.has(phrase)) continue;          // skip known geography
+    const words = phrase.split(/\s+/);
+    const contentWords = words.filter(w => !ENTITY_STOP_WORDS.has(w));
+    if (contentWords.length === 0) continue;
+    if (contentWords.some(w => w.length >= 4)) entities.push(phrase);
+  }
+  const acroRe = /\b([A-Z]{2,5})\b/g;
+  while ((m = acroRe.exec(text)) !== null) {
+    const a = m[1];
+    if (!/^[AEIOU]+$/.test(a)) entities.push(a);
+  }
+  return [...new Set(entities)].slice(0, 10);
+}
+
+// Exclusion detection
+function extractExclusions(text) {
+  const ex = [];
+  const exRe = /(?:skip|avoid|no\s+(?:more\s+)?|don'?t\s+(?:cover|include|want)|leave\s+out)\s+([\w\s]{3,30}?)(?:[,.]|$)/gi;
+  let m;
+  while ((m = exRe.exec(text)) !== null) ex.push(m[1].trim().toLowerCase());
+  return [...new Set(ex)];
+}
+
+function matchPhrases(text, phraseList) {
+  const lc = text.toLowerCase();
+  const results = [], seen = new Set();
+  for (const { phrase, terms } of phraseList) {
+    if (seen.has(phrase)) continue;
+    const matched = terms.some(t => {
+      try { return new RegExp(t, 'i').test(lc); }
+      catch { return lc.includes(t.toLowerCase()); }
+    });
+    if (matched) { seen.add(phrase); results.push(phrase); }
+  }
+  return results;
+}
+
+/**
+ * parseFreeText(text) → custom_profile | null
+ *
+ * Two-layer output:
+ *   specificInterests[] — exact phrases for visible chips/copy
+ *   topicBuckets[]      — broad buckets for section routing only
+ */
+function parseFreeText(text) {
+  if (!text || !text.trim()) return null;
+
+  const specificInterests = matchPhrases(text, SPECIFIC_PHRASES);
+  const industries        = matchPhrases(text, INDUSTRY_PHRASES);
+  const tone              = matchPhrases(text, TONE_PHRASES);
+  const formatArr         = matchPhrases(text, FORMAT_PHRASES);
+  const format            = formatArr.reduce((a, f) => { a[f] = true; return a; }, {});
+  const exclusions        = extractExclusions(text);
+  const people            = extractNamedEntities(text);
+
+  // Derive topicBuckets from specificInterests + industries (routing only)
+  const combined = [...specificInterests, ...industries].join(' ');
+  const topicBuckets = BUCKET_MAP
+    .filter(({ test }) => test.test(combined))
+    .map(({ bucket }) => bucket);
+
+  // searchTerms = specific interests + industries (exact, for brief generation)
+  const searchTerms = [...new Set([...specificInterests, ...industries])];
+
+  return {
+    raw: text,
+    specificInterests,   // ← used for visible preview chips
+    topicBuckets,        // ← used only for section routing
+    industries,
+    tone,
+    format,
+    exclusions,
+    people,
+    searchTerms,
+  };
+}
+
+// ── Preview rendering ─────────────────────────────────────────────────────────
+const CUSTOM_PROFILE_ID = '__custom_profile__';
+
+function buildCustomProfileContent(profile) {
+  // Prefer specificInterests for visible copy; fall back to buckets only if empty
+  const visibleTopics = profile.specificInterests.length
+    ? profile.specificInterests
+    : profile.topicBuckets;
+
+  const lines = [];
+  if (visibleTopics.length)
+    lines.push('📌 ' + visibleTopics.slice(0, 4).join('  ·  '));
+  if (profile.industries.length)
+    lines.push('🏢 ' + profile.industries.slice(0, 2).join(', '));
+  if (profile.tone.length)
+    lines.push('✍️ ' + profile.tone.slice(0, 3).join(', '));
+
+  const fmtKeys = Object.keys(profile.format || {});
+  if (fmtKeys.length) lines.push('📐 ' + fmtKeys.slice(0, 2).join(', '));
+
+  if (profile.people.length) {
+    // People/pubs line: filter out geographic terms (≤2-word pure-geo names)
+    const filtered = profile.people.filter(p =>
+      !/^(San Francisco|New York|Los Angeles|San Jose|Washington DC?|Austin TX?)$/i.test(p)
+    ).slice(0, 4);
+    if (filtered.length) lines.push('👁 ' + filtered.join(', '));
+  }
+  if (profile.exclusions.length)
+    lines.push('🚫 skip: ' + profile.exclusions.slice(0, 3).join(', '));
+
+  return lines.join('\n');
+}
+
+function applyCustomProfileToPreview(profile) {
+  const body = document.getElementById('peBody');
+  if (!body) return;
+
+  let el = body.querySelector('[data-topic="' + CUSTOM_PROFILE_ID + '"]');
+
+  const empty = !profile || (
+    !profile.specificInterests.length && !profile.topicBuckets.length &&
+    !profile.tone.length && !profile.people.length
+  );
+  if (empty) {
+    if (el) { el.className = 'pe-section exiting'; setTimeout(() => el && el.remove(), 350); }
+    return;
+  }
+
+  const contentText = buildCustomProfileContent(profile);
+
+  if (el) {
+    const c = el.querySelector('.pe-sec-content');
+    if (c && c.textContent !== contentText) c.textContent = contentText;
+  } else {
+    el = document.createElement('div');
+    el.className = 'pe-section entering';
+    el.dataset.topic = CUSTOM_PROFILE_ID;
+    el.dataset.persistent = '1'; // survives renderTopicSections rebuilds
+    el.innerHTML =
+      '<div class="pe-sec-head">' +
+        '<span class="pe-sec-emoji">🧠</span>' +
+        '<span class="pe-sec-label">Sam\'s Focus</span>' +
+      '</div>' +
+      '<div class="pe-sec-content" style="white-space:pre-line;">' + esc(contentText) + '</div>';
+
+    const firstNP = body.querySelector('.pe-section:not([data-persistent])');
+    const emptyEl = body.querySelector('.pe-empty');
+    if (firstNP)   body.insertBefore(el, firstNP);
+    else if(emptyEl) emptyEl.replaceWith(el);
+    else           body.prepend(el);
+    setTimeout(() => { if (el) el.classList.remove('entering'); }, 420);
+  }
+
+  // Route Following section to named people/publications
+  if (typeof renderFollowingSection === 'function' && profile.people.length) {
+    const filtered = profile.people.filter(p =>
+      !/^(San Francisco|New York|Los Angeles|San Jose|Washington DC?|Austin TX?)$/i.test(p)
+    );
+    if (filtered.length) renderFollowingSection(filtered.join(', '));
+  }
+
+  flashPreview();
+}
+
+/**
+ * rehydrateCustomProfile()
+ * Called by renderQuestion (setTimeout 0) and renderTopicSections tail.
+ * Ensures Sam's Focus section survives all step transitions.
+ */
+function rehydrateCustomProfile() {
+  const p = W.derived && W.derived.custom_profile;
+  if (p) applyCustomProfileToPreview(p);
+}
+
+// Debounced textarea handler (150ms)
+let _customProfileTimer = null;
+function handleSamTextareaInput(text) {
+  clearTimeout(_customProfileTimer);
+  _customProfileTimer = setTimeout(() => {
+    const profile = parseFreeText(text);
+    W.derived.custom_profile     = profile;      // survives renderQuestion
+    W.answers.custom_profile_text = text;        // survives server round-trips
+    W.answers._derived_profile    = profile;     // readable by brief generation
+    applyCustomProfileToPreview(profile);
+  }, 150);
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  VOICE DICTATION ENGINE — Web Speech API
+//  Client-side only. No audio leaves the browser.
+//  Transcript appends to #samTextarea and fires all existing input handlers
+//  (char count, custom profile parsing, preview update, persistence).
+// ══════════════════════════════════════════════════════════════════════════════
+
+(function () {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition || null;
+
+  let recognition   = null;   // SpeechRecognition instance (created once)
+  let isRecording   = false;
+  let interimSpan   = null;   // live interim text tracker
+  let finalBuffer   = '';     // accumulates final results in this session
+  let baseText      = '';     // textarea content at recording start
+
+  // ── Feature detection ──────────────────────────────────────────────────────
+  function voiceSupported() {
+    return !!SpeechRecognition;
+  }
+
+  // ── DOM refs (resolved lazily when Sam screen shows) ──────────────────────
+  function refs() {
+    return {
+      ta:          document.getElementById('samTextarea'),
+      micBtn:      document.getElementById('samMicBtn'),
+      voiceRow:    document.getElementById('samVoiceRow'),
+      statusEl:    document.getElementById('samVoiceStatus'),
+      unsupported: document.getElementById('samVoiceUnsupported'),
+    };
+  }
+
+  // ── Inject interim text into textarea without clobbering confirmed text ────
+  function setTextareaValue(confirmed, interim) {
+    const { ta } = refs();
+    if (!ta) return;
+    ta.value = confirmed + (interim ? ' ' + interim : '');
+    // Sync char count
+    const charEl = document.getElementById('samCharCount');
+    if (charEl) charEl.textContent = ta.value.length;
+    // Only trigger full handlers on confirmed text (not every interim char)
+    if (!interim) {
+      handleSamTextareaInput(ta.value);
+    }
+  }
+
+  // ── Set visual state ───────────────────────────────────────────────────────
+  function setState(state, message) {
+    const { micBtn, statusEl } = refs();
+    if (!micBtn || !statusEl) return;
+
+    statusEl.className = 'sam-voice-status';
+    if (state === 'idle') {
+      micBtn.textContent  = '🎙 Speak';
+      micBtn.classList.remove('recording');
+      statusEl.textContent = message || '';
+    } else if (state === 'recording') {
+      micBtn.innerHTML    = '⏹ Stop';
+      micBtn.classList.add('recording');
+      statusEl.classList.add('listening');
+      statusEl.textContent = message || 'Listening…';
+    } else if (state === 'error') {
+      micBtn.textContent  = '🎙 Speak';
+      micBtn.classList.remove('recording');
+      statusEl.classList.add('error');
+      statusEl.textContent = message || 'Mic error. Try again.';
+    }
+  }
+
+  // ── Start recognition ──────────────────────────────────────────────────────
+  function startRecording() {
+    const { ta } = refs();
+    if (!ta) return;
+
+    try {
+      if (!recognition) {
+        recognition = new SpeechRecognition();
+        recognition.interimResults = true;
+        recognition.continuous     = true;
+        recognition.lang           = 'en-US';
+        recognition.maxAlternatives = 1;
+
+        recognition.onresult = (e) => {
+          let interim = '';
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            const transcript = e.results[i][0].transcript;
+            if (e.results[i].isFinal) {
+              finalBuffer += (finalBuffer ? ' ' : '') + transcript.trim();
+            } else {
+              interim += transcript;
+            }
+          }
+          // Update textarea: baseText + confirmed finals + live interim
+          const confirmed = baseText
+            + (baseText && finalBuffer ? ' ' : '')
+            + finalBuffer;
+          setTextareaValue(confirmed, interim);
+        };
+
+        recognition.onerror = (e) => {
+          const msg = {
+            'not-allowed':   'Microphone access denied. Check browser permissions.',
+            'audio-capture': 'No microphone found. Check your device settings.',
+            'network':       'Network error during voice recognition.',
+            'no-speech':     'No speech detected. Try again.',
+            'aborted':       '',  // user-initiated stop — silent
+          }[e.error] || `Voice error: ${e.error}`;
+
+          isRecording = false;
+          setState(msg ? 'error' : 'idle', msg);
+          // Commit whatever we captured before the error
+          if (finalBuffer) {
+            const confirmed = baseText
+              + (baseText && finalBuffer ? ' ' : '')
+              + finalBuffer;
+            setTextareaValue(confirmed, '');
+          }
+        };
+
+        recognition.onend = () => {
+          if (isRecording) {
+            // Auto-restart if browser stopped (some browsers stop after silence)
+            try { recognition.start(); } catch (_) { isRecording = false; setState('idle'); }
+          } else {
+            setState('idle', finalBuffer ? '✓ Transcript added' : '');
+            // Commit final text cleanly
+            const confirmed = baseText
+              + (baseText && finalBuffer ? ' ' : '')
+              + finalBuffer;
+            setTextareaValue(confirmed, '');
+          }
+        };
+      }
+
+      // Snapshot current textarea content as base
+      baseText    = (ta.value || '').trimEnd();
+      finalBuffer = '';
+      isRecording = true;
+      recognition.start();
+      setState('recording');
+    } catch (err) {
+      isRecording = false;
+      setState('error', 'Could not start voice input. ' + err.message);
+    }
+  }
+
+  // ── Stop recognition ───────────────────────────────────────────────────────
+  function stopRecording() {
+    isRecording = false;
+    try { if (recognition) recognition.stop(); } catch (_) {}
+    setState('idle', finalBuffer ? '✓ Transcript added' : '');
+    // Commit final text on explicit stop
+    const { ta } = refs();
+    if (ta && finalBuffer) {
+      const confirmed = baseText
+        + (baseText && finalBuffer ? ' ' : '')
+        + finalBuffer;
+      setTextareaValue(confirmed, '');
+    }
+  }
+
+  // ── Public toggle ──────────────────────────────────────────────────────────
+  window.toggleVoiceDictation = function () {
+    if (isRecording) stopRecording();
+    else startRecording();
+  };
+
+  // ── Called from showMeetSam() to wire up UI ───────────────────────────────
+  window.initVoiceDictation = function () {
+    const { voiceRow, unsupported } = refs();
+    if (!voiceRow || !unsupported) return;
+
+    if (voiceSupported()) {
+      voiceRow.style.display = 'flex';
+      unsupported.style.display = 'none';
+    } else {
+      voiceRow.style.display = 'none';
+      unsupported.style.display = 'block';
+    }
+
+    // Reset state when Sam screen (re-)opens
+    isRecording   = false;
+    finalBuffer   = '';
+    baseText      = '';
+    setState('idle');
+  };
+
+  // ── Stop if user navigates away from Sam screen ───────────────────────────
+  window.stopVoiceDictationIfActive = function () {
+    if (isRecording) stopRecording();
+  };
+}());
+
+
+function showMeetSam() {
+  hide('preStart');
+  hide('questionArea');
+  show('meetSam');
+  // Stop recording if transitioning back to this screen
+  if (typeof stopVoiceDictationIfActive === 'function') stopVoiceDictationIfActive();
+  initVoiceDictation();
+  const ta = document.getElementById('samTextarea');
+  if (ta) {
+    // Rehydrate: if user already typed something (prev/next navigation), restore it
+    const savedText = W.answers.custom_profile_text || '';
+    ta.value = savedText;
+    const charEl = document.getElementById('samCharCount');
+    if (charEl) charEl.textContent = savedText.length;
+
+    // Only add listener once (guard against double-mount)
+    if (!ta._samListenerAttached) {
+      ta._samListenerAttached = true;
+      ta.addEventListener('input', () => {
+        const charEl2 = document.getElementById('samCharCount');
+        if (charEl2) charEl2.textContent = ta.value.length;
+        handleSamTextareaInput(ta.value);
+      });
+    }
+
+    // Rehydrate preview from saved derived state
+    if (savedText) {
+      const profile = W.derived && W.derived.custom_profile
+        ? W.derived.custom_profile
+        : parseFreeText(savedText);
+      W.derived.custom_profile = profile;
+      applyCustomProfileToPreview(profile);
+    }
+
+    setTimeout(() => ta.focus(), 100);
+  }
+  const errEl = document.getElementById('samError');
+  if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+}
+
+async function handleSamSubmit() {
+  const ta   = document.getElementById('samTextarea');
+  const btn  = document.getElementById('samSubmitBtn');
+  const errEl = document.getElementById('samError');
+  const text = ta ? ta.value.trim() : '';
+
+  if (!text || text.length < 30) {
+    if (ta) { ta.classList.add('error'); setTimeout(() => ta.classList.remove('error'), 1600); ta.focus(); }
+    if (errEl) { errEl.textContent = 'Please write at least a sentence or two so Sam has something to work with.'; errEl.classList.add('show'); }
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending to Sam…'; }
+  if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+
+  // Persist custom profile to all state layers before network round-trip
+  const samProfile = parseFreeText(text);
+  W.derived.custom_profile      = samProfile;
+  W.answers.custom_profile_text = text;
+  W.answers._derived_profile    = samProfile;
+  applyCustomProfileToPreview(samProfile);
+
+  try {
+    await fetch('/api/sam-onboarding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: W.session_id, onboarding_text: text })
+    });
+    // Response is fire-and-forget on the server — success or fail, continue Wizard
+  } catch (e) {
+    console.warn('[Meet Sam] sam-onboarding request failed (non-fatal):', e.message);
+  }
+
+  continuePastSam();
+}
+
+function skipSam() {
+  continuePastSam();
+}
+
+function continuePastSam() {
+  if (typeof stopVoiceDictationIfActive === 'function') stopVoiceDictationIfActive();
+  hide('meetSam');
+  const nextQ = W.pendingNextQ;
+  W.pendingNextQ = null;
+  if (nextQ) {
+    show('questionArea');
+    renderQuestion(nextQ);
+  }
+}
+
+function showTransition() {
+  hide('questionArea');
+  const progressWrap = document.getElementById('progressBarWrap');
+  if (progressWrap) progressWrap.style.display = 'none';
+  const area = document.getElementById('questionArea');
+  area.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;gap:18px;text-align:center;padding:32px 16px;">
+      <div style="font-size:48px;">✨</div>
+      <h2 style="font-size:22px;font-weight:800;color:var(--navy);">Setting up your newsletter...</h2>
+      <p style="font-size:15px;color:var(--gray);max-width:340px;line-height:1.6;">Personalizing your sample from the topics you chose.</p>
+      <div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;"></div>
+    </div>`;
+  show('questionArea');
+}
+
+// showSuccess() removed - completion now redirects to /newsletter-preview?session_id=...
+// If you need a success screen again, add it to newsletter-preview.html, not here.
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════════════════════════════════════
+function show(id) { const el = document.getElementById(id); if (el) el.style.display = ''; }
+function hide(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls)  e.className   = cls;
+  if (text) e.textContent = text;
+  return e;
+}
+
+function esc(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function showQError(msg, withRetry = false) {
+  const errEl = document.getElementById('qError');
+  if (!errEl) return;
+  errEl.innerHTML = `<span>${esc(msg)}</span>`;
+  if (withRetry) {
+    const rb = document.createElement('button');
+    rb.className = 'retry-btn';
+    rb.textContent = 'Retry';
+    rb.onclick = () => submitAnswer();
+    errEl.appendChild(rb);
+  }
+  errEl.classList.add('show');
+  setTimeout(() => errEl.classList.remove('show'), 5000);
+}
+</script>
+
+</body>
+</html>
