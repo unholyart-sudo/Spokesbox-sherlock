@@ -403,6 +403,43 @@
     .sam-skip a { color: var(--gray); text-decoration: underline; cursor: pointer; }
     .sam-skip a:hover { color: var(--navy); }
 
+    /* Sam guidance panel — prompt bullets + quick-insert chips */
+    .sam-guide {
+      border: 1.5px solid var(--border); border-radius: 12px;
+      background: #fafcff; overflow: hidden;
+    }
+    .sam-guide-toggle {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; background: transparent; border: none;
+      cursor: pointer; font-size: 13px; font-weight: 700; color: #6b7280;
+      text-align: left; gap: 8px;
+    }
+    .sam-guide-toggle:hover { color: var(--teal); }
+    .sam-guide-arrow { font-size: 11px; transition: transform 0.2s; flex-shrink: 0; }
+    .sam-guide-arrow.open { transform: rotate(180deg); }
+    .sam-guide-body { padding: 2px 14px 13px; }
+    .sam-bullets {
+      margin: 0 0 11px 0; padding: 0; list-style: none;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .sam-bullets li {
+      font-size: 12.5px; color: #6b7280; line-height: 1.6;
+      padding-left: 14px; position: relative;
+    }
+    .sam-bullets li::before {
+      content: '·'; position: absolute; left: 3px;
+      color: var(--teal); font-weight: 700;
+    }
+    .sam-chips-row { display: flex; flex-wrap: wrap; gap: 7px; }
+    .sam-chip {
+      padding: 5px 13px; border-radius: 50px;
+      border: 1.5px solid #99e6da; background: #f0fdfc;
+      color: var(--teal); font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s; line-height: 1;
+    }
+    .sam-chip:hover  { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .sam-chip:active { transform: scale(0.95); }
+
     /* Voice dictation */
     .sam-voice-row {
       display: flex; align-items: center; gap: 10px;
@@ -685,6 +722,34 @@
       </div>
       <h2 class="step-question" style="font-size:20px;line-height:1.4;">What do you want Sam to know about you?</h2>
       <p class="step-sub">Tell Sam what you care about — your work, your interests, what you read, what you're trying to stay on top of. Your words, your way. Sam uses this to write your brief.</p>
+
+      <!-- Guidance panel: prompt bullets + quick-insert chips -->
+      <div class="sam-guide" id="samGuide">
+        <button class="sam-guide-toggle" type="button"
+                onclick="toggleSamGuide()" aria-expanded="false"
+                aria-controls="samGuideBody" id="samGuideToggle">
+          <span>Not sure what to write?</span>
+          <span class="sam-guide-arrow" id="samGuideArrow">&#9660;</span>
+        </button>
+        <div class="sam-guide-body" id="samGuideBody" style="display:none">
+          <ul class="sam-bullets">
+            <li>What do you do for work?</li>
+            <li>What topics, industries, companies, people, or sources do you follow?</li>
+            <li>What do you want more of?</li>
+            <li>What do you want less of?</li>
+            <li>What tone should Sam use?</li>
+            <li>What should Sam avoid?</li>
+          </ul>
+          <div class="sam-chips-row" id="samChipsRow">
+            <button class="sam-chip" type="button" onclick="insertSamChip('Work')"     aria-label="Insert Work prompt">+ Work</button>
+            <button class="sam-chip" type="button" onclick="insertSamChip('Topics')"   aria-label="Insert Topics prompt">+ Topics</button>
+            <button class="sam-chip" type="button" onclick="insertSamChip('Sources')"  aria-label="Insert Sources prompt">+ Sources</button>
+            <button class="sam-chip" type="button" onclick="insertSamChip('Tone')"     aria-label="Insert Tone prompt">+ Tone</button>
+            <button class="sam-chip" type="button" onclick="insertSamChip('Avoid')"    aria-label="Insert Avoid prompt">+ Avoid</button>
+          </div>
+        </div>
+      </div>
+
       <textarea id="samTextarea"
         placeholder="E.g. I work in early-stage VC and follow AI infrastructure closely. I read The Information and Matt Levine. I'm also into NBA basketball and I want dry, specific takes — no filler..."
         rows="6" maxlength="5000"></textarea>
@@ -1211,6 +1276,8 @@ function renderTopicTiles(q, inputWrap, currentSelected) {
           btn.setAttribute('aria-pressed', 'true');
         }
         updateContinueBtn();
+        // FIX C: keep right-panel preview in sync with tile selections
+        renderTopicSections(Array.from(selected));
       });
 
       grid.appendChild(btn);
@@ -1417,6 +1484,8 @@ function renderQuestion(q) {
       W.multiSelected = allPreselected.slice();
       const cleanup = renderTopicTiles(q, inputWrap, allPreselected);
       W._tileCleanup = cleanup;
+      // FIX D: populate right-panel preview with preselected topics on initial load
+      if (allPreselected.length > 0) renderTopicSections(allPreselected);
       // Don't render checkbox grid; tile continue button handles submission
     } else {
       // Existing checkbox multi-select (backward-compat fallback)
@@ -2327,6 +2396,8 @@ function renderTopicSections(topics, toneLabel) {
         <div class="pe-empty-icon">✨</div>
         <div class="pe-empty-text">Pick topics on the left to see<br>your newsletter take shape</div>
       </div>`;
+    // FIX B: must rehydrate even on empty path so Sam's Focus isn't lost
+    if (typeof rehydrateCustomProfile === 'function') rehydrateCustomProfile();
     return;
   }
 
@@ -2338,10 +2409,12 @@ function renderTopicSections(topics, toneLabel) {
   );
   const wantedIds = new Set(topics);
 
-  // Remove unwanted
+  // Remove unwanted — skip persistent sections (e.g. Sam's Focus custom profile)
   existingIds.forEach(id => {
     if (!wantedIds.has(id)) {
       const el = body.querySelector(`.pe-section[data-topic="${CSS.escape(id)}"]`);
+      // FIX A: honour data-persistent flag; Sam's Focus is re-injected by rehydrateCustomProfile
+      if (el && el.dataset.persistent === '1') return;
       if (el) { el.classList.add('exiting'); setTimeout(() => el.remove(), 320); }
     }
   });
@@ -2453,6 +2526,8 @@ function showSocialInsights(insights) {
     </div>`;
   body.innerHTML = '';
   body.appendChild(card);
+  // FIX E: restore Sam's Focus after wiping peBody for social insights
+  if (typeof rehydrateCustomProfile === 'function') rehydrateCustomProfile();
   flashPreview();
 }
 
@@ -2471,6 +2546,8 @@ function showPreviewHtml(html) {
   };
   body.innerHTML = '';
   body.appendChild(iframe);
+  // FIX E (server preview path): restore Sam's Focus after iframe swap
+  if (typeof rehydrateCustomProfile === 'function') rehydrateCustomProfile();
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -2784,6 +2861,8 @@ function applyCustomProfileToPreview(profile) {
   const contentText = buildCustomProfileContent(profile);
 
   if (el) {
+    // FIX A: cancel any pending removal animation so the element stays visible
+    el.classList.remove('exiting');
     const c = el.querySelector('.pe-sec-content');
     if (c && c.textContent !== contentText) c.textContent = contentText;
   } else {
@@ -3036,6 +3115,60 @@ function handleSamTextareaInput(text) {
 }());
 
 
+// ── Sam guidance panel toggle ────────────────────────────────────────────────
+function toggleSamGuide() {
+  const body  = document.getElementById('samGuideBody');
+  const arrow = document.getElementById('samGuideArrow');
+  const btn   = document.getElementById('samGuideToggle');
+  if (!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  if (arrow) arrow.classList.toggle('open', !isOpen);
+  if (btn)   btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+// ── Quick-insert chip handler ─────────────────────────────────────────────────
+// Inserts "Label: " starter line into #samTextarea.
+// Idempotent: if the label is already present, moves cursor to its line instead.
+// Fires handleSamTextareaInput so character count + profile parse stay in sync.
+function insertSamChip(label) {
+  const ta = document.getElementById('samTextarea');
+  if (!ta) return;
+
+  const starter  = label + ': ';
+  const current  = ta.value;
+  const lowerCur = current.toLowerCase();
+  const lowerKey = label.toLowerCase() + ':';
+
+  // Already has this label — jump cursor to after it and focus
+  const existIdx = lowerCur.indexOf(lowerKey);
+  if (existIdx !== -1) {
+    ta.focus();
+    const afterColon = existIdx + lowerKey.length + 1; // +1 for space
+    // Clamp to end of that line
+    const lineEnd = current.indexOf('\n', existIdx);
+    const pos = lineEnd === -1 ? current.length : lineEnd;
+    ta.setSelectionRange(Math.min(afterColon, pos), Math.min(afterColon, pos));
+    return;
+  }
+
+  // Append: ensure we start on a fresh line
+  const needsNewline = current.length > 0 && !current.endsWith('\n');
+  const newVal = current + (needsNewline ? '\n' : '') + starter;
+  ta.value = newVal;
+
+  // Position cursor right after the inserted "Label: "
+  ta.focus();
+  ta.setSelectionRange(newVal.length, newVal.length);
+
+  // Keep char count in sync
+  const charEl = document.getElementById('samCharCount');
+  if (charEl) charEl.textContent = newVal.length;
+
+  // Trigger debounced profile parse + preview update
+  handleSamTextareaInput(newVal);
+}
+
 function showMeetSam() {
   hide('preStart');
   hide('questionArea');
@@ -3074,6 +3207,14 @@ function showMeetSam() {
   }
   const errEl = document.getElementById('samError');
   if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+
+  // Reset guidance panel to collapsed on each show
+  const guideBody  = document.getElementById('samGuideBody');
+  const guideArrow = document.getElementById('samGuideArrow');
+  const guideBtn   = document.getElementById('samGuideToggle');
+  if (guideBody)  guideBody.style.display = 'none';
+  if (guideArrow) guideArrow.classList.remove('open');
+  if (guideBtn)   guideBtn.setAttribute('aria-expanded', 'false');
 }
 
 async function handleSamSubmit() {

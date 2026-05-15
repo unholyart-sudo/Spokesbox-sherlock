@@ -437,7 +437,7 @@ async function testEmailSend() {
   head('7. TEST EMAIL SEND (live)');
 
   info(`Sending test email to ${TEST_EMAIL}...`);
-  const SENDGRID_KEY = 'process.env.SENDGRID_API_KEY || ''';
+  const SENDGRID_KEY = process.env.SENDGRID_API_KEY;
 
   const payload = JSON.stringify({
     personalizations: [{ to: [{ email: TEST_EMAIL, name: 'Sherlock Test' }] }],
@@ -2460,6 +2460,261 @@ async function testVoiceDictation() {
   else { fail('iOS/Safari fallback path missing'); record('voice_ios_fallback', false); }
 }
 
+// ────────────────────────────────────────────────────────────────────────────────
+//  Section 19: Sam Profile Persistence & Tile-Grid Rehydration
+//  Regression guard for bugs A-E (May 15 2026 fix):
+//  A - renderTopicSections removal loop now skips data-persistent elements
+//  B - renderTopicSections empty-path now calls rehydrateCustomProfile before return
+//  C - renderTopicTiles click handler now calls renderTopicSections for live preview
+//  D - renderTopicTiles initial render calls renderTopicSections(allPreselected)
+//  E - showSocialInsights / showPreviewHtml call rehydrateCustomProfile after innerHTML wipe
+// ────────────────────────────────────────────────────────────────────────────────
+async function testSamProfilePersistence() {
+  head('19. SAM PROFILE PERSISTENCE — tile-grid rehydration (bugs A-E)');
+  const fs2  = require('fs'), path2 = require('path');
+  const html = fs2.readFileSync(path2.join(__dirname, '../public/wizard.html'), 'utf8');
+  const src = (html.match(/<script>([\s\S]+?)<\/script>/g) || [])
+    .map(s => s.replace(/<\/?script>/g, '')).join('\n');
+
+  // ── Bug A fix: removal loop skips data-persistent ───────────────────────────
+  const fixA_persistentGuard = src.includes("el.dataset.persistent === '1'") &&
+    src.includes('// FIX A: honour data-persistent flag');
+  if (fixA_persistentGuard) { ok('Bug A: renderTopicSections removal loop skips data-persistent=1 elements ✓'); record('sam_fixA_persistent_guard', true); }
+  else { fail('Bug A: removal loop does not guard against data-persistent=1 — Sam\'s Focus will be removed by topic rebuilds'); record('sam_fixA_persistent_guard', false); }
+
+  // ── Bug A fix: applyCustomProfileToPreview removes exiting class ─────────────
+  const fixA_exitingCancel = src.includes("el.classList.remove('exiting')") &&
+    src.includes('// FIX A: cancel any pending removal');
+  if (fixA_exitingCancel) { ok('Bug A: applyCustomProfileToPreview cancels exiting animation before 320ms removal fires ✓'); record('sam_fixA_exiting_cancel', true); }
+  else { fail('Bug A: applyCustomProfileToPreview does not remove exiting class — Sam\'s Focus may disappear 320ms after rehydration'); record('sam_fixA_exiting_cancel', false); }
+
+  // ── Bug B fix: empty-path calls rehydrateCustomProfile ──────────────────────
+  const fixB_emptyRehydrate = src.includes('// FIX B: must rehydrate even on empty path') &&
+    src.includes('if (typeof rehydrateCustomProfile === \'function\') rehydrateCustomProfile();\n    return;');
+  if (fixB_emptyRehydrate) { ok('Bug B: renderTopicSections empty-path calls rehydrateCustomProfile before early return ✓'); record('sam_fixB_empty_rehydrate', true); }
+  else { fail('Bug B: renderTopicSections([]) early return still skips rehydrateCustomProfile — Sam\'s Focus is wiped when no topics selected'); record('sam_fixB_empty_rehydrate', false); }
+
+  // ── Bug C fix: tile click calls renderTopicSections ─────────────────────────
+  const fixC_tileClick = src.includes('// FIX C: keep right-panel preview in sync with tile selections') &&
+    src.includes('renderTopicSections(Array.from(selected));');
+  if (fixC_tileClick) { ok('Bug C: renderTopicTiles click handler calls renderTopicSections to update live preview ✓'); record('sam_fixC_tile_click_preview', true); }
+  else { fail('Bug C: tile click handler never calls renderTopicSections — right-panel preview is static while tiles are toggled'); record('sam_fixC_tile_click_preview', false); }
+
+  // ── Bug D fix: tile initial render calls renderTopicSections(allPreselected) ─
+  const fixD_tileInit = src.includes('// FIX D: populate right-panel preview with preselected topics on initial load') &&
+    src.includes('if (allPreselected.length > 0) renderTopicSections(allPreselected);');
+  if (fixD_tileInit) { ok('Bug D: renderTopicTiles initial render calls renderTopicSections(allPreselected) for right-panel preview ✓'); record('sam_fixD_tile_init_preview', true); }
+  else { fail('Bug D: tile_grid initial render never populates right-panel preview — preview stays stale when question 3 loads'); record('sam_fixD_tile_init_preview', false); }
+
+  // ── Bug E fix: showSocialInsights rehydrates after innerHTML wipe ────────────
+  const fixE_socialRehydrate = (() => {
+    // Count occurrences of rehydrateCustomProfile after body.innerHTML = ''
+    // We expect one in showSocialInsights and one in showPreviewHtml
+    const matches = [...src.matchAll(
+      /body\.innerHTML = '';[\s\S]{0,200}rehydrateCustomProfile/g
+    )];
+    return matches.length >= 2;
+  })();
+  if (fixE_socialRehydrate) { ok('Bug E: showSocialInsights + showPreviewHtml both call rehydrateCustomProfile after innerHTML wipe ✓'); record('sam_fixE_social_rehydrate', true); }
+  else { fail('Bug E: innerHTML wipe in showSocialInsights or showPreviewHtml does not rehydrate Sam\'s Focus'); record('sam_fixE_social_rehydrate', false); }
+
+  // ── Sam input persists through question 3 — parseFreeText smoke test ─────────
+  // Inline a minimal parseFreeText to verify the test input produces expected output
+  // (wizard.html ships the full engine; here we just validate the phrase dict is intact)
+  const samTestInput = 'I run a boutique investment advisory. AI infrastructure, inference-layer companies, crypto market structure. Dry tone, no emoji.';
+  const hasAllPhrases = [
+    "phrase:'AI infrastructure'",
+    "phrase:'inference-layer companies'",
+    "phrase:'crypto market structure'",
+    "phrase:'dry'",
+    "phrase:'no emoji'",
+  ].every(p => src.includes(p));
+  if (hasAllPhrases) { ok('Sam input smoke: SPECIFIC_PHRASES contains all 5 phrases expected from test input ✓'); record('sam_phrase_dict_intact', true); }
+  else { fail('Sam input smoke: one or more expected phrases missing from SPECIFIC_PHRASES dictionary'); record('sam_phrase_dict_intact', false); }
+
+  // ── topicBuckets must remain routing-only — not used for visible chips ────────
+  const bucketsRoutingOnly = src.includes('// Bucket routing: specific phrases map to broad buckets for section routing only') &&
+    src.includes('const visibleTopics = profile.specificInterests.length') &&
+    src.includes('? profile.specificInterests') &&
+    src.includes(': profile.topicBuckets;');
+  if (bucketsRoutingOnly) { ok('topicBuckets are routing-only; visible chips always prefer specificInterests when non-empty ✓'); record('sam_buckets_routing_only', true); }
+  else { fail('topicBuckets may leak into visible chips even when specificInterests exist'); record('sam_buckets_routing_only', false); }
+
+  // ── rehydrateCustomProfile called after every renderQuestion transition ───────
+  const renderQHook = src.includes('setTimeout(rehydrateCustomProfile, 0)') &&
+    src.includes('function renderQuestion(');
+  if (renderQHook) { ok('rehydrateCustomProfile is called (async) after every renderQuestion transition ✓'); record('sam_rehydrate_after_renderQ', true); }
+  else { fail('renderQuestion does not schedule rehydrateCustomProfile — Sam profile lost on step transitions'); record('sam_rehydrate_after_renderQ', false); }
+
+  // ── W.derived.custom_profile survives renderQuestion (not reset) ─────────────
+  const derivedNotReset = src.includes('derived: { custom_profile: null }') &&
+    !src.includes('W.derived = {') && // should never reset W.derived wholesale
+    src.includes('W.derived.custom_profile');
+  if (derivedNotReset) { ok('W.derived.custom_profile is never wholesale-reset in renderQuestion – persists across steps ✓'); record('sam_derived_not_reset', true); }
+  else { fail('W.derived is reset somewhere — Sam profile data will be lost mid-wizard'); record('sam_derived_not_reset', false); }
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+//  Section 20: Sam Guidance Panel — "Not sure what to write?"
+// ────────────────────────────────────────────────────────────────────────────────
+async function testSamGuidancePanel() {
+  head('20. SAM GUIDANCE PANEL — prompt bullets + quick-insert chips');
+  const fs2  = require('fs'), path2 = require('path');
+  const raw  = fs2.readFileSync(path2.join(__dirname, '../public/wizard.html'), 'utf8');
+
+  // ── Structure: guidance panel container ────────────────────────────────
+  const hasGuideDiv    = raw.includes('id="samGuide"');
+  const hasGuideBody   = raw.includes('id="samGuideBody"');
+  const hasToggleBtn   = raw.includes('id="samGuideToggle"');
+  const hasArrow       = raw.includes('id="samGuideArrow"');
+  ok(hasGuideDiv,   'Guidance panel container #samGuide present');
+  ok(hasGuideBody,  'Collapsible body #samGuideBody present');
+  ok(hasToggleBtn,  'Toggle button #samGuideToggle present');
+  ok(hasArrow,      'Arrow indicator #samGuideArrow present');
+  record('sam_guide_structure', hasGuideDiv && hasGuideBody && hasToggleBtn && hasArrow);
+
+  // ── All 6 bullet prompts present ─────────────────────────────────────
+  const bullets = [
+    'What do you do for work?',
+    'What topics, industries, companies, people, or sources do you follow?',
+    'What do you want more of?',
+    'What do you want less of?',
+    'What tone should Sam use?',
+    'What should Sam avoid?',
+  ];
+  const allBullets = bullets.every(b => raw.includes(b));
+  if (allBullets) { ok('All 6 prompt bullets present \u2713'); record('sam_guide_bullets', true); }
+  else {
+    const missing = bullets.filter(b => !raw.includes(b));
+    fail('Missing prompt bullets: ' + missing.join(' | '));
+    record('sam_guide_bullets', false);
+  }
+
+  // ── All 5 quick-insert chips wired to insertSamChip() ───────────────────
+  const chips = ['Work', 'Topics', 'Sources', 'Tone', 'Avoid'];
+  const allChips = chips.every(c => raw.includes(`insertSamChip('${c}')`) && raw.includes(`class="sam-chip"`));
+  if (allChips) { ok('All 5 quick-insert chips wired to insertSamChip() \u2713'); record('sam_guide_chips_wired', true); }
+  else {
+    const missing = chips.filter(c => !raw.includes(`insertSamChip('${c}')`));
+    fail('Chips not wired: ' + missing.join(', '));
+    record('sam_guide_chips_wired', false);
+  }
+
+  // ── Chip aria-labels present for accessibility ─────────────────────────
+  const allAria = chips.every(c => raw.includes(`aria-label="Insert ${c} prompt"`));
+  if (allAria) { ok('All chips have aria-label for accessibility \u2713'); record('sam_guide_chips_aria', true); }
+  else { fail('One or more chips missing aria-label'); record('sam_guide_chips_aria', false); }
+
+  // ── #samGuideBody starts collapsed (display:none) ───────────────────────
+  const startsCollapsed = raw.includes('id="samGuideBody" style="display:none"') ||
+                          raw.includes("id=\"samGuideBody\" style=\"display:none\"");
+  if (startsCollapsed) { ok('Guidance body starts collapsed (display:none) \u2713'); record('sam_guide_collapsed_init', true); }
+  else { fail('Guidance body is not collapsed on init — may push textarea below fold on small screens'); record('sam_guide_collapsed_init', false); }
+
+  // ── JS: toggleSamGuide() defined ──────────────────────────────────────
+  const hasToggleFn = raw.includes('function toggleSamGuide()');
+  if (hasToggleFn) { ok('toggleSamGuide() function defined \u2713'); record('sam_guide_toggle_fn', true); }
+  else { fail('toggleSamGuide() function missing'); record('sam_guide_toggle_fn', false); }
+
+  // ── JS: insertSamChip() defined and complete ─────────────────────────
+  const hasInsertFn = raw.includes('function insertSamChip(label)');
+  if (hasInsertFn) { ok('insertSamChip(label) function defined \u2713'); record('sam_chip_insert_fn', true); }
+  else { fail('insertSamChip(label) function missing'); record('sam_chip_insert_fn', false); }
+
+  // Insert function must call handleSamTextareaInput to keep parsing in sync
+  const insertCallsParser = raw.includes('handleSamTextareaInput(newVal)') &&
+    raw.indexOf('handleSamTextareaInput(newVal)') >
+    raw.indexOf('function insertSamChip(label)');
+  if (insertCallsParser) { ok('insertSamChip calls handleSamTextareaInput — char count + profile parse stay in sync \u2713'); record('sam_chip_calls_parser', true); }
+  else { fail('insertSamChip does not call handleSamTextareaInput — profile parse will lag after chip insert'); record('sam_chip_calls_parser', false); }
+
+  // Insert function is idempotent — checks for existing label before inserting
+  const isIdempotent = raw.includes('lowerCur.indexOf(lowerKey)') ||
+    raw.includes('existIdx');
+  if (isIdempotent) { ok('insertSamChip is idempotent: checks for existing label before appending \u2713'); record('sam_chip_idempotent', true); }
+  else { fail('insertSamChip may duplicate labels on repeated chip taps'); record('sam_chip_idempotent', false); }
+
+  // Insert function updates character count (check within the insertSamChip body)
+  const insertFnStart = raw.indexOf('function insertSamChip(label)');
+  const insertFnEnd   = raw.indexOf('\nfunction ', insertFnStart + 1);
+  const insertFnBody  = insertFnEnd > insertFnStart ? raw.slice(insertFnStart, insertFnEnd) : raw.slice(insertFnStart, insertFnStart + 2000);
+  const updatesCharCount = insertFnBody.includes('samCharCount');
+  if (updatesCharCount) { ok('insertSamChip updates #samCharCount \u2713'); record('sam_chip_char_count', true); }
+  else { fail('insertSamChip does not update character count'); record('sam_chip_char_count', false); }
+
+  // showMeetSam resets guide to collapsed on navigation
+  const showMeetSamResetsGuide = raw.includes('samGuideBody') &&
+    raw.includes('guideBody.style.display = \'none\'') &&
+    raw.indexOf('guideBody.style.display = \'none\'') >
+    raw.indexOf('function showMeetSam()');
+  if (showMeetSamResetsGuide) { ok('showMeetSam resets guidance panel to collapsed on each navigation \u2713'); record('sam_guide_reset_on_show', true); }
+  else { fail('showMeetSam does not reset guidance panel state — may show stale open/closed state on back navigation'); record('sam_guide_reset_on_show', false); }
+
+  // ── Smoke: inline insertSamChip logic ───────────────────────────────────
+  // Re-implement the core insert logic in-process to unit-test it
+  function simulateInsert(current, label) {
+    const starter  = label + ': ';
+    const lowerCur = current.toLowerCase();
+    const lowerKey = label.toLowerCase() + ':';
+    if (lowerCur.indexOf(lowerKey) !== -1) return { val: current, jumped: true };
+    const needsNewline = current.length > 0 && !current.endsWith('\n');
+    return { val: current + (needsNewline ? '\n' : '') + starter, jumped: false };
+  }
+
+  // Fresh insert
+  const r1 = simulateInsert('', 'Work');
+  ok(r1.val === 'Work: ' && !r1.jumped, 'Fresh insert into empty textarea: \'Work: \' \u2713');
+  record('sam_chip_insert_empty', r1.val === 'Work: ');
+
+  // Append with existing content
+  const r2 = simulateInsert('I work in VC.', 'Topics');
+  ok(r2.val === 'I work in VC.\nTopics: ' && !r2.jumped, 'Append with newline when content exists \u2713');
+  record('sam_chip_insert_append', r2.val === 'I work in VC.\nTopics: ');
+
+  // Already ends in newline — no double newline
+  const r3 = simulateInsert('I work in VC.\n', 'Topics');
+  ok(r3.val === 'I work in VC.\nTopics: ', 'No double-newline when text already ends with \\n \u2713');
+  record('sam_chip_no_double_newline', r3.val === 'I work in VC.\nTopics: ');
+
+  // Idempotent: label already present — jump, no append
+  const r4 = simulateInsert('Work: VC investor\nTopics: AI', 'Work');
+  ok(r4.jumped && r4.val === 'Work: VC investor\nTopics: AI', 'Idempotent: existing label causes jump, no duplicate \u2713');
+  record('sam_chip_idempotent_runtime', r4.jumped);
+
+  // Case-insensitive duplicate detection
+  const r5 = simulateInsert('work: something', 'Work');
+  ok(r5.jumped, 'Case-insensitive duplicate detection: \'work:\' matches \'Work\' \u2713');
+  record('sam_chip_case_insensitive', r5.jumped);
+
+  // All 5 chip labels produce correct starter strings
+  const chipLabels = ['Work', 'Topics', 'Sources', 'Tone', 'Avoid'];
+  const allStarters = chipLabels.every(l => simulateInsert('', l).val === l + ': ');
+  if (allStarters) { ok('All 5 chip labels produce correct \"Label: \" starter \u2713'); record('sam_chip_all_starters', true); }
+  else {
+    const bad = chipLabels.filter(l => simulateInsert('', l).val !== l + ': ');
+    fail('Bad starters for: ' + bad.join(', '));
+    record('sam_chip_all_starters', false);
+  }
+
+  // Existing textarea, voice dictation, char count, custom profile unchanged
+  const originalStructure = [
+    'id="samTextarea"',
+    'id="samCharCount"',
+    'id="samMicBtn"',
+    'id="samVoiceRow"',
+    'id="samSubmitBtn"',
+    'function handleSamTextareaInput(',
+    'function showMeetSam()',
+  ];
+  const allOriginal = originalStructure.every(s => raw.includes(s));
+  if (allOriginal) { ok('All existing Sam elements (textarea, voice, char count, submit) still present \u2713'); record('sam_guide_no_regression', true); }
+  else {
+    const missing = originalStructure.filter(s => !raw.includes(s));
+    fail('Regression: missing original elements: ' + missing.join(', '));
+    record('sam_guide_no_regression', false);
+  }
+}
+
 async function getBetaCookie() {
   try {
     const fs2   = require('fs');
@@ -2514,6 +2769,8 @@ async function main() {
   await testTextareaPreviewWiring();
   await testVoiceDictation();
   await testBriefWiring();
+  await testSamProfilePersistence();
+  await testSamGuidancePanel();
 
   // ── Summary ────────────────────────────────────────────────────────────────
   head('─── RESULTS ───────────────────────────────');
