@@ -1,4 +1,57 @@
+# Environment — never commit real credentials
 .env
+.env.local
+.env.*.local
+
+# Dependencies
 node_modules/
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Logs
 *.log
+logs/
+/tmp/
+
+# OS artifacts
 .DS_Store
+Thumbs.db
+
+# Build / dist
+dist/
+build/
+
+# Test output
+test/last-report.json
+
+# Media / screenshots / workspace artifacts
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.mp4
+*.mov
+*.html.bak
+screenshot*/
+media/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor
+.vscode/
+.idea/
+!public/*.jpg
+!public/*.jpeg
+!public/*.png
+!public/*.gif
+!public/*.webp
+!public/og-image.jpg
