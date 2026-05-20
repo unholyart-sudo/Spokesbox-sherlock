@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TorahTxt — Daily Torah Wisdom by SMS</title>
+  <link rel="canonical" href="https://torahtxt.com" />
+  <!-- Social / OG meta -->
+  <meta name="description" content="Daily Torah wisdom delivered by SMS & Email. Free, forever. Subscribe in seconds." />
+  <meta property="og:title" content="TorahTxt — Daily Torah Wisdom by SMS &amp; Email" />
+  <meta property="og:description" content="Daily Torah wisdom delivered by SMS & Email. Free, forever. Subscribe in seconds." />
+  <meta property="og:image" content="https://torahtxt.com/images/og-v9.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://torahtxt.com" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TorahTxt" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TorahTxt — Daily Torah Wisdom by SMS &amp; Email" />
+  <meta name="twitter:description" content="Daily Torah wisdom delivered by SMS & Email. Free, forever." />
+  <meta name="twitter:image" content="https://torahtxt.com/images/og-v9.jpg" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=1774537955" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=1774537955" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=1774537955" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=1774537955" />
+  <link rel="apple-touch-icon" sizes="512x512" href="/favicon-512.png?v=1774537955" />
+  <meta name="theme-color" content="#07090f" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+    :root {
+      --navy: #07090f;
+      --navy-mid: #0d1121;
+      --navy-light: #141b2e;
+      --gold: #c9a84c;
+      --gold-light: #e2c46a;
+      --gold-bright: #f0d080;
+      --gold-dim: #7a6328;
+      --gold-glow: rgba(201,168,76,0.15);
+      --white: #f2ece0;
+      --off-white: #d4cfc4;
+      --grey: #6b7a96;
+      --card: #0f1628;
+      --card-hover: #141e33;
+      --border: rgba(201,168,76,0.12);
+      --border-hover: rgba(201,168,76,0.45);
+    }
+
+    body::after {
+      content: none;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Scroll Progress Bar */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #c9a84c, #e2c46a);
+      z-index: 200;
+      transition: width 0.1s ease;
+      width: 0%;
+    }
+
+    /* Star of David Watermark */
+    body::before {
+      content: none;
+    }
+
+    .star-watermark {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(680px, 95vw);
+      height: min(680px, 95vw);
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star-watermark svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    section, header, footer, nav { position: relative; z-index: 1; }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 3rem;
+      border-bottom: 1px solid rgba(201,168,76,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7,9,15,0.85);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #c9a84c;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-logo-icon {
+      display: inline-block;
+      width: 1.4rem;
+      height: 1.4rem;
+      vertical-align: middle;
+      margin-right: 0.3rem;
+      position: relative;
+      top: -1px;
+    }
+
+    .nav-hebrew {
+      font-size: 0.9rem;
+      color: var(--grey);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-cta {
+      background: transparent;
+      color: var(--gold);
+      padding: 0.5rem 1.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: 1px solid rgba(201,168,76,0.4);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .nav-cta:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 5rem 1.5rem 4rem;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      color: #f2ece0;
+    }
+    .hero-logo-img {
+      display: block;
+      margin: 0 auto 1.5rem;
+      max-width: calc(100vw - 3rem);
+      width: 320px;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, rgba(201,168,76,0.03) 30%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero > * { position: relative; z-index: 1; }
+
+    .floating-hebrew {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: rgba(201,168,76,0.2);
+      direction: rtl;
+      margin-bottom: 1rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 4px;
+      padding: 0.45rem 1.1rem;
+      font-size: 0.7rem;
+      color: var(--gold-light);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 9vw, 6.5rem);
+      font-weight: 900;
+      color: #c9a84c;
+      background: linear-gradient(135deg, #c9a84c 0%, #f0d080 40%, #c9a84c 70%, #a07830 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+    @supports not (-webkit-background-clip: text) {
+      .hero h1 { -webkit-text-fill-color: #c9a84c; background: none; }
+    }
+
+    .hero-hebrew {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      color: rgba(201,168,76,0.5);
+      font-family: 'Playfair Display', serif;
+      direction: rtl;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
+      color: var(--off-white);
+      line-height: 1.8;
+      font-weight: 300;
+      letter-spacing: 0.01em;
+      max-width: 580px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-tagline strong {
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #c9a84c, #e2c46a);
+      color: #07090f;
+      padding: 0.9rem 2.25rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #e2c46a, #f0d080);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--gold);
+      padding: 0.9rem 2.25rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.25s;
+      border: 1px solid rgba(201,168,76,0.35);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.06);
+      color: var(--gold-light);
+    }
+
+    .hero-stat {
+      margin-top: 3.5rem;
+      font-size: 0.8rem;
+      color: var(--grey);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-stat span {
+      color: var(--gold-light);
+      font-weight: 600;
+      font-size: 1rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* DIVIDER */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      opacity: 0.3;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .divider-star {
+      color: var(--gold);
+      font-size: 1.2rem;
+    }
+
+    /* HOW IT WORKS */
+    .how-it-works {
+      padding: 5rem 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 700;
+      text-align: center;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--grey);
+      font-size: 1rem;
+      margin-bottom: 3.5rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .step {
+      background: linear-gradient(145deg, rgba(20,27,46,0.9), rgba(10,13,25,0.95));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s, opacity 0.6s ease;
+    }
+
+    .step:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.1);
+    }
+
+    .step-number {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+      border: 1px solid rgba(201,168,76,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      margin-bottom: 1.25rem;
+      box-shadow: 0 0 20px rgba(201,168,76,0.1);
+    }
+
+    .step h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+
+    .step p {
+      color: var(--grey);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .step-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    /* BENEFITS SECTION */
+    .benefits-section {
+      padding: 5rem 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-top: 3rem;
+    }
+
+    .benefit-card {
+      background: linear-gradient(145deg, rgba(20,27,46,0.9), rgba(10,13,25,0.95));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .benefit-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.1);
+    }
+
+    .benefit-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+
+    .benefit-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--white);
+      margin-bottom: 0.6rem;
+    }
+
+    .benefit-card p { color: var(--grey); font-size: 0.875rem; line-height: 1.7; }
+
+    /* SIGNUP */
+    .signup-section {
+      padding: 7rem 1.5rem;
+      background: linear-gradient(180deg, var(--navy-light) 0%, var(--navy-mid) 100%);
+      border-top: 1px solid rgba(201,168,76,0.08);
+      border-bottom: 1px solid rgba(201,168,76,0.08);
+      position: relative;
+    }
+
+    .signup-inner {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .signup-count {
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--grey);
+      margin-bottom: 2.5rem;
+    }
+
+    .signup-count strong {
+      color: var(--gold);
+      font-size: 1.1rem;
+    }
+
+    .signup-form {
+      background: linear-gradient(145deg, rgba(15,22,40,0.95), rgba(10,13,25,0.98));
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: 16px;
+      padding: 3rem;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(201,168,76,0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--grey);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"] {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 6px;
+      padding: 1rem 1.1rem;
+      color: var(--white);
+      font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="tel"]:focus,
+    input[type="email"]:focus {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.04);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+    }
+
+    /* Subscription Tabs */
+    .sub-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .sub-tab {
+      flex: 1;
+      padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.02);
+      color: var(--grey);
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+
+    .sub-tab:first-child { border-right: 1px solid rgba(201,168,76,0.15); }
+
+    .sub-tab.active {
+      background: rgba(201,168,76,0.12);
+      color: var(--gold-light);
+    }
+
+    .sub-tab:hover:not(.active) {
+      background: rgba(201,168,76,0.05);
+      color: var(--off-white);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    input::placeholder { color: rgba(107,122,150,0.5); }
+
+    .form-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #c9a84c, #e2c46a);
+      color: #07090f;
+      border: none;
+      padding: 1.1rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.25s;
+      margin-top: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+    }
+
+    .form-submit:hover:not(:disabled) {
+      background: linear-gradient(135deg, #e2c46a, #f0d080);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.45);
+    }
+
+    .form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .form-disclaimer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--grey);
+      margin-top: 1rem;
+      line-height: 1.5;
+    }
+
+    .form-message {
+      margin-top: 1rem;
+      padding: 0.875rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: center;
+      display: none;
+    }
+
+    .form-message.success {
+      display: block;
+      background: rgba(52,199,89,0.12);
+      border: 1px solid rgba(52,199,89,0.3);
+      color: #4ade80;
+    }
+
+    .form-message.error {
+      display: block;
+      background: rgba(255,59,48,0.12);
+      border: 1px solid rgba(255,59,48,0.3);
+      color: #f87171;
+    }
+
+    /* SAMPLE DVAR */
+    .sample-section {
+      padding: 5rem 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .phone-mockup {
+      max-width: 380px;
+      margin: 3rem auto 0;
+      background: linear-gradient(145deg, rgba(15,22,40,0.95), rgba(8,11,20,0.98));
+      border-radius: 32px;
+      border: 1px solid rgba(201,168,76,0.2);
+      padding: 2rem;
+      box-shadow:
+        0 32px 80px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(201,168,76,0.05),
+        inset 0 1px 0 rgba(201,168,76,0.1);
+    }
+
+    .phone-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+      margin-bottom: 1.25rem;
+    }
+
+    .phone-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .phone-contact {
+      flex: 1;
+    }
+
+    .phone-contact-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--white);
+    }
+
+    .phone-contact-sub {
+      font-size: 0.75rem;
+      color: var(--grey);
+    }
+
+    .sms-bubble {
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 18px 18px 18px 4px;
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: var(--white);
+    }
+
+    .sms-time {
+      font-size: 0.7rem;
+      color: var(--grey);
+      margin-top: 0.5rem;
+      text-align: right;
+    }
+
+    .sms-label {
+      font-size: 0.7rem;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    /* TESTIMONIALS SECTION */
+    .testimonials-section {
+      padding: 5rem 1.5rem;
+      background: var(--navy-light);
+      border-top: 1px solid rgba(201,168,76,0.08);
+      border-bottom: 1px solid rgba(201,168,76,0.08);
+    }
+
+    .testimonials-section .section-title,
+    .testimonials-section .section-label,
+    .testimonials-section .gold-line {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 3rem auto 0;
+    }
+
+    .testimonial-card {
+      background: linear-gradient(145deg, rgba(20,27,46,0.9), rgba(10,13,25,0.95));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .testimonial-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.1);
+    }
+
+    .testimonial-card::before {
+      content: '\201C';
+      position: absolute;
+      top: 1rem;
+      left: 1.5rem;
+      font-size: 4rem;
+      font-family: 'Playfair Display', serif;
+      color: rgba(201,168,76,0.15);
+      line-height: 1;
+    }
+
+    .testimonial-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; }
+
+    .testimonial-text {
+      color: var(--white);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      font-style: italic;
+      margin-bottom: 1.25rem;
+    }
+
+    .testimonial-author { color: var(--grey); font-size: 0.8rem; font-weight: 500; }
+
+    /* DONATION */
+    .donation-section {
+      padding: 5rem 1.5rem;
+      background: var(--navy-light);
+      border-top: 1px solid rgba(201,168,76,0.08);
+    }
+
+    .donation-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .donation-card {
+      background: linear-gradient(145deg, rgba(15,22,40,0.95), rgba(10,13,25,0.98));
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: 16px;
+      padding: 3.5rem 2.5rem;
+      margin-top: 2.5rem;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.08);
+    }
+
+    .donation-emoji { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+    .donation-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+
+    .donation-card p {
+      color: var(--grey);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .btn-donate {
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.4);
+      padding: 0.9rem 2.25rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .btn-donate:hover {
+      background: rgba(201,168,76,0.08);
+      border-color: var(--gold);
+      color: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.2);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #040508;
+      border-top: 1px solid rgba(201,168,76,0.08);
+      padding: 4rem 1.5rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #c9a84c, #e2c46a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    .footer-hebrew {
+      font-size: 1rem;
+      color: rgba(201,168,76,0.4);
+      direction: rtl;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-tagline {
+      color: var(--grey);
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .footer-links a {
+      color: var(--grey);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-copy {
+      font-size: 0.75rem;
+      color: rgba(107,122,150,0.4);
+    }
+
+    .footer-divider {
+      width: 60px;
+      height: 1px;
+      background: rgba(201,168,76,0.15);
+      margin: 0 auto 2rem;
+    }
+
+    /* Gold line accent */
+    .gold-line {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      border-radius: 0;
+      margin: 1.25rem auto 3rem;
+    }
+
+    /* Shimmer */
+    @keyframes shimmer {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    .shimmer { animation: shimmer 2s ease-in-out infinite; }
+
+    /* Fade-in animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive — Mobile First */
+    @media (max-width: 640px) {
+      /* Nav — slim on mobile */
+      nav { padding: 0.75rem 1rem; }
+      .nav-hebrew { display: none; }
+      .nav-cta-secondary { display: none; } /* hide "Today's Lesson" on mobile */
+      .nav-cta-primary { padding: 0.5rem 1rem; font-size: 0.8rem; }
+      .nav-logo img { height: 3.2rem !important; }
+
+      /* Hero */
+      .hero { padding: 2.5rem 1rem 2rem; }
+      .hero-logo-img { max-width: 85vw; margin-bottom: 0.75rem; }
+      .hero-tagline { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
+      h1 { font-size: 1.8rem; }
+
+      /* Hero inline signup */
+      .signup-form { padding: 1.25rem 1rem; border-radius: 0.75rem; }
+      .signup-form input { font-size: 1rem; padding: 0.8rem 1rem; }
+      .form-submit { font-size: 1rem; padding: 0.9rem; }
+
+      /* Section padding */
+      .how-it-works,
+      .benefits-section,
+      .signup-section,
+      .sample-section,
+      .testimonials-section,
+      .donation-section { padding: 2.5rem 1rem; }
+
+      .section-title { font-size: 1.5rem; }
+      .section-subtitle { font-size: 0.95rem; }
+
+      /* Cards */
+      .how-it-works-grid,
+      .benefits-grid,
+      .testimonials-grid { grid-template-columns: 1fr; gap: 1rem; }
+
+      .step-card, .benefit-card, .testimonial-card { padding: 1.25rem; }
+
+      /* Phone mockup */
+      .phone-mockup { max-width: 100%; font-size: 0.9rem; padding: 1rem; border-radius: 1rem; }
+      .phone-header { padding: 0.5rem 0 0.75rem; }
+
+      /* Signup section (duplicate below fold) */
+      .signup-inner { padding: 0; }
+
+      /* Footer */
+      footer { padding: 2rem 1rem; }
+      .footer-links { flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+
+      /* Donation */
+      .donation-amounts { flex-wrap: wrap; gap: 0.5rem; }
+      .donation-btn { padding: 0.5rem 1rem; font-size: 0.85rem; }
+
+      /* Hero stat */
+      .hero-stat { font-size: 0.85rem; margin-top: 0.75rem; }
+    }
+
+    /* Tap target sizing for mobile */
+    @media (max-width: 640px) {
+      button, .btn-primary, .btn-secondary, .form-submit, .nav-cta {
+        min-height: 44px;
+      }
+      input[type="text"], input[type="tel"], input[type="email"] {
+        min-height: 48px;
+        font-size: 16px; /* Prevents iOS zoom on focus */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+
+
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="nav-logo"><img src="/images/logo-final.png" alt="TorahTxt" style="height:4.5rem;width:auto;border-radius:4px;"></a>
+    
+    <div style="display:flex;gap:0.75rem;align-items:center;">
+      <a href="/today" class="nav-cta nav-cta-secondary" style="background:transparent;color:var(--gold);border-color:rgba(201,168,76,0.5);">✨ Today's Lesson</a>
+      <a href="#signup" class="nav-cta nav-cta-primary">Subscribe Free</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+
+    
+    <p style="font-family:'DM Sans',sans-serif;font-size:1.43rem;font-weight:700;color:#e2c46a;letter-spacing:0.06em;margin-bottom:1.5rem;">Divine Inspiration. Delivered Daily.</p>
+    <p class="hero-tagline">
+      Daily Torah wisdom delivered every morning at <strong>6:30am ET</strong> —
+      by <strong>text message</strong> or <strong>email</strong>, your choice.
+      AI-crafted from real Torah sources. Grounded in tradition, powered by technology.
+    </p>
+    <p style="font-size:0.9rem;color:#9a8a70;margin-top:-0.5rem;margin-bottom:0.5rem;">
+      Free forever &nbsp;·&nbsp; Any phone, any carrier &nbsp;·&nbsp; Text STOP anytime
+    </p>
+
+    <!-- Inline signup form — above the fold -->
+    <div class="signup-form fade-in" style="max-width:480px;margin:1.5rem auto 0;text-align:left;">
+      <p style="font-size:0.85rem;color:var(--grey);margin-bottom:1rem;text-align:center;">Choose how you'd like to receive it — or both.</p>
+
+      <div class="form-group">
+        <label for="hero-name">Your Name</label>
+        <input type="text" id="hero-name" placeholder="Enter your name" autocomplete="given-name" />
+      </div>
+
+      <div style="display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.95rem;color:var(--off-white);cursor:pointer;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.6rem 1rem;flex:1;min-width:130px;">
+          <input type="checkbox" id="hero-check-sms" onchange="heroToggleFields()" style="width:1.2rem;height:1.2rem;accent-color:var(--gold);cursor:pointer;flex-shrink:0;" /> <span>📱 Text</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.95rem;color:var(--off-white);cursor:pointer;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.6rem 1rem;flex:1;min-width:130px;">
+          <input type="checkbox" id="hero-check-email" onchange="heroToggleFields()" style="width:1.2rem;height:1.2rem;accent-color:var(--gold);cursor:pointer;flex-shrink:0;" /> <span>📧 Email</span>
+        </label>
+      </div>
+
+      <div id="hero-phone-field" style="display:none;">
+        <div class="form-group">
+          <label for="hero-phone">US Phone Number</label>
+          <input type="tel" id="hero-phone" placeholder="(555) 867-5309" autocomplete="tel" />
+        </div>
+      </div>
+      <div id="hero-email-field" style="display:none;">
+        <div class="form-group">
+          <label for="hero-email">Email Address</label>
+          <input type="email" id="hero-email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+      </div>
+
+      <button class="form-submit" id="hero-submit-btn" onclick="heroSubmit()" style="width:100%;">📖 Subscribe Free</button>
+      <div class="form-message" id="hero-msg"></div>
+      <p class="form-disclaimer" style="text-align:center;margin-top:0.75rem;">
+        Daily at 6:30am ET. Reply STOP to unsubscribe. Always free.
+      </p>
+    </div>
+
+    <div class="hero-stat" style="margin-top:1rem;">
+      <span id="hero-count" class="shimmer">⏳</span> subscribers learning daily
+    </div>
+    <div style="margin-top:1rem;">
+      <a href="/today" class="btn-secondary" style="font-size:0.9rem;">📖 See Today's Lesson</a>
+    </div>
+  </section>
+
+  <!-- Today's D'var Torah (live) -->
+  <section class="sample-section">
+    <div class="section-label">Today's Teaching</div>
+    <h2 class="section-title" id="home-dvar-title">Daily D'var Torah</h2>
+    <div class="gold-line"></div>
+    <p class="section-subtitle">Wisdom delivered to your phone every morning at 6:30 AM.</p>
+
+    <div class="phone-mockup fade-in">
+      <div class="phone-header">
+        <div class="phone-avatar">✡</div>
+        <div class="phone-contact">
+          <div class="phone-contact-name">TorahTxt</div>
+          <div class="phone-contact-sub">Daily Torah Wisdom</div>
+        </div>
+      </div>
+      <div class="sms-label">📨 Today's D'var Torah</div>
+      <div class="sms-bubble" id="home-sms-bubble">
+        <span style="color:#9a8a70; font-size:0.9rem;">Loading today's teaching...</span>
+      </div>
+      <div class="sms-time">6:30 AM · Delivered ✓✓</div>
+    </div>
+    <div style="margin-top:1.5rem;">
+      <a href="/today" style="color:#c9a84c; font-size:0.9rem; text-decoration:none; font-family:'DM Sans',sans-serif;">📖 Read the full teaching →</a>
+    </div>
+  </section>
+
+  <script>
+    fetch('/api/today').then(r => r.json()).then(data => {
+      const title = data.title || data.parasha || 'Daily D\'var Torah';
+      const msg = data.message || '';
+      document.getElementById('home-dvar-title').textContent = title;
+      document.getElementById('home-sms-bubble').innerHTML = msg.split('\n').join('<br>');
+    }).catch(() => {});
+  </script>
+
+  <!-- Support strip -->
+  <section style="text-align:center;padding:2.5rem 1.5rem;border-top:1px solid rgba(201,168,76,0.12);">
+    <p style="color:#9a8a70;font-size:0.95rem;margin-bottom:1rem;">Torah is priceless — and always free. If TorahTxt has enriched your mornings, consider supporting it.</p>
+    <a href="https://paypal.me/greeninkad" target="_blank" style="display:inline-block;background:transparent;border:1px solid rgba(201,168,76,0.4);color:#c9a84c;text-decoration:none;padding:10px 28px;border-radius:8px;font-size:0.95rem;">❤️ Support TorahTxt</a>
+    &nbsp;&nbsp;
+    <a href="/sponsor.html" style="display:inline-block;background:transparent;border:1px solid rgba(201,168,76,0.25);color:#9a8a70;text-decoration:none;padding:10px 28px;border-radius:8px;font-size:0.95rem;">🕯️ Sponsor a Day</a>
+  </section>
+
+
+  <!-- Share Bar -->
+  <section style="text-align:center; padding:2rem 1.5rem 0.5rem; background:#07090f;">
+    <div style="margin-bottom:0.75rem; font-size:0.78rem; color:#9a8a70; font-family:'DM Sans',sans-serif; letter-spacing:0.08em; text-transform:uppercase;">Share TorahTxt</div>
+    <div style="display:flex; align-items:center; justify-content:center; gap:0.6rem; flex-wrap:wrap;">
+      <a href="https://wa.me/?text=Check%20out%20TorahTxt%20%E2%80%94%20free%20daily%20Torah%20wisdom%20by%20SMS%20%26%20email%3A%20https%3A%2F%2Ftorahtxt.com" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.1);background:#1a2a1a;color:#a8dfc0;font-size:0.82rem;font-family:'DM Sans',sans-serif;text-decoration:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a href="https://x.com/intent/tweet?text=Check%20out%20TorahTxt%20%E2%80%94%20free%20daily%20Torah%20wisdom%20by%20SMS%20%26%20email%20%F0%9F%93%96%0A%0Ahttps%3A%2F%2Ftorahtxt.com%0A%0A%23Torah%20%23DvarTorah%20%23JewishWisdom" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.1);background:#1a1a2a;color:#a0a8df;font-size:0.82rem;font-family:'DM Sans',sans-serif;text-decoration:none;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.74-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Post
+      </a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftorahtxt.com" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.1);background:#1a1e2a;color:#8da0e0;font-size:0.82rem;font-family:'DM Sans',sans-serif;text-decoration:none;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </a>
+      <button onclick="navigator.clipboard.writeText('https://torahtxt.com').then(()=>{this.textContent='✓ Copied!';this.style.color='#7ecf9a';setTimeout(()=>{this.textContent='Copy Link';this.style.color='#b0a898';},2000)})" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.1);background:#1c1c1c;color:#b0a898;font-size:0.82rem;font-family:'DM Sans',sans-serif;cursor:pointer;">
+        Copy Link
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">
+      <img src="/images/logo-final.png" alt="TorahTxt" style="height:auto;width:200px;max-width:80%;object-fit:contain;display:block;margin:0 auto 8px;">
+    </div>
+    <div class="footer-divider"></div>
+    <p class="footer-tagline">
+      Daily Torah wisdom delivered to your phone, every morning.<br>
+      Free forever. Powered by love of learning.
+    </p>
+    <div class="footer-links">
+      <a href="#signup">Subscribe</a>
+      <a href="/today">Today</a>
+      <a href="/archive">Archive</a>
+      <a href="/our-approach.html">Our Approach</a>
+      <a href="/sponsor.html">Sponsor</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:info@torahtxt.com">Contact</a>
+    </div>
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(201,168,76,0.15);font-size:0.82rem;color:#9a8a70;">
+      🕯️ <a href="/in-memory" style="color:#c9a84c;text-decoration:none;">Dedicated in memory of Michael Green, of Blessed Memory</a>
+    </div>
+    <div class="footer-copy">
+      © <span id="copy-year"></span> TorahTxt. Made with ❤️, Torah, and AI. &nbsp;·&nbsp; <span style="color:#9a8a70;">✦ AI-Generated Content</span>
+      <br>TorahTxt sends 1 daily Torah wisdom text. Msg &amp; data rates may apply. Reply STOP to unsubscribe, HELP for help.
+    </div>
+  </footer>
+
+  <script>
+    // Dynamic copyright year
+    document.getElementById('copy-year').textContent = new Date().getFullYear();
+
+    // Scroll progress bar
+    window.addEventListener('scroll', () => {
+      const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+      document.getElementById('scrollProgress').style.width = pct + '%';
+    });
+
+    // Intersection Observer for fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Hero form toggle
+    function heroToggleFields() {
+      document.getElementById('hero-phone-field').style.display = document.getElementById('hero-check-sms').checked ? 'block' : 'none';
+      document.getElementById('hero-email-field').style.display = document.getElementById('hero-check-email').checked ? 'block' : 'none';
+    }
+
+    async function heroSubmit() {
+      const name = document.getElementById('hero-name').value.trim();
+      const sms = document.getElementById('hero-check-sms').checked;
+      const email = document.getElementById('hero-check-email').checked;
+      const phone = document.getElementById('hero-phone').value.trim();
+      const emailVal = document.getElementById('hero-email').value.trim();
+      const btn = document.getElementById('hero-submit-btn');
+      const msg = document.getElementById('hero-msg');
+
+      if (!name) { msg.textContent = 'Please enter your name.'; msg.className = 'form-message error'; return; }
+      if (!sms && !email) { msg.textContent = 'Choose at least one delivery method.'; msg.className = 'form-message error'; return; }
+      if (sms && !phone) { msg.textContent = 'Please enter your phone number.'; msg.className = 'form-message error'; return; }
+      if (email && !emailVal) { msg.textContent = 'Please enter your email address.'; msg.className = 'form-message error'; return; }
+
+      btn.disabled = true; btn.textContent = 'Subscribing...';
+      msg.className = 'form-message'; msg.textContent = '';
+
+      const results = [];
+      if (sms) {
+        try {
+          const r = await fetch('/subscribe', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name, phone}) });
+          const d = await r.json();
+          results.push(d.success ? '📱 Text ✓' : '📱 ' + d.message);
+        } catch { results.push('📱 Failed'); }
+      }
+      if (email) {
+        try {
+          const r = await fetch('/subscribe/email', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name, email: emailVal}) });
+          const d = await r.json();
+          results.push(d.success ? '📧 Email ✓' : '📧 ' + d.message);
+        } catch { results.push('📧 Failed'); }
+      }
+
+      const allOk = results.every(r => r.includes('✓'));
+      msg.textContent = allOk ? "You're in! First message arrives tomorrow morning." : results.join(' · ');
+      msg.className = 'form-message ' + (allOk ? 'success' : 'error');
+      if (allOk) btn.textContent = 'Subscribed! 🎉';
+      else { btn.disabled = false; btn.textContent = '📖 Subscribe Free'; }
+    }
+
+    // Homepage checkbox signup
+    function hpToggleFields() {
+      document.getElementById('hp-phone-field').style.display = document.getElementById('hp-check-sms').checked ? 'block' : 'none';
+      document.getElementById('hp-email-field').style.display = document.getElementById('hp-check-email').checked ? 'block' : 'none';
+    }
+
+    async function hpSubmit() {
+      const name = document.getElementById('hp-name').value.trim();
+      const wantSms = document.getElementById('hp-check-sms').checked;
+      const wantEmail = document.getElementById('hp-check-email').checked;
+      const phone = document.getElementById('hp-phone').value.trim();
+      const email = document.getElementById('hp-email').value.trim();
+      const btn = document.getElementById('hp-submit-btn');
+      const msgEl = document.getElementById('hp-msg');
+
+      if (!name) { showMessage(msgEl, 'Please enter your name.', 'error'); return; }
+      if (!wantSms && !wantEmail) { showMessage(msgEl, 'Choose at least one delivery method.', 'error'); return; }
+      if (wantSms && !phone) { showMessage(msgEl, 'Please enter your phone number.', 'error'); return; }
+      if (wantEmail && !email) { showMessage(msgEl, 'Please enter your email address.', 'error'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Subscribing...';
+
+      const results = [];
+      if (wantSms) {
+        try {
+          const r = await fetch('/subscribe', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name, phone}) });
+          const d = await r.json();
+          results.push(d.success ? '📱 Text ✓' : '📱 ' + d.message);
+        } catch { results.push('📱 Failed'); }
+      }
+      if (wantEmail) {
+        try {
+          const r = await fetch('/subscribe/email', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name, email}) });
+          const d = await r.json();
+          results.push(d.success ? '📧 Email ✓' : '📧 ' + d.message);
+        } catch { results.push('📧 Failed'); }
+      }
+
+      const allOk = results.every(r => r.includes('✓'));
+      showMessage(msgEl, allOk ? `🎉 Welcome, ${name}! First message arrives tomorrow morning.` : results.join(' · '), allOk ? 'success' : 'error');
+      if (allOk) btn.textContent = 'Subscribed!';
+      else { btn.disabled = false; btn.textContent = '📖 Subscribe Free'; }
+    }
+
+    // Tab switching
+    function switchTab(tab) {
+      document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('panel-' + tab).classList.add('active');
+    }
+
+    // Fetch combined subscriber count on load
+    async function fetchCount() {
+      try {
+        const [smsRes, emailRes] = await Promise.all([
+          fetch('/subscribers/count'),
+          fetch('/subscribers/email-count')
+        ]);
+        const smsData = await smsRes.json();
+        const emailData = await emailRes.json();
+        const count = (smsData.count || 0) + (emailData.count || 0);
+        const formatted = count.toLocaleString();
+        document.getElementById('hero-count').textContent = formatted;
+        document.getElementById('hero-count').classList.remove('shimmer');
+        const sc = document.getElementById('signup-count');
+        if (sc) sc.textContent = formatted;
+      } catch (e) {
+        document.getElementById('hero-count').textContent = '0';
+        document.getElementById('hero-count').classList.remove('shimmer');
+      }
+    }
+
+    fetchCount();
+
+    // Handle SMS form submission
+    const form = document.getElementById('subscribeForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formMessage = document.getElementById('formMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      if (!name || !phone) {
+        showMessage(formMessage, 'Please fill in both your name and phone number.', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Subscribing...';
+      formMessage.className = 'form-message';
+      formMessage.style.display = 'none';
+
+      try {
+        const res = await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone }),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showMessage(formMessage, `🎉 Welcome, ${name}! Check your phone for a confirmation text. Todah! ✡️`, 'success');
+          form.reset();
+          fetchCount();
+        } else {
+          showMessage(formMessage, data.message || 'Something went wrong. Please try again.', 'error');
+        }
+      } catch (err) {
+        showMessage(formMessage, 'Network error. Please check your connection and try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '📖 Subscribe to Daily Torah';
+      }
+    });
+
+    // Handle Email form submission
+    const emailForm = document.getElementById('emailSubscribeForm');
+    const emailSubmitBtn = document.getElementById('emailSubmitBtn');
+    const emailFormMessage = document.getElementById('emailFormMessage');
+
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('email-name').value.trim();
+      const email = document.getElementById('email-address').value.trim();
+
+      if (!name || !email) {
+        showMessage(emailFormMessage, 'Please fill in both your name and email address.', 'error');
+        return;
+      }
+
+      emailSubmitBtn.disabled = true;
+      emailSubmitBtn.textContent = '⏳ Subscribing...';
+      emailFormMessage.className = 'form-message';
+      emailFormMessage.style.display = 'none';
+
+      try {
+        const res = await fetch('/subscribe/email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email }),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showMessage(emailFormMessage, `🎉 Welcome, ${name}! Check your inbox for a confirmation. Todah! ✡️`, 'success');
+          emailForm.reset();
+          fetchCount();
+        } else {
+          showMessage(emailFormMessage, data.message || 'Something went wrong. Please try again.', 'error');
+        }
+      } catch (err) {
+        showMessage(emailFormMessage, 'Network error. Please check your connection and try again.', 'error');
+      } finally {
+        emailSubmitBtn.disabled = false;
+        emailSubmitBtn.textContent = '📧 Subscribe via Email';
+      }
+    });
+
+    function showMessage(el, msg, type) {
+      el.textContent = msg;
+      el.className = `form-message ${type}`;
+      el.style.display = 'block';
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>

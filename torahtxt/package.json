@@ -1,0 +1,19 @@
+{
+  "name": "torahtxt",
+  "version": "1.0.0",
+  "description": "TorahTxt - Daily Torah wisdom via SMS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "send": "node sender.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "pm2": "^6.0.14",
+    "telnyx": "^6.26.0",
+    "ws": "^8.20.0",
+    "better-sqlite3": "^12.8.0"
+  }
+}
