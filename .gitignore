@@ -2,3 +2,5 @@
 # TorahTxt podcast audio — not committed unless explicitly approved
 podcasts/daily-torah/**/*.mp3
 .env.podcast
+google-service-account.json
+google-vertex-service-account.json
