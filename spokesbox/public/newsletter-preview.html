@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Sample Newsletter — Spokesbox</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:  #1a2744;
+      --navy2: #243255;
+      --teal:  #00B4D8;
+      --gold:  #ffd166;
+      --white: #ffffff;
+      --gray:  #6b7280;
+      --gray-lt: #f0f4f8;
+      --border: #e5e7eb;
+      --green: #10b981;
+      --red:   #ef4444;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--gray-lt);
+      min-height: 100vh;
+      color: var(--navy);
+    }
+
+    /* ── TOP BAR ─────────────────────────────── */
+    .topbar {
+      background: var(--navy);
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    }
+    .topbar-logo { text-decoration: none; display: flex; align-items: center; }
+    .topbar-title { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; margin-left: 8px; }
+
+    /* ── LAYOUT ──────────────────────────────── */
+    .page-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 36px 24px 60px;
+    }
+
+    /* ── HEADER BLOCK ────────────────────────── */
+    .page-header {
+      margin-bottom: 28px;
+    }
+    .page-header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.6;
+      max-width: 580px;
+    }
+
+    /* ── TOPIC CHIPS ─────────────────────────── */
+    .chips-section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .chips-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gray);
+      margin-bottom: 12px;
+    }
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 36px;
+    }
+    .topic-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f4fd;
+      color: #0369a1;
+      border: 1.5px solid #bae6fd;
+      border-radius: 50px;
+      padding: 6px 10px 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .topic-chip:hover { background: #dbeafe; border-color: #93c5fd; }
+    .chip-remove {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      background: rgba(3,105,161,0.15);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      color: #0369a1;
+      font-weight: 700;
+      line-height: 1;
+      padding: 0;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .chip-remove:hover { background: rgba(239,68,68,0.18); color: var(--red); }
+    .no-topics {
+      font-size: 14px;
+      color: var(--gray);
+      font-style: italic;
+    }
+
+    /* ── STATUS BAR ──────────────────────────── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--gray);
+      min-height: 28px;
+      margin-bottom: 16px;
+      transition: opacity 0.2s;
+    }
+    .status-bar.hidden { opacity: 0; pointer-events: none; }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      background: var(--teal);
+    }
+    .status-dot.updating { animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    .status-dot.error { background: var(--red); animation: none; }
+    .status-dot.ready { background: var(--green); animation: none; }
+
+    /* ── PREVIEW AREA ────────────────────────── */
+    .preview-section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .preview-section iframe {
+      width: 100%;
+      border: none;
+      min-height: 600px;
+      display: block;
+    }
+
+    /* Skeleton overlay while loading */
+    .preview-skeleton {
+      position: absolute;
+      inset: 0;
+      background: var(--white);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 32px 28px;
+    }
+    .sk-line {
+      background: #e5e7eb;
+      border-radius: 6px;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.45; }
+    }
+
+    /* ── CTA ─────────────────────────────────── */
+    .cta-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--navy);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      padding: 13px 28px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-primary:hover { background: var(--navy2); transform: translateY(-1px); }
+    .btn-secondary {
+      color: var(--gray);
+      font-size: 14px;
+      text-decoration: underline;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 640px) {
+      .page-wrap { padding: 24px 16px 48px; }
+      .page-header h1 { font-size: 22px; }
+      .chips-section { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="/" class="topbar-logo">
+    <img src="/spokesbox-logo.png" alt="Spokesbox" style="height:34px;width:auto;display:block;">
+  </a>
+  <span class="topbar-title">Your newsletter</span>
+</header>
+
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>We built your first edition 🎉</h1>
+    <p>Based on your answers and public social profiles, here’s what we think you’ll want to read. Edit anything before we send it.</p>
+  </div>
+
+  <!-- Explicit topic chips -->
+  <div class="chips-section">
+    <div class="chips-label">Your topics — tap × to remove</div>
+    <div class="chips-row" id="chipsRow">
+      <!-- chips rendered by JS -->
+    </div>
+  </div>
+
+  <!-- Social suggestions (hidden until populated) -->
+  <div class="chips-section" id="socialSection" style="display:none;border-color:#bae6fd;">
+    <div class="chips-label" style="color:#0369a1;">Suggested from your social profiles</div>
+    <div class="chips-row" id="socialChipsRow"></div>
+  </div>
+
+  <!-- Enrichment pending notice -->
+  <div id="enrichmentNotice" style="display:none;font-size:13px;color:#6b7280;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+    <div style="width:8px;height:8px;border-radius:50%;background:#00B4D8;animation:pulse 1s ease-in-out infinite;"></div>
+    Analyzing your social profiles in the background… suggestions may appear shortly.
+  </div>
+
+  <!-- Status bar -->
+  <div class="status-bar hidden" id="statusBar">
+    <div class="status-dot updating" id="statusDot"></div>
+    <span id="statusText">Updating preview…</span>
+  </div>
+
+  <!-- Newsletter preview -->
+  <div class="preview-section" id="previewSection">
+    <!-- Skeleton while loading -->
+    <div class="preview-skeleton" id="previewSkeleton">
+      <div class="sk-line" style="height:48px;width:60%;"></div>
+      <div class="sk-line" style="height:20px;width:40%;margin-bottom:8px;"></div>
+      <div class="sk-line" style="height:14px;width:90%;"></div>
+      <div class="sk-line" style="height:14px;width:80%;"></div>
+      <div class="sk-line" style="height:14px;width:85%;"></div>
+      <div class="sk-line" style="height:14px;width:70%;margin-bottom:12px;"></div>
+      <div class="sk-line" style="height:20px;width:45%;"></div>
+      <div class="sk-line" style="height:14px;width:88%;"></div>
+      <div class="sk-line" style="height:14px;width:82%;"></div>
+      <div class="sk-line" style="height:14px;width:76%;"></div>
+    </div>
+    <iframe id="previewFrame" title="Newsletter preview" style="display:none;"></iframe>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-row">
+    <a id="dashboardBtn" href="/profile" class="btn-primary">Looks good — build my newsletter →</a>
+    <button class="btn-secondary" onclick="window.top && window.top !== window ? window.top.location.href='/' : window.location.href='/'">
+      Back to homepage
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════════════════════
+const S = {
+  sessionId:          null,
+  email:              null,
+  token:              null,
+  activeTopics:       [],       // explicit user-chosen topics (editable)
+  socialSuggestions:  [],       // AI-inferred from social profiles (Keep/Remove)
+  acceptedSuggestions:new Set(),// suggestions user has accepted
+  previewStatus:      'loading',
+  previewHtml:        null,
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+//  BOOT
+// ════════════════════════════════════════════════════════════════════════════
+(async function init() {
+  const params = new URLSearchParams(location.search);
+  S.sessionId = params.get('session_id') || '';
+
+  if (!S.sessionId) {
+    showError('Missing session. Please complete the wizard first.');
+    return;
+  }
+
+  try {
+    const data = await apiPost('/api/sample-newsletter', { session_id: S.sessionId });
+    S.email             = data.email;
+    S.token             = data.token;
+    S.activeTopics      = data.activeTopics      || [];
+    S.socialSuggestions = data.socialSuggestions || [];
+    S.previewHtml       = data.previewHtml       || '';
+    S.previewStatus     = 'ready';
+
+    // Store token in sessionStorage — never put it in a URL query param
+    if (S.email && S.token) {
+      try { sessionStorage.setItem('sb_auth', JSON.stringify({ email: S.email, token: S.token })); } catch (_) {}
+    }
+    const btn = document.getElementById('dashboardBtn');
+    if (btn && S.email) btn.href = `/profile?email=${encodeURIComponent(S.email)}`;
+
+    // Show enrichment notice if still processing
+    if (data.enrichmentPending) {
+      const notice = document.getElementById('enrichmentNotice');
+      if (notice) notice.style.display = 'flex';
+      // Poll once more after 10s to pick up completed enrichment
+      setTimeout(async () => {
+        try {
+          const d2 = await apiPost('/api/sample-newsletter', { session_id: S.sessionId });
+          if ((d2.socialSuggestions || []).length > 0) {
+            S.socialSuggestions = d2.socialSuggestions;
+            renderSocialSuggestions();
+            if (notice) notice.style.display = 'none';
+          }
+        } catch (_) {}
+      }, 10000);
+    }
+
+    renderChips();
+    renderSocialSuggestions();
+    renderPreview(S.previewHtml);
+    setStatus('ready');
+  } catch (err) {
+    console.error('Sample newsletter init error:', err);
+    showError('Could not load your newsletter preview right now.');
+  }
+})();
+
+// ════════════════════════════════════════════════════════════════════════════
+//  RENDER CHIPS
+// ════════════════════════════════════════════════════════════════════════════
+function renderChips() {
+  const row = document.getElementById('chipsRow');
+  row.innerHTML = '';
+
+  if (S.activeTopics.length === 0) {
+    const empty = document.createElement('span');
+    empty.className = 'no-topics';
+    empty.textContent = 'No topics selected. Add topics from your profile.';
+    row.appendChild(empty);
+    return;
+  }
+
+  S.activeTopics.forEach(topic => {
+    const chip = document.createElement('span');
+    chip.className = 'topic-chip';
+    chip.setAttribute('data-topic', topic);
+
+    const label = document.createTextNode(topic);
+    chip.appendChild(label);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'chip-remove';
+    removeBtn.setAttribute('aria-label', `Remove ${topic}`);
+    removeBtn.setAttribute('title', `Remove ${topic}`);
+    removeBtn.innerHTML = '×';
+    removeBtn.addEventListener('click', () => removeTopic(topic));
+    chip.appendChild(removeBtn);
+
+    row.appendChild(chip);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  RENDER PREVIEW
+// ════════════════════════════════════════════════════════════════════════════
+function renderPreview(html) {
+  const frame    = document.getElementById('previewFrame');
+  const skeleton = document.getElementById('previewSkeleton');
+
+  function revealFrame() {
+    try {
+      const h = frame.contentDocument.documentElement.scrollHeight;
+      if (h > 100) frame.style.height = h + 'px';
+    } catch (_) {}
+    skeleton.style.display = 'none';
+    frame.style.display = 'block';
+  }
+
+  // srcdoc can finish loading synchronously before onload is attached.
+  // Detect already-complete documents to avoid missing the event.
+  frame.onload = revealFrame;
+  frame.srcdoc = html;
+
+  // If document was already complete when we set srcdoc (same-document reuse),
+  // contentDocument.readyState will be 'complete' — reveal immediately.
+  try {
+    if (frame.contentDocument && frame.contentDocument.readyState === 'complete') {
+      revealFrame();
+    }
+  } catch (_) {}
+
+  // Hard fallback after 2.5s in case onload never fires (e.g. heavy HTML)
+  setTimeout(() => {
+    if (skeleton.style.display !== 'none') revealFrame();
+  }, 2500);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  SOCIAL SUGGESTIONS (Keep / Remove)
+function renderSocialSuggestions() {
+  const section = document.getElementById('socialSection');
+  const row     = document.getElementById('socialChipsRow');
+  if (!section || !row) return;
+
+  // Show only suggestions not already in activeTopics
+  const pending = S.socialSuggestions.filter(t => !S.activeTopics.includes(t));
+  if (pending.length === 0) { section.style.display = 'none'; return; }
+
+  section.style.display = '';
+  row.innerHTML = '';
+
+  pending.forEach(topic => {
+    const accepted = S.acceptedSuggestions.has(topic);
+    const chip = document.createElement('span');
+    chip.style.cssText = 'display:inline-flex;align-items:center;gap:6px;border-radius:50px;padding:6px 10px 6px 14px;font-size:13px;font-weight:600;border:1.5px dashed #0096b7;background:#f0f9ff;color:#0369a1;';
+    chip.innerHTML = esc(topic);
+
+    const keepBtn = document.createElement('button');
+    keepBtn.type = 'button';
+    keepBtn.style.cssText = 'border-radius:50px;border:1px solid #0096b7;background:#0096b7;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;cursor:pointer;';
+    keepBtn.textContent = 'Keep';
+    keepBtn.addEventListener('click', () => acceptSuggestion(topic));
+
+    const skipBtn = document.createElement('button');
+    skipBtn.type = 'button';
+    skipBtn.style.cssText = 'border-radius:50px;border:1px solid #d1d5db;background:none;color:#9ca3af;font-size:11px;font-weight:600;padding:2px 8px;cursor:pointer;';
+    skipBtn.textContent = 'Remove';
+    skipBtn.addEventListener('click', () => dismissSuggestion(topic));
+
+    chip.appendChild(keepBtn);
+    chip.appendChild(skipBtn);
+    row.appendChild(chip);
+  });
+}
+
+async function acceptSuggestion(topic) {
+  S.acceptedSuggestions.add(topic);
+  S.activeTopics.push(topic);
+  dismissSuggestion(topic); // remove from suggestions panel
+  renderChips();
+  setStatus('updating', 'Updating preview…');
+  showPreviewUpdating();
+  // Add via profile/save so it persists
+  try {
+    await apiPost('/api/sample-newsletter', { session_id: S.sessionId }); // re-fetch to regenerate
+    // Re-fetch full state
+    const d = await apiPost('/api/sample-newsletter', { session_id: S.sessionId });
+    S.previewHtml = d.previewHtml || S.previewHtml;
+    renderPreview(S.previewHtml);
+    setStatus('ready');
+  } catch (_) { setStatus('hidden'); renderPreview(S.previewHtml); }
+}
+
+function dismissSuggestion(topic) {
+  S.socialSuggestions = S.socialSuggestions.filter(t => t !== topic);
+  renderSocialSuggestions();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  REMOVE TOPIC — state transition: activeTopics → updating → ready/error
+// ════════════════════════════════════════════════════════════════════════════
+async function removeTopic(topic) {
+  if (!S.activeTopics.includes(topic)) return;
+
+  // 1. Remove chip immediately from UI (optimistic)
+  S.activeTopics = S.activeTopics.filter(t => t !== topic);
+  renderChips();
+
+  // 2. Show inline updating status
+  S.previewStatus = 'updating';
+  setStatus('updating', 'Updating preview…');
+
+  // 3. Show skeleton over existing preview (non-blocking)
+  showPreviewUpdating();
+
+  try {
+    // 4. Persist removal + get regenerated preview
+    const data = await apiPost('/api/sample-newsletter/remove-topic', {
+      session_id: S.sessionId,
+      topic,
+    });
+
+    // 5. Update state with confirmed server response
+    S.activeTopics  = data.activeTopics || S.activeTopics;
+    S.previewHtml   = data.previewHtml  || S.previewHtml;
+    S.previewStatus = 'ready';
+
+    renderChips();
+    renderPreview(S.previewHtml);
+    setStatus('ready');
+  } catch (err) {
+    // 6. Failure: keep current screen, show inline message, don't lose edits
+    console.error('Remove topic error:', err);
+    S.previewStatus = 'error';
+    setStatus('error', 'Could not refresh preview right now. Your topic was still removed.');
+    // Restore preview with current known HTML (no rollback of topic removal)
+    renderPreview(S.previewHtml);
+    setTimeout(() => setStatus('hidden'), 4000);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  STATUS HELPERS
+// ════════════════════════════════════════════════════════════════════════════
+function setStatus(state, text) {
+  const bar  = document.getElementById('statusBar');
+  const dot  = document.getElementById('statusDot');
+  const span = document.getElementById('statusText');
+
+  if (state === 'hidden' || state === 'ready') {
+    bar.classList.add('hidden');
+    dot.className = 'status-dot ready';
+    return;
+  }
+  bar.classList.remove('hidden');
+  if (state === 'updating') {
+    dot.className = 'status-dot updating';
+    span.textContent = text || 'Refreshing newsletter…';
+  } else if (state === 'error') {
+    dot.className = 'status-dot error';
+    span.textContent = text || 'Could not refresh preview. Your selected topics were still saved.';
+  }
+}
+
+function showPreviewUpdating() {
+  const skeleton = document.getElementById('previewSkeleton');
+  const frame    = document.getElementById('previewFrame');
+  skeleton.style.display = 'flex';
+  frame.style.display = 'none';
+  frame.srcdoc = '';
+}
+
+function showError(msg) {
+  const skeleton = document.getElementById('previewSkeleton');
+  skeleton.innerHTML = `<p style="color:#ef4444;font-size:14px;">${esc(msg)}</p>`;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════════════════════════════════════
+async function apiPost(path, body) {
+  const res = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+function esc(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>

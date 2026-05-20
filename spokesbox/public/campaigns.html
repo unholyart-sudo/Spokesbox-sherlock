@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spokesbox Campaign Playbook</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1a2744;
+      --navy-light: #223060;
+      --navy-dark: #111b33;
+      --cyan: #00b4d8;
+      --yellow: #ffd166;
+      --white: #ffffff;
+      --muted: #8fa3bf;
+      --card-bg: #1e2f52;
+      --card-inner: #162340;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy-dark);
+      color: var(--white);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: linear-gradient(135deg, #111b33 0%, #1a2744 50%, #0d1f3c 100%);
+      border-bottom: 2px solid var(--cyan);
+      padding: 56px 40px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .site-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,180,216,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .internal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,209,102,0.15);
+      border: 1px solid var(--yellow);
+      color: var(--yellow);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .internal-badge::before { content: '🔒'; font-size: 10px; }
+    .site-header h1 {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 14px;
+      line-height: 1.1;
+    }
+    .site-header .wordmark {
+      color: var(--cyan);
+      -webkit-text-fill-color: var(--cyan);
+    }
+    .site-header .subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      margin-bottom: 28px;
+    }
+    .tagline-pill {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--cyan), #0ea5e9);
+      color: var(--navy-dark);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 7px 20px;
+      border-radius: 20px;
+    }
+    .header-meta {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+    }
+    .header-stat {
+      text-align: center;
+    }
+    .header-stat .num {
+      display: block;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+    .header-stat .lbl {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── NAV PILLS ── */
+    .demo-nav {
+      background: var(--navy);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 16px 40px;
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .demo-nav::-webkit-scrollbar { display: none; }
+    .demo-nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .demo-nav a:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+
+    /* ── MAIN LAYOUT ── */
+    .main { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── CAMPAIGN CARD ── */
+    .campaign-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 48px;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    }
+
+    /* Card header band */
+    .card-header {
+      padding: 32px 36px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.25) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .card-emoji {
+      font-size: 42px;
+      line-height: 1;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .card-header-text { position: relative; z-index: 1; }
+    .card-demo-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    .card-demo-meta {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .card-number {
+      margin-left: auto;
+      font-size: 64px;
+      font-weight: 900;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+      letter-spacing: -0.04em;
+    }
+
+    /* Card body */
+    .card-body { padding: 32px 36px; display: grid; gap: 28px; }
+
+    /* Section label */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      opacity: 0.6;
+    }
+
+    /* Profile */
+    .profile-text {
+      font-size: 15px;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.7;
+    }
+
+    /* Core insight */
+    .core-insight {
+      border-radius: 12px;
+      padding: 20px 24px;
+      border-left: 4px solid;
+    }
+    .core-insight p {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    /* Pain point quote */
+    .pain-quote {
+      position: relative;
+      padding: 20px 24px 20px 56px;
+    }
+    .pain-quote::before {
+      content: '"';
+      position: absolute;
+      left: 16px;
+      top: 10px;
+      font-size: 56px;
+      line-height: 1;
+      font-family: Georgia, serif;
+      opacity: 0.25;
+    }
+    .pain-quote p {
+      font-size: 16px;
+      font-style: italic;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.65;
+    }
+    .pain-quote .attribution {
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 8px;
+      opacity: 0.5;
+    }
+
+    /* Messaging grid */
+    .messaging-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .headline-card {
+      background: var(--card-inner);
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .headline-type {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .headline-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .headline-sub {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Ad copy block */
+    .ad-copy-block {
+      background: var(--card-inner);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .ad-copy-block p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.75;
+    }
+
+    /* Two-col layout for channels + features */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+    .channels-list, .features-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .channel-item, .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.5;
+    }
+    .channel-icon, .feature-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .channel-name { font-weight: 600; color: #fff; }
+    .channel-reason { color: var(--muted); margin-left: 2px; }
+
+    /* CTA block */
+    .cta-block {
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .cta-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+    .cta-text {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .cta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 22px;
+      border-radius: 25px;
+      font-size: 13px;
+      font-weight: 700;
+      background: #fff;
+      white-space: nowrap;
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 0 36px;
+    }
+
+    /* ── CAMPAIGN NOTES ── */
+    .campaign-notes {
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid rgba(255,209,102,0.2);
+      overflow: hidden;
+      margin-top: 48px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    }
+    .notes-header {
+      background: linear-gradient(135deg, rgba(255,209,102,0.12), rgba(0,180,216,0.08));
+      padding: 28px 36px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .notes-header h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--yellow);
+      margin-bottom: 4px;
+    }
+    .notes-header p { font-size: 13px; color: var(--muted); }
+    .notes-body { padding: 32px 36px; display: grid; gap: 32px; }
+
+    .insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .insight-card {
+      background: var(--card-inner);
+      border-radius: 12px;
+      padding: 18px 20px;
+      border-left: 3px solid var(--cyan);
+    }
+    .insight-card h4 { font-size: 13px; font-weight: 700; color: var(--cyan); margin-bottom: 6px; }
+    .insight-card p { font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.55; }
+
+    .launch-sequence { display: flex; flex-direction: column; gap: 0; }
+    .launch-phase {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      position: relative;
+      padding-bottom: 24px;
+    }
+    .launch-phase:last-child { padding-bottom: 0; }
+    .launch-phase:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: 0;
+      width: 2px;
+      background: rgba(255,255,255,0.08);
+    }
+    .phase-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--cyan);
+      color: var(--navy-dark);
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .phase-content h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .phase-content p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .phase-demos {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .demo-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 10px;
+      border: 1px solid;
+    }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      text-align: center;
+      padding: 32px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .site-footer strong { color: var(--cyan); }
+
+    /* ── UTILITY ── */
+    .subsection { display: flex; flex-direction: column; }
+    .text-muted { color: var(--muted); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--navy-light); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     SITE HEADER
+══════════════════════════════════════ -->
+<header class="site-header">
+  <div class="internal-badge">Internal Use Only</div>
+  <h1><span class="wordmark">Spokesbox</span> Campaign Playbook</h1>
+  <p class="subtitle">6 Target Demographics &nbsp;·&nbsp; Individual Campaign Strategy &nbsp;·&nbsp; Ad Copy &amp; Creative Direction</p>
+  <div class="tagline-pill">YOUR WORLD IN ONE DAILY EMAIL</div>
+  <div class="header-meta">
+    <div class="header-stat"><span class="num">6</span><span class="lbl">Demographics</span></div>
+    <div class="header-stat"><span class="num">18</span><span class="lbl">Headline Variants</span></div>
+    <div class="header-stat"><span class="num">6</span><span class="lbl">Ad Copy Blocks</span></div>
+    <div class="header-stat"><span class="num">$9.99</span><span class="lbl">/ Month</span></div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     STICKY NAV
+══════════════════════════════════════ -->
+<nav class="demo-nav">
+  <a href="#demo-1" style="color:#ff8c42; border-color:rgba(255,140,66,0.3);">🏘️ Suburban Parent</a>
+  <a href="#demo-2" style="color:#c9a227; border-color:rgba(201,162,39,0.3);">👴 Retired Pro</a>
+  <a href="#demo-3" style="color:#0ea5e9; border-color:rgba(14,165,233,0.3);">💼 Ambitious Pro</a>
+  <a href="#demo-4" style="color:#8b5cf6; border-color:rgba(139,92,246,0.3);">🌍 Curious Learner</a>
+  <a href="#demo-5" style="color:#10b981; border-color:rgba(16,185,129,0.3);">👩‍💼 Small Biz Owner</a>
+  <a href="#demo-6" style="color:#f472b6; border-color:rgba(244,114,182,0.3);">🧓 Active Senior</a>
+  <a href="#campaign-notes" style="margin-left:auto;">📋 Campaign Notes</a>
+</nav>
+
+<main class="main">
+
+  <!-- ══════════════════════════════════════
+       DEMO 1: SUBURBAN PARENT
+  ══════════════════════════════════════ -->
+  <article class="campaign-card" id="demo-1">
+    <div class="card-header" style="background: linear-gradient(135deg, #ff8c42 0%, #e06b1f 100%);">
+      <div class="card-emoji">🏘️</div>
+      <div class="card-header-text">
+        <div class="card-demo-name">The Suburban Parent</div>
+        <div class="card-demo-meta">Ages 32–48 &nbsp;·&nbsp; HHI $80k+ &nbsp;·&nbsp; Homeowner &nbsp;·&nbsp; 1–3 kids</div>
+      </div>
+      <div class="card-number">01</div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- WHO THEY ARE -->
+      <div class="subsection">
+        <div class="section-label" style="color:#ff8c42;">Who They Are</div>
+        <p class="profile-text">Busy moms and dads juggling kids, work, school schedules, and local activities while drowning in app notifications. They care deeply about their neighborhood and community, but they've lost the thread — they used to know the town gossip, the school closings, the new restaurant opening. Now they find out about things from other parents, always a day late. They have 14 apps on their phone and use exactly three of them.</p>
+      </div>
+
+      <!-- CORE INSIGHT -->
+      <div class="core-insight" style="background: rgba(255,140,66,0.1); border-color: #ff8c42;">
+        <div class="section-label" style="color:#ff8c42;">⚡ Core Buying Insight</div>
+        <p>They don't want <em>more information</em> — they want to feel like the <strong>informed parent in the room</strong>. The one who knew about the school closing before drop-off. The one who heard about the restaurant before anyone else. Spokesbox doesn't save them time. It saves them <strong>social currency</strong>.</p>
+      </div>
+
+      <!-- PAIN POINT QUOTE -->
+      <div class="pain-quote" style="background: rgba(255,140,66,0.06); border-radius: 12px;">
+        <p>"I don't have time to read 5 different apps to know what's happening in my neighborhood. And then somehow I'm always the last one to know when school is cancelled."</p>
+        <div class="attribution" style="color:#ff8c42;">— Suburban Parent, Inner Monologue</div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- CAMPAIGN MESSAGING -->
+      <div class="subsection">
+        <div class="section-label" style="color:#ff8c42;">Campaign Messaging — 3 Headline Variants</div>
+        <div class="messaging-grid">
+          <div class="headline-card">
+            <div class="headline-type" style="color:#ff8c42;">Headline A — Awareness Play</div>
+            <div class="headline-text">"Be the parent who always knows what's going on."</div>
+            <div class="headline-sub">One email, every morning. Your neighborhood, your schools, your town — all in one place before the day starts.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#ff8c42;">Headline B — Pain Point Play</div>
+            <div class="headline-text">"Sick of finding out the school was closed after you already drove there?"</div>
+            <div class="headline-sub">Spokesbox delivers local news, school alerts, and neighborhood updates every morning — before you leave the driveway.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#ff8c42;">Headline C — Aspiration Play</div>
+            <div class="headline-text">"Your town, summarized while your coffee brews."</div>
+            <div class="headline-sub">Know everything happening in your neighborhood — events, closings, openings, weather — in a 3-minute morning read.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AD COPY BLOCK -->
+      <div class="subsection">
+        <div class="section-label" style="color:#ff8c42;">Ad Copy Block — Ready to Use</div>
+        <div class="ad-copy-block">
+          <p>You used to be the parent who knew everything — every school event, every neighborhood opening, every snow day before it happened. Somewhere between the group chats and the 47 apps, you lost the thread. <strong>Spokesbox brings it back.</strong> Every morning, one email built just for your family and your neighborhood — school alerts, local events, weekend activities, and whatever else your town has going on. Try it free for 7 days. Cancel anytime. Reply to make it better. It's the neighborhood update you've been missing.</p>
+        </div>
+      </div>
+
+      <!-- CHANNELS + FEATURES -->
+      <div class="two-col">
+        <div class="subsection">
+          <div class="section-label" style="color:#ff8c42;">Channel Recommendations</div>
+          <ul class="channels-list">
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(255,140,66,0.15);">📘</div>
+              <div><span class="channel-name">Facebook</span><br/><span class="channel-reason">Highest concentration of suburban parents 35–48. Local community groups, neighborhood pages. Geo-target by zip code around suburban areas.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(255,140,66,0.15);">📸</div>
+              <div><span class="channel-name">Instagram</span><br/><span class="channel-reason">Younger parents 32–38. Lifestyle-feel creative — show the morning kitchen scene, coffee in hand, phone with newsletter.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(255,140,66,0.15);">🎯</div>
+              <div><span class="channel-name">Nextdoor Ads</span><br/><span class="channel-reason">Hyperlocal audience. Suburban homeowners who already care about their neighborhood — perfect fit for the message.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(255,140,66,0.15);">🔍</div>
+              <div><span class="channel-name">Google Search</span><br/><span class="channel-reason">Intent keywords: "local news newsletter," "neighborhood newsletter," "[city] news daily email."</span></div>
+            </li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <div class="section-label" style="color:#ff8c42;">Key Features to Highlight</div>
+          <ul class="features-list">
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(255,140,66,0.15);">🏫</div>
+              <div>School alerts and closings for their district, personalized by location</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(255,140,66,0.15);">📍</div>
+              <div>Hyperlocal news: restaurant openings, road closures, community events by neighborhood</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(255,140,66,0.15);">⏱️</div>
+              <div>3-minute morning read — designed for the school drop-off window</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(255,140,66,0.15);">💬</div>
+              <div>Just reply to add topics — kids' sports, local weather, family activities</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-block" style="background: linear-gradient(135deg, rgba(255,140,66,0.15), rgba(255,140,66,0.05)); border: 1px solid rgba(255,140,66,0.25);">
+        <div>
+          <div class="cta-label">CTA Variant for This Demo</div>
+          <div class="cta-text">"Get your neighborhood in your inbox — free for 7 days"</div>
+        </div>
+        <div class="cta-pill" style="color:#ff8c42;">Get My Neighborhood →</div>
+      </div>
+
+    </div>
+  </article>
+
+
+  <!-- ══════════════════════════════════════
+       DEMO 2: RETIRED PROFESSIONAL
+  ══════════════════════════════════════ -->
+  <article class="campaign-card" id="demo-2">
+    <div class="card-header" style="background: linear-gradient(135deg, #c9a227 0%, #a07c10 100%);">
+      <div class="card-emoji">👴</div>
+      <div class="card-header-text">
+        <div class="card-demo-name">The Retired Professional</div>
+        <div class="card-demo-meta">Ages 60–75 &nbsp;·&nbsp; Comfortable Retirement &nbsp;·&nbsp; Former Executive / Educator / Doctor</div>
+      </div>
+      <div class="card-number">02</div>
+    </div>
+
+    <div class="card-body">
+
+      <div class="subsection">
+        <div class="section-label" style="color:#c9a227;">Who They Are</div>
+        <p class="profile-text">Former executives, educators, physicians, and professionals who spent decades being the best-informed person in the room. Retirement gave them time but took away their daily information infrastructure. They still want to be sharp, current, and engaged — but modern news apps feel like a carnival designed for 22-year-olds. They're reading, curious, and have opinions. They just need a source that respects that.</p>
+      </div>
+
+      <div class="core-insight" style="background: rgba(201,162,39,0.1); border-color: #c9a227;">
+        <div class="section-label" style="color:#c9a227;">⚡ Core Buying Insight</div>
+        <p>They're not looking for simplicity — they're looking for <strong>quality without noise</strong>. A service that filters the overwhelming flood of information down to what actually matters, without dumbing it down. Spokesbox is the equivalent of a brilliant, well-read assistant who knows exactly what they care about. Position it as <strong>elevation, not convenience</strong>.</p>
+      </div>
+
+      <div class="pain-quote" style="background: rgba(201,162,39,0.06); border-radius: 12px;">
+        <p>"News apps are overwhelming and full of clickbait. Cable news is exhausting. I just want a smart, curated daily summary — one that respects my intelligence and covers the things I actually care about."</p>
+        <div class="attribution" style="color:#c9a227;">— Retired Professional, Inner Monologue</div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#c9a227;">Campaign Messaging — 3 Headline Variants</div>
+        <div class="messaging-grid">
+          <div class="headline-card">
+            <div class="headline-type" style="color:#c9a227;">Headline A — Awareness Play</div>
+            <div class="headline-text">"Sharp minds deserve a smarter morning read."</div>
+            <div class="headline-sub">A daily newsletter built around what you actually care about — no clickbait, no noise. Just the morning brief you've always wanted.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#c9a227;">Headline B — Pain Point Play</div>
+            <div class="headline-text">"Finally: news without the algorithm designed for teenagers."</div>
+            <div class="headline-sub">Spokesbox learns what you care about — policy, local news, culture, health — and delivers it once a day. That's it. No scroll, no binge.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#c9a227;">Headline C — Aspiration Play</div>
+            <div class="headline-text">"Start your morning ritual. End information overload."</div>
+            <div class="headline-sub">Your daily briefing: personalized to your interests, respects your time, and improves every time you reply.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#c9a227;">Ad Copy Block — Ready to Use</div>
+        <div class="ad-copy-block">
+          <p>You spent decades staying at the forefront of your field. You read everything. You were always informed. But retirement changed the infrastructure — and the modern news environment has become a shouting match designed for short attention spans, not yours. <strong>Spokesbox is built for people like you.</strong> A beautifully curated daily briefing — local news, national headlines, health insights, book recommendations, and whatever else you care about — delivered once, every morning, to your inbox. Tell it your interests. Reply to refine it. Let it match your intellectual standard. Try it free for 7 days.</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="section-label" style="color:#c9a227;">Channel Recommendations</div>
+          <ul class="channels-list">
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(201,162,39,0.15);">📘</div>
+              <div><span class="channel-name">Facebook</span><br/><span class="channel-reason">Primary digital home for 60–75 demographic. Target interest segments: NPR, PBS, book clubs, AARP, Wall Street Journal.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(201,162,39,0.15);">📧</div>
+              <div><span class="channel-name">Email Newsletter Ads</span><br/><span class="channel-reason">Sponsor Morning Brew, Axios, The Atlantic daily. Audience already values quality email content.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(201,162,39,0.15);">🔍</div>
+              <div><span class="channel-name">Google Display</span><br/><span class="channel-reason">Target NYT, Washington Post, Politico, and Atlantic readers. High intent, high literacy audience.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(201,162,39,0.15);">📻</div>
+              <div><span class="channel-name">Podcast Sponsorships</span><br/><span class="channel-reason">NPR podcasts, Freakonomics, Fresh Air audience. They already consume quality audio content daily.</span></div>
+            </li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <div class="section-label" style="color:#c9a227;">Key Features to Highlight</div>
+          <ul class="features-list">
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(201,162,39,0.15);">🧠</div>
+              <div>Curated, signal-to-noise optimized — no clickbait, no algorithm games</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(201,162,39,0.15);">📚</div>
+              <div>Book picks, cultural events, health insights tailored to their interests</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(201,162,39,0.15);">🌤️</div>
+              <div>Local weather and events — relevant to their active daily life</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(201,162,39,0.15);">✉️</div>
+              <div>Email-native — no new app, no new password, just their inbox</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-block" style="background: linear-gradient(135deg, rgba(201,162,39,0.15), rgba(201,162,39,0.05)); border: 1px solid rgba(201,162,39,0.25);">
+        <div>
+          <div class="cta-label">CTA Variant for This Demo</div>
+          <div class="cta-text">"Start your morning ritual — free for 7 days"</div>
+        </div>
+        <div class="cta-pill" style="color:#c9a227;">Start My Morning Brief →</div>
+      </div>
+
+    </div>
+  </article>
+
+
+  <!-- ══════════════════════════════════════
+       DEMO 3: AMBITIOUS PROFESSIONAL
+  ══════════════════════════════════════ -->
+  <article class="campaign-card" id="demo-3">
+    <div class="card-header" style="background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);">
+      <div class="card-emoji">💼</div>
+      <div class="card-header-text">
+        <div class="card-demo-name">The Ambitious Professional</div>
+        <div class="card-demo-meta">Ages 26–40 &nbsp;·&nbsp; Career-Focused &nbsp;·&nbsp; Urban / Suburban &nbsp;·&nbsp; Time is money</div>
+      </div>
+      <div class="card-number">03</div>
+    </div>
+
+    <div class="card-body">
+
+      <div class="subsection">
+        <div class="section-label" style="color:#0ea5e9;">Who They Are</div>
+        <p class="profile-text">Early-to-mid career professionals — consultants, engineers, marketers, lawyers — who understand that information is a competitive advantage. They subscribe to everything but read nothing. Their inbox is a graveyard of newsletters from Morning Brew, The Hustle, Bloomberg, and six Substack writers they meant to keep up with. They hate wasted time more than anything, but they keep adding subscriptions hoping the next one will be the one they actually read.</p>
+      </div>
+
+      <div class="core-insight" style="background: rgba(14,165,233,0.1); border-color: #0ea5e9;">
+        <div class="section-label" style="color:#0ea5e9;">⚡ Core Buying Insight</div>
+        <p>They don't need another newsletter. They need <strong>one newsletter to replace all the others</strong>. The sell isn't addition — it's subtraction. Spokesbox isn't "here's another thing to read." It's "unsubscribe from everything else. This is all you need." Frame it as a <strong>system upgrade</strong>, not a new subscription. They'll respect that framing immediately.</p>
+      </div>
+
+      <div class="pain-quote" style="background: rgba(14,165,233,0.06); border-radius: 12px;">
+        <p>"I have 47 unread newsletters in my inbox and I've read zero of them this week. I'm paying for two Substacks and I haven't opened either in a month. There has to be a better way."</p>
+        <div class="attribution" style="color:#0ea5e9;">— Ambitious Professional, Inner Monologue</div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#0ea5e9;">Campaign Messaging — 3 Headline Variants</div>
+        <div class="messaging-grid">
+          <div class="headline-card">
+            <div class="headline-type" style="color:#0ea5e9;">Headline A — Awareness Play</div>
+            <div class="headline-text">"The only newsletter you'll actually read."</div>
+            <div class="headline-sub">Because it's the only one built entirely around you — not the writer's agenda, not the algorithm, not a sponsor. Just your stuff.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#0ea5e9;">Headline B — Pain Point Play</div>
+            <div class="headline-text">"You subscribed to 12 newsletters. You've read zero this week."</div>
+            <div class="headline-sub">Spokesbox replaces them all. One email, every morning, built exactly around what you care about. Unsubscribe from the rest.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#0ea5e9;">Headline C — Aspiration Play</div>
+            <div class="headline-text">"Stay ahead. In 5 minutes. Every morning."</div>
+            <div class="headline-sub">Your industry news, market updates, local commute weather, and curated reads — one email, always waiting, always relevant.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#0ea5e9;">Ad Copy Block — Ready to Use</div>
+        <div class="ad-copy-block">
+          <p>You subscribed to 12 newsletters. You've read maybe three of them this year. The problem isn't you — it's that none of them were built for you. Morning Brew was built for its 4 million subscribers. The Hustle was built for clicks. Your Spokesbox is built for one person: you. <strong>Your stocks. Your industry. Your commute weather. Your local news.</strong> All in one email, every morning, before you open Slack. 7-day free trial. Replace your entire newsletter stack on day one.</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="section-label" style="color:#0ea5e9;">Channel Recommendations</div>
+          <ul class="channels-list">
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(14,165,233,0.15);">💼</div>
+              <div><span class="channel-name">LinkedIn</span><br/><span class="channel-reason">Career-focused targeting by job title and seniority. Target: Manager, Director, Analyst, Consultant, Engineer, 3–10 years exp.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(14,165,233,0.15);">🐦</div>
+              <div><span class="channel-name">Twitter / X</span><br/><span class="channel-reason">Heavy concentration of ambitious young professionals. Target newsletter/productivity/startup adjacent accounts.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(14,165,233,0.15);">📸</div>
+              <div><span class="channel-name">Instagram</span><br/><span class="channel-reason">Productivity/lifestyle angle — "workspace aesthetic" audience. Reels showing the morning routine that actually works.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(14,165,233,0.15);">🎙️</div>
+              <div><span class="channel-name">Podcast Mid-Rolls</span><br/><span class="channel-reason">Sponsor How I Built This, Acquired, My First Million, All-In. Audience = exactly this demographic.</span></div>
+            </li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <div class="section-label" style="color:#0ea5e9;">Key Features to Highlight</div>
+          <ul class="features-list">
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(14,165,233,0.15);">📈</div>
+              <div>Market tickers, portfolio stocks, industry news — all personalized to them</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(14,165,233,0.15);">⚡</div>
+              <div>5-minute read max — respects their most scarce resource: time</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(14,165,233,0.15);">🔄</div>
+              <div>Replaces multiple subscriptions — the ultimate newsletter consolidation</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(14,165,233,0.15);">🌤️</div>
+              <div>Commute weather + local news — practical morning intel they actually need</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-block" style="background: linear-gradient(135deg, rgba(14,165,233,0.15), rgba(14,165,233,0.05)); border: 1px solid rgba(14,165,233,0.25);">
+        <div>
+          <div class="cta-label">CTA Variant for This Demo</div>
+          <div class="cta-text">"Replace your newsletter stack — free for 7 days"</div>
+        </div>
+        <div class="cta-pill" style="color:#0ea5e9;">Build My One Newsletter →</div>
+      </div>
+
+    </div>
+  </article>
+
+
+  <!-- ══════════════════════════════════════
+       DEMO 4: CURIOUS LEARNER
+  ══════════════════════════════════════ -->
+  <article class="campaign-card" id="demo-4">
+    <div class="card-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);">
+      <div class="card-emoji">🌍</div>
+      <div class="card-header-text">
+        <div class="card-demo-name">The Curious Learner</div>
+        <div class="card-demo-meta">Ages 22–35 &nbsp;·&nbsp; Intellectual &amp; Eclectic &nbsp;·&nbsp; Graduate Student / Teacher / Creative</div>
+      </div>
+      <div class="card-number">04</div>
+    </div>
+
+    <div class="card-body">
+
+      <div class="subsection">
+        <div class="section-label" style="color:#8b5cf6;">Who They Are</div>
+        <p class="profile-text">Graduate students, independent researchers, teachers, writers, and lifelong learners who devour information across wildly specific domains. They'll spend three hours reading about mycology, then pivot to a deep-dive on Cold War cinema, then check Reddit for vintage typewriter deals. Standard newsletters bore them instantly — too broad, too generic, too much sports coverage they couldn't care less about. They want depth, weirdness, and specificity in equal measure.</p>
+      </div>
+
+      <div class="core-insight" style="background: rgba(139,92,246,0.1); border-color: #8b5cf6;">
+        <div class="section-label" style="color:#8b5cf6;">⚡ Core Buying Insight</div>
+        <p>They don't want a newsletter that <em>includes</em> their interests. They want one that is <em>entirely about</em> their interests. Every existing newsletter feels like a compromise — "close enough." Spokesbox is the first thing that can actually be <strong>exactly right</strong> because it's not pre-built. It's built from scratch, by them, for them. The pitch: <strong>finally, something as specific as you are.</strong></p>
+      </div>
+
+      <div class="pain-quote" style="background: rgba(139,92,246,0.06); border-radius: 12px;">
+        <p>"No newsletter on earth covers both quantum computing AND independent Italian cinema AND my city's underground jazz scene AND the best vintage sneaker drops. So I have nine bookmarks tabs and zero morning routine."</p>
+        <div class="attribution" style="color:#8b5cf6;">— Curious Learner, Inner Monologue</div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#8b5cf6;">Campaign Messaging — 3 Headline Variants</div>
+        <div class="messaging-grid">
+          <div class="headline-card">
+            <div class="headline-type" style="color:#8b5cf6;">Headline A — Awareness Play</div>
+            <div class="headline-text">"Your interests are too specific for any existing newsletter."</div>
+            <div class="headline-sub">So we built yours from scratch. Astrophysics + local jazz + vintage sneaker drops + your city's best tacos. Finally, all in one email.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#8b5cf6;">Headline B — Pain Point Play</div>
+            <div class="headline-text">"Tired of newsletters that miss the point by 80%?"</div>
+            <div class="headline-sub">Standard newsletters are built for the average reader. Spokesbox is built for you — your niche obsessions, your weird rabbit holes, your specific city.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#8b5cf6;">Headline C — Aspiration Play</div>
+            <div class="headline-text">"Build your weird, perfect morning newsletter."</div>
+            <div class="headline-sub">Tell us what you love. We'll put it all in one email. Reply to go deeper on anything. The most personalized morning read that has ever existed.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#8b5cf6;">Ad Copy Block — Ready to Use</div>
+        <div class="ad-copy-block">
+          <p>You follow 14 subreddits, 6 newsletters, and 3 Substack writers. Combined, they cover maybe 40% of what you actually care about. The other 60% is just… missing. <strong>Spokesbox is the first newsletter designed to cover 100% of your interests</strong> — because it's not a newsletter someone else wrote. It's your newsletter, assembled every morning from the topics you choose. Quantum computing and local jazz and vintage cameras and your neighborhood farmers market, all in one email. Absurdly specific. Completely yours. Try it free for 7 days and tell us everything you're into.</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="section-label" style="color:#8b5cf6;">Channel Recommendations</div>
+          <ul class="channels-list">
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(139,92,246,0.15);">🎭</div>
+              <div><span class="channel-name">Reddit Ads</span><br/><span class="channel-reason">Reach niche community dwellers where they live: r/books, r/science, r/philosophy, r/indiefilm, r/jazz, etc. Hyper-targeted by interest.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(139,92,246,0.15);">📸</div>
+              <div><span class="channel-name">Instagram / TikTok</span><br/><span class="channel-reason">BookTok, intellectual content, "what I'm reading" aesthetic. Creative ads that mirror their eclectic taste.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(139,92,246,0.15);">📧</div>
+              <div><span class="channel-name">Substack / Newsletter Sponsorships</span><br/><span class="channel-reason">Sponsor niche newsletters they already read — the exact audience that wants a more personalized version.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(139,92,246,0.15);">🐦</div>
+              <div><span class="channel-name">Twitter / X</span><br/><span class="channel-reason">Intellectual Twitter: philosophy, science, academia, film discourse. Target by interest graph and follows.</span></div>
+            </li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <div class="section-label" style="color:#8b5cf6;">Key Features to Highlight</div>
+          <ul class="features-list">
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(139,92,246,0.15);">🎯</div>
+              <div>Unlimited niche topics — no interest too specific, no combo too weird</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(139,92,246,0.15);">💬</div>
+              <div>Reply to go deeper — ask for more on any story and tomorrow's email adapts</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(139,92,246,0.15);">🔍</div>
+              <div>Discovery engine — surfaces things adjacent to your interests you didn't know you wanted</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(139,92,246,0.15);">📍</div>
+              <div>Local layer — your city's weird/wonderful events, farmers markets, art shows, pop-ups</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-block" style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05)); border: 1px solid rgba(139,92,246,0.25);">
+        <div>
+          <div class="cta-label">CTA Variant for This Demo</div>
+          <div class="cta-text">"Build your weird, perfect newsletter — free for 7 days"</div>
+        </div>
+        <div class="cta-pill" style="color:#8b5cf6;">Build My Newsletter →</div>
+      </div>
+
+    </div>
+  </article>
+
+
+  <!-- ══════════════════════════════════════
+       DEMO 5: SMALL BUSINESS OWNER
+  ══════════════════════════════════════ -->
+  <article class="campaign-card" id="demo-5">
+    <div class="card-header" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%);">
+      <div class="card-emoji">👩‍💼</div>
+      <div class="card-header-text">
+        <div class="card-demo-name">The Small Business Owner</div>
+        <div class="card-demo-meta">Ages 30–55 &nbsp;·&nbsp; Local / Regional Business &nbsp;·&nbsp; Restaurant / Retail / Services</div>
+      </div>
+      <div class="card-number">05</div>
+    </div>
+
+    <div class="card-body">
+
+      <div class="subsection">
+        <div class="section-label" style="color:#10b981;">Who They Are</div>
+        <p class="profile-text">Restaurant owners, boutique retailers, service providers, and local entrepreneurs who are deeply invested in their community and market — but too busy running their business to actually track it. They care enormously about local economic conditions, competitor moves, community events, and weather patterns that affect foot traffic. They used to read the local paper. It died. Now they get their information from whatever random thing shows up in their Facebook feed, which is not a system.</p>
+      </div>
+
+      <div class="core-insight" style="background: rgba(16,185,129,0.1); border-color: #10b981;">
+        <div class="section-label" style="color:#10b981;">⚡ Core Buying Insight</div>
+        <p>For a small business owner, being informed about their local market isn't a luxury — it's a <strong>competitive advantage</strong>. The road closure that kills foot traffic. The festival that triples it. The competitor who just opened three blocks away. Frame Spokesbox not as a newsletter, but as their <strong>daily market intelligence brief</strong>. The ROI framing resonates: $9.99/month is nothing if it prevents one bad day or unlocks one opportunity.</p>
+      </div>
+
+      <div class="pain-quote" style="background: rgba(16,185,129,0.06); border-radius: 12px;">
+        <p>"I need to know what's happening in my city — a road closure by my restaurant, a competing opening down the block, a festival that brings 5,000 people to my neighborhood — but I'm too busy actually running my business to read 10 different sources every morning."</p>
+        <div class="attribution" style="color:#10b981;">— Small Business Owner, Inner Monologue</div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#10b981;">Campaign Messaging — 3 Headline Variants</div>
+        <div class="messaging-grid">
+          <div class="headline-card">
+            <div class="headline-type" style="color:#10b981;">Headline A — Awareness Play</div>
+            <div class="headline-text">"Know your market before you unlock the door."</div>
+            <div class="headline-sub">Local business news, economic conditions, community events, and weather — your morning market brief, delivered before you open.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#10b981;">Headline B — Pain Point Play</div>
+            <div class="headline-text">"You found out about the road closure at noon. Your competitor knew at 7am."</div>
+            <div class="headline-sub">Spokesbox delivers local market intelligence every morning — road closures, community events, economic news — before your day begins.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#10b981;">Headline C — Aspiration Play</div>
+            <div class="headline-text">"Your local market intelligence brief. Every morning. $9.99/mo."</div>
+            <div class="headline-sub">What's happening in your neighborhood today? Who's coming to your block? What's affecting your customers? All in one morning email.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#10b981;">Ad Copy Block — Ready to Use</div>
+        <div class="ad-copy-block">
+          <p>You know your business. But do you know your market this morning? The festival three blocks away that brings 2,000 potential customers to your neighborhood. The construction project that's rerouting foot traffic away from your door. The new restaurant that just announced an opening a block from yours. <strong>This is the intelligence that affects your day — and it's sitting in 10 different places you don't have time to check.</strong> Spokesbox delivers it all in one email, every morning, before you open. Local business news, community events, economic trends, weather that affects your day. Your local market intelligence brief. Try it free for 7 days.</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="section-label" style="color:#10b981;">Channel Recommendations</div>
+          <ul class="channels-list">
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(16,185,129,0.15);">📘</div>
+              <div><span class="channel-name">Facebook</span><br/><span class="channel-reason">Target local business owner groups, chamber of commerce pages, small business interest segments. Geo-target by region.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(16,185,129,0.15);">💼</div>
+              <div><span class="channel-name">LinkedIn</span><br/><span class="channel-reason">Target by "Business Owner" job title, company size 1–10, industries: retail, restaurant, services. Very precise.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(16,185,129,0.15);">🏪</div>
+              <div><span class="channel-name">Local Chamber / BID Partnerships</span><br/><span class="channel-reason">Partner with local chambers of commerce and business improvement districts for direct endorsement to member businesses.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(16,185,129,0.15);">🔍</div>
+              <div><span class="channel-name">Google Search</span><br/><span class="channel-reason">Keywords: "local business newsletter," "small business news [city]," "local market trends email."</span></div>
+            </li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <div class="section-label" style="color:#10b981;">Key Features to Highlight</div>
+          <ul class="features-list">
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(16,185,129,0.15);">🗺️</div>
+              <div>Hyperlocal market intel — road closures, permits, development news for their exact neighborhood</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(16,185,129,0.15);">📅</div>
+              <div>Community event calendar — festivals, markets, sports events that drive foot traffic</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(16,185,129,0.15);">📊</div>
+              <div>Local economic trends — consumer confidence, industry news, competitor activity</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(16,185,129,0.15);">⛅</div>
+              <div>Weather briefing — especially relevant for outdoor seating, foot traffic, seasonal business</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-block" style="background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); border: 1px solid rgba(16,185,129,0.25);">
+        <div>
+          <div class="cta-label">CTA Variant for This Demo</div>
+          <div class="cta-text">"Start your business morning brief — free for 7 days"</div>
+        </div>
+        <div class="cta-pill" style="color:#10b981;">Get My Market Brief →</div>
+      </div>
+
+    </div>
+  </article>
+
+
+  <!-- ══════════════════════════════════════
+       DEMO 6: ACTIVE SENIOR
+  ══════════════════════════════════════ -->
+  <article class="campaign-card" id="demo-6">
+    <div class="card-header" style="background: linear-gradient(135deg, #f472b6 0%, #be185d 100%);">
+      <div class="card-emoji">🧓</div>
+      <div class="card-header-text">
+        <div class="card-demo-name">The Active Senior</div>
+        <div class="card-demo-meta">Ages 65+ &nbsp;·&nbsp; Active Lifestyle &nbsp;·&nbsp; Tech-Comfortable, Not Tech-Obsessed</div>
+      </div>
+      <div class="card-number">06</div>
+    </div>
+
+    <div class="card-body">
+
+      <div class="subsection">
+        <div class="section-label" style="color:#f472b6;">Who They Are</div>
+        <p class="profile-text">Grandparents and retirees who use email every single day — it's their most comfortable digital format. They want to stay informed, connected, and engaged with their community, local events, health tips, and family activities. They're not afraid of technology, but they resent complexity. They had a newspaper subscription for 40 years and they still miss it. Email is the closest thing that feels familiar and trustworthy to them.</p>
+      </div>
+
+      <div class="core-insight" style="background: rgba(244,114,182,0.1); border-color: #f472b6;">
+        <div class="section-label" style="color:#f472b6;">⚡ Core Buying Insight</div>
+        <p>They're not afraid of email — they love it. The barrier isn't technology; it's <strong>complexity and overwhelm</strong>. Spokesbox eliminates both: no new app, no new password, no new account to manage. It arrives in the inbox they already check every morning, it's written in clear language, and it's instantly fixable by just writing back. The pitch: <strong>as simple as getting a letter from a well-informed friend.</strong></p>
+      </div>
+
+      <div class="pain-quote" style="background: rgba(244,114,182,0.06); border-radius: 12px;">
+        <p>"I want to stay informed about what's happening in my community and in the world, but everything online is so overwhelming and complicated. I just want something simple that I can trust — like my newspaper used to be."</p>
+        <div class="attribution" style="color:#f472b6;">— Active Senior, Inner Monologue</div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#f472b6;">Campaign Messaging — 3 Headline Variants</div>
+        <div class="messaging-grid">
+          <div class="headline-card">
+            <div class="headline-type" style="color:#f472b6;">Headline A — Awareness Play</div>
+            <div class="headline-text">"Everything you want to know, in one simple email."</div>
+            <div class="headline-sub">Local news, weather, health tips, community events — waiting in your inbox every morning. No apps, no passwords, no fuss.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#f472b6;">Headline B — Pain Point Play</div>
+            <div class="headline-text">"Remember when staying informed was simple?"</div>
+            <div class="headline-sub">It still can be. Spokesbox is your daily briefing — delivered to the email you already use, in plain language, covering exactly what you care about.</div>
+          </div>
+          <div class="headline-card">
+            <div class="headline-type" style="color:#f472b6;">Headline C — Aspiration Play</div>
+            <div class="headline-text">"Start every morning feeling connected and informed."</div>
+            <div class="headline-sub">Your neighborhood news, health tips, local events, weather, and more — all in one warm, easy morning email. Just like your daily paper, but better.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="section-label" style="color:#f472b6;">Ad Copy Block — Ready to Use</div>
+        <div class="ad-copy-block">
+          <p>You used to look forward to the morning paper. It had everything — local news, weather, things to do, something interesting to think about. Then it got thinner. Then it disappeared. And everything that replaced it felt chaotic, overwhelming, and honestly a little exhausting. <strong>Spokesbox brings that morning ritual back.</strong> A personalized daily email — your local news, your weather, your health tips, your community events — waiting in your inbox every morning. No apps to download. No passwords to remember. If you want something different, just reply and say so. We'll update it. Start your free week today.</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="section-label" style="color:#f472b6;">Channel Recommendations</div>
+          <ul class="channels-list">
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(244,114,182,0.15);">📘</div>
+              <div><span class="channel-name">Facebook</span><br/><span class="channel-reason">Dominant platform for 65+ demographic. Target by age, interests: AARP, health/wellness, local community groups, book clubs.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(244,114,182,0.15);">📧</div>
+              <div><span class="channel-name">Email Newsletter Sponsorships</span><br/><span class="channel-reason">Sponsor AARP The Magazine email, senior living publications, health newsletters. Audience already email-native.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(244,114,182,0.15);">📺</div>
+              <div><span class="channel-name">Local TV / Streaming Ads</span><br/><span class="channel-reason">Connected TV (Hulu, Peacock) targeting 65+. Local news programs. High reach for this demographic.</span></div>
+            </li>
+            <li class="channel-item">
+              <div class="channel-icon" style="background:rgba(244,114,182,0.15);">🏘️</div>
+              <div><span class="channel-name">Community Partnerships</span><br/><span class="channel-reason">Senior centers, libraries, church bulletins, YMCA. Word of mouth is primary trust mechanism for this demo.</span></div>
+            </li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <div class="section-label" style="color:#f472b6;">Key Features to Highlight</div>
+          <ul class="features-list">
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(244,114,182,0.15);">✉️</div>
+              <div>Email-only — no app, no download, no new account — works in the inbox they already have</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(244,114,182,0.15);">🏥</div>
+              <div>Health tips, medical news, wellness content tailored to their life stage</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(244,114,182,0.15);">📍</div>
+              <div>Local community events, activities, places — relevant and nearby</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon" style="background:rgba(244,114,182,0.15);">💬</div>
+              <div>Reply to change it — they write back, we adjust. No tech skills needed.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-block" style="background: linear-gradient(135deg, rgba(244,114,182,0.15), rgba(244,114,182,0.05)); border: 1px solid rgba(244,114,182,0.25);">
+        <div>
+          <div class="cta-label">CTA Variant for This Demo</div>
+          <div class="cta-text">"Start your free week — no app, no hassle"</div>
+        </div>
+        <div class="cta-pill" style="color:#f472b6;">Start My Free Week →</div>
+      </div>
+
+    </div>
+  </article>
+
+
+  <!-- ══════════════════════════════════════
+       CAMPAIGN NOTES
+  ══════════════════════════════════════ -->
+  <section class="campaign-notes" id="campaign-notes">
+    <div class="notes-header">
+      <h2>📋 Campaign Notes &amp; Strategic Overview</h2>
+      <p>Cross-demographic insights, shared learnings, and recommended launch sequence</p>
+    </div>
+    <div class="notes-body">
+
+      <!-- CROSS-DEMO INSIGHTS -->
+      <div>
+        <div class="section-label" style="color:var(--yellow); opacity:1;">Cross-Demographic Insights</div>
+        <div class="insight-grid">
+          <div class="insight-card">
+            <h4>Universal Pain: Information Overload</h4>
+            <p>Every demographic suffers from too much information across too many sources. The consolidation pitch works everywhere — but the framing changes. "Replace your stack" for pros; "simpler than the news" for seniors; "one place" for parents.</p>
+          </div>
+          <div class="insight-card">
+            <h4>The Reply Mechanism Is the Secret Weapon</h4>
+            <p>Every demo responds to the "just reply to improve it" feature — but for different reasons. Parents love the control. Seniors love the simplicity. Professionals love the efficiency. Lead with this in all copy.</p>
+          </div>
+          <div class="insight-card">
+            <h4>Email Is the Right Medium for Every Demo</h4>
+            <p>Critically, email isn't a limitation — it's a feature. All 6 demos check email daily. No app friction, no platform dependence. This is a competitive advantage vs. news apps and should be stated explicitly in creative.</p>
+          </div>
+          <div class="insight-card">
+            <h4>Local Content Is the Differentiator</h4>
+            <p>No newsletter competitor does truly hyperlocal. This is Spokesbox's moat. Lead with local in every demo — it's the thing they can't get anywhere else and the thing they care most about.</p>
+          </div>
+          <div class="insight-card">
+            <h4>Free Trial Removes the Entire Barrier</h4>
+            <p>At $9.99/month, the price is negligible. The real barrier is trust ("will this actually be good?") and setup effort. The 7-day free trial eliminates both objections. Make it feel effortless to start.</p>
+          </div>
+          <div class="insight-card">
+            <h4>Personalization Must Feel Real, Not Algorithmic</h4>
+            <p>Avoid language like "AI-powered" or "algorithm" — it feels impersonal and triggers skepticism. Use human-feel language: "built around you," "your newsletter," "we learn what you love." The product is personalized; the experience should feel hand-curated.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAUNCH SEQUENCE -->
+      <div>
+        <div class="section-label" style="color:var(--yellow); opacity:1;">Recommended Launch Sequence</div>
+        <div class="launch-sequence">
+          <div class="launch-phase">
+            <div class="phase-num">1</div>
+            <div class="phase-content">
+              <h4>Phase 1: High-Value Anchors (Week 1–4)</h4>
+              <p>Launch with the two highest-LTV demographics first. Suburban Parents and Ambitious Professionals have strong word-of-mouth networks and high retention potential. Test 3 creatives per demo, identify winners, establish baseline CAC.</p>
+              <div class="phase-demos">
+                <span class="demo-tag" style="color:#ff8c42; border-color:rgba(255,140,66,0.35); background:rgba(255,140,66,0.08);">🏘️ Suburban Parent</span>
+                <span class="demo-tag" style="color:#0ea5e9; border-color:rgba(14,165,233,0.35); background:rgba(14,165,233,0.08);">💼 Ambitious Pro</span>
+              </div>
+            </div>
+          </div>
+          <div class="launch-phase">
+            <div class="phase-num">2</div>
+            <div class="phase-content">
+              <h4>Phase 2: Niche Expansion (Week 5–8)</h4>
+              <p>Layer in the Curious Learner (strong word-of-mouth in intellectual communities) and Small Business Owner (community-driven acquisition potential). These demos amplify organically when the product resonates.</p>
+              <div class="phase-demos">
+                <span class="demo-tag" style="color:#8b5cf6; border-color:rgba(139,92,246,0.35); background:rgba(139,92,246,0.08);">🌍 Curious Learner</span>
+                <span class="demo-tag" style="color:#10b981; border-color:rgba(16,185,129,0.35); background:rgba(16,185,129,0.08);">👩‍💼 Small Biz Owner</span>
+              </div>
+            </div>
+          </div>
+          <div class="launch-phase">
+            <div class="phase-num">3</div>
+            <div class="phase-content">
+              <h4>Phase 3: Scale with Senior Demos (Week 9–16)</h4>
+              <p>Senior segments (Retired Pro + Active Senior) convert more slowly but churn less and have longer LTV. Invest here after the product experience is proven and retention data is strong. Prioritize Facebook and email-adjacent channels. Consider referral incentive programs for this cohort.</p>
+              <div class="phase-demos">
+                <span class="demo-tag" style="color:#c9a227; border-color:rgba(201,162,39,0.35); background:rgba(201,162,39,0.08);">👴 Retired Pro</span>
+                <span class="demo-tag" style="color:#f472b6; border-color:rgba(244,114,182,0.35); background:rgba(244,114,182,0.08);">🧓 Active Senior</span>
+              </div>
+            </div>
+          </div>
+          <div class="launch-phase">
+            <div class="phase-num">4</div>
+            <div class="phase-content">
+              <h4>Phase 4: Full Portfolio + Optimization (Month 5+)</h4>
+              <p>Run all 6 demos simultaneously. A/B test across headline variants. Allocate budget by demonstrated ROAS. Introduce referral programs — particularly powerful for Suburban Parents (neighbor network) and Small Business Owners (chamber connections). Begin annual plan promotion targeting Ambitious Professionals and Curious Learners ($79/yr vs $9.99/mo).</p>
+              <div class="phase-demos">
+                <span class="demo-tag" style="color:var(--cyan); border-color:rgba(0,180,216,0.35); background:rgba(0,180,216,0.08);">All 6 Demographics Active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRICING NOTE -->
+      <div style="background:rgba(0,180,216,0.08); border:1px solid rgba(0,180,216,0.2); border-radius:12px; padding:20px 24px;">
+        <div class="section-label" style="color:var(--cyan); opacity:1; margin-bottom:8px;">💡 Pricing Angle by Demo</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+          <div style="font-size:13px; color:rgba(255,255,255,0.78);">
+            <strong style="color:#ff8c42;">Suburban Parent:</strong> Lead with free trial. Price is irrelevant; "free" removes friction.
+          </div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.78);">
+            <strong style="color:#c9a227;">Retired Pro:</strong> Lead with value ("a newsletter this good usually costs much more"). Annual plan fits their pattern.
+          </div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.78);">
+            <strong style="color:#0ea5e9;">Ambitious Pro:</strong> Stack comparison — "less than one Substack subscription, replaces your entire stack."
+          </div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.78);">
+            <strong style="color:#8b5cf6;">Curious Learner:</strong> Frame as investment in their intellectual life. Annual plan = 2 months free.
+          </div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.78);">
+            <strong style="color:#10b981;">Small Biz Owner:</strong> ROI frame — "one better decision/month pays for a year."
+          </div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.78);">
+            <strong style="color:#f472b6;">Active Senior:</strong> "Less than a streaming subscription." Trial first, price second.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <strong>Spokesbox</strong> Campaign Playbook &nbsp;·&nbsp; Internal Use Only &nbsp;·&nbsp; 6 Demographics &nbsp;·&nbsp; YOUR WORLD IN ONE DAILY EMAIL
+  <br/><br/>
+  Free 7-day trial &nbsp;·&nbsp; $9.99/mo or $79/yr &nbsp;·&nbsp; Cancel anytime
+</footer>
+
+</body>
+</html>

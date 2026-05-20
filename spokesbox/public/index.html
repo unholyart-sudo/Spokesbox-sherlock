@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spokesbox — One email. Made just for you.</title>
+  <meta name="description" content="Your world in one daily email. Personalized news, weather, sports, and more — delivered every morning at your chosen time.">
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://spokesbox.com/">
+  <meta property="og:title" content="Spokesbox — One email. Made just for you.">
+  <meta property="og:description" content="Your world in one daily email. Personalized news, weather, sports, and more — delivered every morning at your chosen time.">
+  <meta property="og:image" content="https://spokesbox.com/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Spokesbox — One email. Made just for you.">
+  <meta name="twitter:description" content="Your world in one daily email. Personalized news, weather, sports, and more — delivered every morning at your chosen time.">
+  <meta name="twitter:image" content="https://spokesbox.com/og-image.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --charcoal: #1a1a2e;
+      --teal: #00b4d8;
+      --teal-dark: #0096b7;
+      --yellow: #ffd166;
+      --yellow-dark: #e6b800;
+      --white: #ffffff;
+      --gray: #6b7280;
+      --gray-light: #f8f9fa;
+      --border: #e5e7eb;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--white);
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+
+    /* ── HERO ───────────────────────────────── */
+    .hero {
+      background: var(--charcoal);
+      color: white;
+      padding: 80px 24px 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(0,180,216,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--teal);
+      letter-spacing: -0.5px;
+      margin-bottom: 64px;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      color: white;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--teal), #7dd3f8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: #a0aec0;
+      max-width: 540px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+    }
+
+    .subscribe-form {
+      display: flex;
+      gap: 12px;
+      max-width: 480px;
+      margin: 0 auto 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .subscribe-form input {
+      flex: 1;
+      min-width: 240px;
+      padding: 16px 20px;
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .subscribe-form input::placeholder { color: #718096; }
+    .subscribe-form input:focus { border-color: var(--teal); }
+
+    .btn-primary {
+      padding: 16px 32px;
+      background: var(--yellow);
+      color: var(--charcoal);
+      font-weight: 700;
+      font-size: 16px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: var(--teal);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,180,216,0.3);
+    }
+
+    .hero-note {
+      font-size: 13px;
+      color: #718096;
+      margin-top: 12px;
+    }
+
+    .form-success {
+      display: none;
+      background: rgba(0,180,216,0.15);
+      border: 1px solid var(--teal);
+      border-radius: 12px;
+      padding: 16px 24px;
+      color: var(--teal);
+      font-weight: 600;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── SECTIONS ────────────────────────────── */
+    section { padding: 80px 24px; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      color: var(--charcoal);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 18px;
+      color: var(--gray);
+      max-width: 560px;
+    }
+
+    /* ── HOW IT WORKS ────────────────────────── */
+    .how { background: var(--gray-light); }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 32px;
+      margin-top: 56px;
+    }
+
+    .how-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 32px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .how-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .how-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .how-step {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .how-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 12px;
+    }
+
+    .how-card p {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    /* ── WHAT'S INSIDE ───────────────────────── */
+    .inside-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .inside-item {
+      background: var(--gray-light);
+      border-radius: 16px;
+      padding: 24px 16px;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .inside-item:hover {
+      background: linear-gradient(135deg, rgba(0,180,216,0.1), rgba(255,209,102,0.1));
+      transform: translateY(-2px);
+    }
+
+    .inside-icon { font-size: 32px; margin-bottom: 8px; }
+
+    .inside-item span {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+
+    /* ── SAMPLE NEWSLETTER ───────────────────── */
+    .sample { background: var(--gray-light); }
+
+    .newsletter-preview {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.12);
+      overflow: hidden;
+      max-width: 640px;
+      margin: 48px auto 0;
+      border: 1px solid var(--border);
+    }
+
+    .nl-header {
+      background: var(--charcoal);
+      padding: 28px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nl-logo {
+      color: var(--teal);
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .nl-date {
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .nl-greeting {
+      background: linear-gradient(135deg, #00b4d8 0%, #0096b7 100%);
+      padding: 32px 36px;
+    }
+
+    .nl-greeting h2 {
+      color: white;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .nl-greeting p {
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .nl-body { padding: 32px 36px; }
+
+    .nl-section {
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nl-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+    .nl-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 10px;
+    }
+
+    .weather-widget {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--gray-light);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+
+    .weather-temp { font-size: 36px; font-weight: 800; color: var(--charcoal); }
+    .weather-desc { font-size: 14px; color: var(--gray); }
+    .weather-desc strong { color: var(--charcoal); display: block; font-size: 15px; }
+
+    .news-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .news-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--teal);
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .news-item p {
+      font-size: 14px;
+      color: var(--charcoal);
+      line-height: 1.5;
+    }
+
+    .joke-box {
+      background: #fff8e6;
+      border-left: 4px solid var(--yellow);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    .joke-box p {
+      font-size: 14px;
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+
+    .joke-box .punchline {
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .book-card {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .book-cover {
+      width: 52px;
+      height: 72px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .book-info h4 { font-size: 15px; font-weight: 700; color: var(--charcoal); }
+    .book-info .author { font-size: 13px; color: var(--gray); margin-bottom: 6px; }
+    .book-info p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+
+    /* ── PRICING ─────────────────────────────── */
+    .pricing { background: var(--charcoal); }
+    .pricing .section-title { color: white; }
+    .pricing .section-sub { color: #a0aec0; }
+    .pricing .section-label { color: var(--teal); }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 700px;
+      margin: 56px auto 0;
+    }
+
+    .pricing-card {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 40px 36px;
+      text-align: center;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .pricing-card.popular {
+      border-color: var(--yellow);
+      background: rgba(255,209,102,0.05);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--yellow);
+      color: var(--charcoal);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 20px;
+      border-radius: 50px;
+    }
+
+    .pricing-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #718096;
+      margin-bottom: 8px;
+    }
+
+    .pricing-price {
+      font-size: 48px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pricing-price span {
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0;
+      color: #718096;
+    }
+
+    .pricing-save {
+      font-size: 14px;
+      color: var(--yellow);
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+
+    .pricing-features li {
+      font-size: 14px;
+      color: #a0aec0;
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .btn-outline {
+      display: block;
+      padding: 14px 24px;
+      border: 2px solid rgba(255,255,255,0.2);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.2s;
+      font-family: inherit;
+      cursor: pointer;
+      background: transparent;
+      width: 100%;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .pricing-note {
+      font-size: 13px;
+      color: #718096;
+      margin-top: 16px;
+    }
+
+    /* ── TESTIMONIALS ────────────────────────── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .testimonial {
+      background: var(--gray-light);
+      border-radius: 20px;
+      padding: 32px;
+    }
+
+    .stars { font-size: 18px; margin-bottom: 16px; }
+
+    .testimonial q {
+      font-size: 16px;
+      color: var(--charcoal);
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .author-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+
+    .author-title {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    /* ── FAQ ─────────────────────────────────── */
+    .faq { background: var(--gray-light); }
+
+    .faq-list {
+      max-width: 720px;
+      margin: 48px auto 0;
+    }
+
+    .faq-item {
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-q {
+      width: 100%;
+      text-align: left;
+      padding: 22px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--charcoal);
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: inherit;
+      transition: color 0.2s;
+    }
+
+    .faq-q:hover { color: var(--teal); }
+
+    .faq-chevron {
+      transition: transform 0.2s;
+      color: var(--gray);
+      flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .faq-a {
+      display: none;
+      padding: 0 28px 22px;
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+
+    .faq-item.open .faq-a { display: block; }
+
+    /* ── FOOTER ──────────────────────────────── */
+    footer {
+      background: var(--charcoal);
+      color: #718096;
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    footer .footer-logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    footer p { font-size: 14px; line-height: 2; }
+    footer a { color: var(--teal); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── TOAST ────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--charcoal);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── RESPONSIVE ───────────────────────────── */
+    @media (max-width: 600px) {
+      .hero { padding: 60px 20px 80px; }
+      section { padding: 60px 20px; }
+      .subscribe-form { flex-direction: column; align-items: stretch; }
+      .subscribe-form input { min-width: 0; border-radius: 12px; }
+      .btn-primary { border-radius: 12px; }
+      .nl-header, .nl-greeting, .nl-body { padding: 20px 24px; }
+    }
+    .skip-link { position:absolute; top:-40px; left:8px; background:#1a1a2e; color:#fff; padding:8px 12px; text-decoration:none; z-index:1000; border-radius:4px; font-weight:600; }
+    .skip-link:focus { top:8px; }
+        .step-title { font-size:inherit; font-weight:inherit; margin:inherit; }
+    .learn-title { font-size:inherit; font-weight:inherit; margin:inherit; }
+    .visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    .form-help { font-size:12px; color:#718096; margin-top:6px; text-align:center; }
+    :focus-visible { outline:3px solid #FFD166; outline-offset:2px; border-radius:2px; }
+    .btn-primary:focus-visible { outline-color:#00b4d8; }
+    .hero-subhead strong { color:#fff; font-weight:700; }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "Organization", "name": "Spokesbox", "url": "https://spokesbox.com", "logo": "https://spokesbox.com/favicon.svg" },
+      { "@type": "Product", "name": "Spokesbox", "description": "A personalized daily newsletter that learns from you and gets better every day.", "brand": { "@type": "Brand", "name": "Spokesbox" } }
+    ]
+  }
+  </script>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header role="banner" style="display:none;"></header>
+
+<main id="main">
+<!-- ── HERO ──────────────────────────────────────────────────────── -->
+<section class="hero">
+  <img src="/spokesbox-logo.png" alt="Spokesbox" style="width:420px;max-width:90%;height:auto;margin-bottom:32px;">
+  <h1>Your world,<br><span>delivered daily.</span></h1>
+  <p>A personalized newsletter that learns from you — local news, weather, topics you love, and more. Just reply to improve it. Free forever.</p>
+
+  <form class="subscribe-form" id="heroForm" novalidate>
+    <label for="heroEmail" class="visually-hidden">Your email address</label>
+    <input type="email" id="heroEmail" name="email" placeholder="Enter your email address" required autocomplete="email" aria-required="true" aria-describedby="heroFormHelp" inputmode="email">
+    <button type="submit" class="btn-primary">Personalize My Newsletter →</button>
+  </form>
+  <p id="heroFormHelp" class="form-help" style="color:#718096;font-size:12px;margin-top:6px;">Free forever. Unsubscribe anytime.</p>
+  <div class="hero-note">Free forever. Unsubscribe anytime.</div>
+  <div style="margin-top:16px;">
+    
+  </div>
+  <div class="form-success" id="heroSuccess">
+    🎉 You're in! Check your inbox — then <a href="/wizard" style="color:var(--yellow);font-weight:700;">personalize your newsletter →</a>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ───────────────────────────────────────────────── -->
+<section class="how">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <div class="section-title">Three steps to your perfect newsletter</div>
+    <p class="section-sub">We do the work. You get a great read in your inbox every morning.</p>
+
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-icon">📬</div>
+        <div class="how-step">Step 01</div>
+        <h2 class="step-title">Enter your email</h2>
+        <p>Sign up in seconds. No credit card, no password, no friction. We'll send you a quick quiz to learn what you love.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">✍️</div>
+        <div class="how-step">Step 02</div>
+        <h2 class="step-title">We personalize it</h2>
+        <p>Answer 10 quick questions — your location, topics, tone, and timing. Takes 2 minutes. We do the rest.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">📩</div>
+        <div class="how-step">Step 03</div>
+        <h2 class="step-title">It arrives every morning</h2>
+        <p>Your newsletter lands in your inbox at exactly the time you chose. Reply anytime to tweak what you see.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── LEARNS FROM YOU ──────────────────────────────────────────── -->
+<section style="background:#0f1b2d;padding:80px 24px;text-align:center;">
+  <div class="container">
+    <div class="section-label">The newsletter that listens</div>
+    <h2 class="section-title" style="color:#fff;margin-bottom:16px;">It learns from you.<br><span style="color:#00b4d8;">Every single day.</span></h2>
+    <p style="color:#a0b4c8;font-size:18px;max-width:640px;margin:0 auto 56px;line-height:1.7;">Most newsletters are static. Spokesbox is dynamic. Reply to any email with a simple instruction and watch your next edition change instantly.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;max-width:900px;margin:0 auto;">
+      <div style="background:#1a2744;border-radius:16px;padding:32px;text-align:left;border:1px solid #243050;">
+        <div style="font-size:36px;margin-bottom:16px;">💬</div>
+        <h2 class="learn-title" style="color:#00b4d8;font-size:18px;margin-bottom:10px;">Just reply to improve it</h2>
+        <p style="color:#a0b4c8;font-size:15px;line-height:1.7;">Reply with anything: <em>"Add more tech news"</em>, <em>"Remove sports"</em>, <em>"Make it shorter"</em> — and your next newsletter reflects it. No login, no forms, no friction.</p>
+      </div>
+      <div style="background:#1a2744;border-radius:16px;padding:32px;text-align:left;border:1px solid #243050;">
+        <div style="font-size:36px;margin-bottom:16px;">🎯</div>
+        <h2 class="learn-title" style="color:#00b4d8;font-size:18px;margin-bottom:10px;">Add topics on the fly</h2>
+        <p style="color:#a0b4c8;font-size:15px;line-height:1.7;">Want coverage of a specific stock, sports team, artist, or neighborhood? Just say so. Spokesbox adds it to your personal feed immediately.</p>
+      </div>
+      <div style="background:#1a2744;border-radius:16px;padding:32px;text-align:left;border:1px solid #243050;">
+        <div style="font-size:36px;margin-bottom:16px;">🔄</div>
+        <h2 class="learn-title" style="color:#00b4d8;font-size:18px;margin-bottom:10px;">Gets better over time</h2>
+        <p style="color:#a0b4c8;font-size:15px;line-height:1.7;">Every reply teaches Spokesbox more about you. The longer you use it, the more precisely curated your newsletter becomes. It's the only email that actually improves with age.</p>
+      </div>
+    </div>
+    <div style="margin-top:48px;background:#1a2744;border-radius:12px;padding:24px 32px;max-width:600px;margin:48px auto 0;border-left:4px solid #00b4d8;text-align:left;">
+      <p style="color:#fff;font-size:16px;margin:0;"><span style="color:#00b4d8;font-weight:700;">Example:</span> Reply <em style="color:#ffd166;">&ldquo;Add a daily joke and more local restaurant news. Remove politics.&rdquo;</em> — your next morning&rsquo;s newsletter will reflect all three changes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT'S INSIDE ──────────────────────────────────────────────── -->
+<section>
+  <div class="container">
+    <div class="section-label">What's inside</div>
+    <div class="section-title">Everything you care about.<br>Nothing you don't.</div>
+    <p class="section-sub">Mix and match from 18+ content modules. You're in control.</p>
+
+    <div class="inside-grid">
+      <div class="inside-item"><div class="inside-icon">🌤️</div><span>Local Weather</span></div>
+      <div class="inside-item"><div class="inside-icon">📰</div><span>Local News</span></div>
+      <div class="inside-item"><div class="inside-icon">😂</div><span>Daily Joke</span></div>
+      <div class="inside-item"><div class="inside-icon">📚</div><span>Book Picks</span></div>
+      <div class="inside-item"><div class="inside-icon">🏃</div><span>Health Tips</span></div>
+      <div class="inside-item"><div class="inside-icon">🎬</div><span>Entertainment</span></div>
+      <div class="inside-item"><div class="inside-icon">💰</div><span>Finance</span></div>
+      <div class="inside-item"><div class="inside-icon">🍽️</div><span>Recipes</span></div>
+      <div class="inside-item"><div class="inside-icon">✈️</div><span>Travel</span></div>
+      <div class="inside-item"><div class="inside-icon">🐾</div><span>Pet Tips</span></div>
+      <div class="inside-item"><div class="inside-icon">👶</div><span>Parenting</span></div>
+      <div class="inside-item"><div class="inside-icon">💡</div><span>Fun Facts</span></div>
+      <div class="inside-item"><div class="inside-icon">🏆</div><span>Sports</span></div>
+      <div class="inside-item"><div class="inside-icon">💻</div><span>Technology</span></div>
+      <div class="inside-item"><div class="inside-icon">🎪</div><span>Local Events</span></div>
+      <div class="inside-item"><div class="inside-icon">💼</div><span>Career Tips</span></div>
+      <div class="inside-item"><div class="inside-icon">🏛️</div><span>History</span></div>
+      <div class="inside-item" style="background: linear-gradient(135deg, rgba(0,180,216,0.1), rgba(255,209,102,0.1));">
+        <div class="inside-icon">✨</div><span style="color:var(--teal);">+ More</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SAMPLE NEWSLETTER ──────────────────────────────────────────── -->
+<section class="sample">
+  <div class="container" style="text-align: center;">
+    <div class="section-label">Sample newsletter</div>
+    <div class="section-title">See what lands in your inbox</div>
+    <p class="section-sub" style="margin: 0 auto;">Every newsletter is unique — built for you, not a million other people.</p>
+
+    <div class="newsletter-preview">
+      <div class="nl-header">
+        <div class="nl-logo"><img src="/spokesbox-logo-cropped.jpg" alt="Spokesbox" style="height:48px;width:auto;display:block;"></div>
+        <div class="nl-date">Thursday, April 24, 2026</div>
+      </div>
+
+      <div class="nl-greeting">
+        <h2>Good morning, Alex! ☀️</h2>
+        <p>Here's your personalized edition for Austin, TX — warm & friendly, just like you like it.</p>
+      </div>
+
+      <div class="nl-body">
+
+        <!-- Weather -->
+        <div class="nl-section">
+          <div class="nl-section-title">🌤️ Today's Weather — Austin, TX</div>
+          <div class="weather-widget">
+            <div style="font-size: 48px;">⛅</div>
+            <div>
+              <div class="weather-temp">82°F</div>
+              <div class="weather-desc">
+                <strong>Partly Cloudy</strong>
+                Feels like 85°F · Humidity 68% · Wind 12 mph
+              </div>
+            </div>
+          </div>
+          <p style="font-size: 13px; color: var(--gray); margin-top: 10px;">🌧️ Light showers possible this evening. Maybe pack a light jacket!</p>
+        </div>
+
+        <!-- Local News -->
+        <div class="nl-section">
+          <div class="nl-section-title">📰 Austin News</div>
+          <div class="news-item"><div class="news-dot"></div><p><strong>New light rail line opens downtown</strong> — Austin's Red Line extension is officially open, connecting the Domain to South Congress in under 20 minutes.</p></div>
+          <div class="news-item"><div class="news-dot"></div><p><strong>UT wins Big 12 title</strong> — The Longhorns clinched the conference championship with a 14-point rally in the fourth quarter.</p></div>
+          <div class="news-item"><div class="news-dot"></div><p><strong>South Lamar farmers market returns</strong> — Starting this Saturday, the beloved market is back every weekend through October.</p></div>
+        </div>
+
+        <!-- Joke -->
+        <div class="nl-section">
+          <div class="nl-section-title">😂 Today's Joke</div>
+          <div class="joke-box">
+            <p>Why don't scientists trust atoms?</p>
+            <p class="punchline">Because they make up everything! 😄</p>
+          </div>
+        </div>
+
+        <!-- Book Pick -->
+        <div class="nl-section">
+          <div class="nl-section-title">📚 Book Pick of the Day</div>
+          <div class="book-card">
+            <div class="book-cover">📖</div>
+            <div class="book-info">
+              <h3 class="book-title">The Midnight Library</h3>
+              <div class="author">by Matt Haig</div>
+              <p>A dazzling novel about all the choices that go into a life well lived — poignant, funny, and unexpectedly moving. Perfect for your "warm & cozy" mood.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FREE CTA ─────────────────────────────────────────────────── -->
+<section class="cta-section" style="text-align:center;padding:80px 24px;background:var(--charcoal);">
+  <div class="container">
+    <h2 class="section-title" style="color:#fff;">Try Spokesbox — it's free</h2>
+    <p class="section-sub" style="margin:0 auto 32px;max-width:560px;color:#a0aec0;">No credit card. No trial countdown. No paywall. Just a personalized newsletter that gets better every day.</p>
+    <button class="btn-primary" onclick="window.location.href='/wizard'">Get my newsletter</button>
+    <div class="pricing-note" style="margin-top:16px;color:#718096;">Takes 60 seconds. First edition arrives tomorrow morning.</div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ───────────────────────────────────────────────── -->
+<section>
+  <div class="container">
+    <div class="section-label">What readers say</div>
+    <div class="section-title">People who actually read their email now</div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <q>I used to delete newsletters the second they landed. Spokesbox is different — it's about ME. My weather, my teams, my topics. I read it every single morning over coffee.</q>
+        <div class="testimonial-author">
+          <div class="avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">M</div>
+          <div>
+            <div class="author-name">Maria K.</div>
+            <div class="author-title">Teacher · Portland, OR</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <q>The "reply to change anything" feature is genius. I mentioned I hate clickbait headlines, and the next day they were gone. It actually listened. This is how all newsletters should work.</q>
+        <div class="testimonial-author">
+          <div class="avatar" style="background: linear-gradient(135deg, #f093fb, #f5576c);">D</div>
+          <div>
+            <div class="author-name">David R.</div>
+            <div class="author-title">Engineer · Chicago, IL</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <q>My morning routine starts with Spokesbox. It replaced like four apps for me — news, weather, sports scores, all in one email that actually knows what I care about.</q>
+        <div class="testimonial-author">
+          <div class="avatar" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">S</div>
+          <div>
+            <div class="author-name">Sarah T.</div>
+            <div class="author-title">Nurse · Nashville, TN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────────────────────── -->
+<section class="faq">
+  <div class="container">
+    <div class="section-label">FAQ</div>
+    <div class="section-title">Questions? We've got answers.</div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" type="button" id="faq-1-trigger" aria-expanded="false" aria-controls="faq-1-panel">
+          How does personalization work?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-1-panel" role="region" aria-labelledby="faq-1-trigger">
+          When you sign up, we walk you through a quick 10-question wizard — your location, favorite topics, preferred tone, and delivery time. We use your answers to curate and generate a newsletter built around you. As you reply with feedback, we keep improving it.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" id="faq-2-trigger" aria-expanded="false" aria-controls="faq-2-panel">
+          Can I change my topics?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-2-panel" role="region" aria-labelledby="faq-2-trigger">
+          Absolutely — anytime. Just reply to any newsletter email and say something like "add more sports" or "remove finance." We'll update your preferences and apply changes to your next edition.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" id="faq-3-trigger" aria-expanded="false" aria-controls="faq-3-panel">
+          What if I don't like something in my newsletter?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-3-panel" role="region" aria-labelledby="faq-3-trigger">
+          Just reply and tell us. That's it. No support tickets, no logins, no forms. We treat your replies as direct feedback and update your personalization accordingly. The more you engage, the better your newsletter gets.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" id="faq-4-trigger" aria-expanded="false" aria-controls="faq-4-panel">
+          Is there a contract?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-4-panel" role="region" aria-labelledby="faq-4-trigger">
+          No contracts, no payments, no catch. Unsubscribe anytime from the link in any email.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" id="faq-5-trigger" aria-expanded="false" aria-controls="faq-5-panel">
+          How do I cancel?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-5-panel" role="region" aria-labelledby="faq-5-trigger">
+          Click "Unsubscribe" at the bottom of any newsletter email. You're out immediately — no friction, no dark patterns, no "are you sure?" maze. We respect your time.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+</main>
+<footer role="contentinfo">
+  <div class="footer-logo"><img src="/spokesbox-logo.png" alt="Spokesbox" style="height:48px;width:auto;display:block;margin:0 auto;"></div>
+  <p>© 2026 Spokesbox. Made with ☀️</p>
+  <p style="margin-top: 8px;">
+    <a href="/unsubscribe">Unsubscribe</a> &nbsp;·&nbsp;
+    <a href="/wizard">Personalize my newsletter</a> &nbsp;·&nbsp;
+    <a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="/terms.html">Terms of Service</a>
+  </p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // FAQ accordion — accessible, delegated
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      const panel = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.setAttribute('aria-expanded', String(!expanded));
+      panel.hidden = expanded;
+      btn.closest('.faq-item').classList.toggle('open', !expanded);
+    });
+  });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── Wizard overlay (iframe approach) ──────────────────────────────────
+  const overlay = document.createElement('div');
+  overlay.id = 'wizardOverlay';
+  overlay.style.cssText = [
+    'display:none','position:fixed','top:0','left:0',
+    'width:100%','height:100%','z-index:9999',
+    'background:#1a2744','opacity:0',
+    'transition:opacity 0.3s ease'
+  ].join(';');
+
+  // Close button
+  const closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '✕ Back';
+  closeBtn.style.cssText = [
+    'position:absolute','top:16px','left:20px','z-index:10001',
+    'background:rgba(255,255,255,0.1)','color:#fff','border:none',
+    'padding:8px 16px','border-radius:50px','font-size:13px',
+    'font-weight:600','cursor:pointer','font-family:Inter,sans-serif',
+    'transition:background 0.2s'
+  ].join(';');
+  closeBtn.onmouseover = () => closeBtn.style.background = 'rgba(255,255,255,0.2)';
+  closeBtn.onmouseout  = () => closeBtn.style.background = 'rgba(255,255,255,0.1)';
+  closeBtn.onclick = () => {
+    overlay.style.opacity = '0';
+    setTimeout(() => { overlay.style.display = 'none'; document.body.style.overflow = ''; }, 300);
+  };
+
+  // Iframe
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+  iframe.setAttribute('allow', 'same-origin');
+
+  overlay.appendChild(closeBtn);
+  overlay.appendChild(iframe);
+  document.body.appendChild(overlay);
+
+  function openWizardOverlay(email) {
+    iframe.src = '/wizard?email=' + encodeURIComponent(email);
+    overlay.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => requestAnimationFrame(() => { overlay.style.opacity = '1'; }));
+  }
+
+  document.getElementById('heroForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('heroEmail').value.trim();
+    if (!email) return;
+    openWizardOverlay(email);
+  });
+
+  // Other CTAs that currently link to /wizard — open in overlay instead
+  document.querySelectorAll('button[onclick*="/wizard"]').forEach(btn => {
+    btn.removeAttribute('onclick');
+    btn.addEventListener('click', () => openWizardOverlay(''));
+  });
+</script>
+
+
+
+</div>
+
+</body>
+</html>

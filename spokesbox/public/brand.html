@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spokesbox Brand Guidelines</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ===========================
+       BASE & RESET
+    =========================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #1a2744;
+      --navy-mid: #1e2f55;
+      --card:    #243050;
+      --cyan:    #00b4d8;
+      --white:   #ffffff;
+      --charcoal:#1a1a2e;
+      --muted:   rgba(255,255,255,0.55);
+      --radius:  12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===========================
+       PRINT STYLES
+    =========================== */
+    @media print {
+      body { background: #fff; color: #111; }
+      .print-btn, .no-print { display: none !important; }
+      .section { break-inside: avoid; }
+      .card { background: #f4f6fb !important; border: 1px solid #dde !important; }
+      .section-label { color: #00b4d8 !important; }
+      .card-label { color: #333 !important; }
+    }
+
+    /* ===========================
+       LAYOUT
+    =========================== */
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+
+    /* ===========================
+       HEADER
+    =========================== */
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 48px 0 32px;
+      border-bottom: 1px solid rgba(0,180,216,0.2);
+      margin-bottom: 72px;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .header-logo img {
+      height: 100px;
+      border-radius: 8px;
+    }
+
+    .header-meta h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 28px;
+      color: var(--cyan);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .header-meta p {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .print-btn {
+      background: var(--cyan);
+      color: var(--navy);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
+    }
+    .print-btn:hover { opacity: 0.85; }
+
+    /* ===========================
+       SECTION CHROME
+    =========================== */
+    .section {
+      margin-bottom: 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .section-num {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--cyan);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .section-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--cyan);
+      letter-spacing: -0.3px;
+    }
+
+    .section-rule {
+      flex: 1;
+      height: 1px;
+      background: rgba(0,180,216,0.18);
+    }
+
+    /* ===========================
+       SECTION 1 — LOGO VARIATIONS
+    =========================== */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 720px) {
+      .logo-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 460px) {
+      .logo-grid { grid-template-columns: 1fr; }
+    }
+
+    .logo-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-card-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      padding: 32px 24px;
+      flex: 1;
+    }
+
+    .logo-card-preview.bg-navy    { background: var(--navy); }
+    .logo-card-preview.bg-white   { background: #ffffff; }
+    .logo-card-preview.bg-charcoal{ background: var(--charcoal); }
+    .logo-card-preview.bg-card    { background: var(--card); }
+
+    .logo-card-footer {
+      background: rgba(0,0,0,0.25);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .logo-card-name {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .logo-card-dl {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* Logo mark component (reused in variations) */
+    .logo-mark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .logo-mark.horizontal {
+      flex-direction: row;
+      text-align: left;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .logo-mark.horizontal .brand-text-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .brand-name {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 26px;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    .brand-tagline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 8.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .brand-tagline strong { font-weight: 700; }
+
+    .icon-only-wrap {
+      width: 90px;
+      height: 90px;
+    }
+
+    /* ===========================
+       SECTION 2 — COLOR PALETTE
+    =========================== */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 720px) {
+      .color-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .color-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--card);
+    }
+
+    .color-swatch {
+      height: 140px;
+      width: 100%;
+    }
+
+    .color-info {
+      padding: 16px;
+    }
+
+    .color-hex {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+      margin-bottom: 6px;
+    }
+
+    .color-name {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 10px;
+    }
+
+    .color-values {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ===========================
+       SECTION 3 — TYPOGRAPHY
+    =========================== */
+    .type-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .type-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 32px 36px;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      align-items: center;
+      gap: 32px;
+    }
+
+    @media (max-width: 640px) {
+      .type-card { grid-template-columns: 1fr; }
+    }
+
+    .type-meta h3 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--cyan);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .type-meta p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .type-sample-display {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 38px;
+      color: var(--white);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .type-sample-body {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 17px;
+      color: var(--white);
+      line-height: 1.5;
+    }
+
+    .type-sample-accent {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ===========================
+       SECTION 4 — USAGE RULES
+    =========================== */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .rules-grid { grid-template-columns: 1fr; }
+    }
+
+    .rules-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 30px;
+    }
+
+    .rules-card h3 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rules-card.do h3   { color: #4ade80; }
+    .rules-card.dont h3 { color: #f87171; }
+
+    .rules-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .rules-card ul li {
+      font-size: 14px;
+      color: var(--white);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.4;
+    }
+
+    .rules-card.do   ul li::before { content: "✓"; color: #4ade80; font-weight: 700; flex-shrink: 0; }
+    .rules-card.dont ul li::before { content: "✕"; color: #f87171; font-weight: 700; flex-shrink: 0; }
+
+    /* ===========================
+       SECTION 5 — CLEAR SPACE
+    =========================== */
+    .clearspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .clearspace-grid { grid-template-columns: 1fr; }
+    }
+
+    .clearspace-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .clearspace-visual {
+      position: relative;
+      display: inline-block;
+    }
+
+    .clearspace-box {
+      border: 2px dashed rgba(0,180,216,0.4);
+      padding: 28px;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .clearspace-s-label {
+      position: absolute;
+      top: 50%;
+      left: -48px;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: var(--cyan);
+      writing-mode: vertical-rl;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .clearspace-desc h4 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+
+    .clearspace-desc p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .size-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .size-table th, .size-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      font-size: 14px;
+    }
+
+    .size-table th {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--cyan);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ===========================
+       SECTION 6 — ASSETS
+    =========================== */
+    .assets-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .assets-grid { grid-template-columns: 1fr; }
+    }
+
+    .asset-item {
+      background: var(--card);
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .asset-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(0,180,216,0.12);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+
+    .asset-info h4 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+
+    .asset-info p {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .assets-note {
+      margin-top: 24px;
+      background: rgba(0,180,216,0.08);
+      border: 1px solid rgba(0,180,216,0.25);
+      border-radius: 8px;
+      padding: 18px 22px;
+      font-size: 14px;
+      color: var(--white);
+    }
+
+    .assets-note a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    /* ===========================
+       SECTION 7 — BRAND VOICE
+    =========================== */
+    .voice-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 720px) {
+      .voice-grid { grid-template-columns: 1fr; }
+    }
+
+    .voice-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .voice-card h3 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 16px;
+    }
+
+    .voice-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .voice-card ul li {
+      font-size: 14px;
+      color: var(--white);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .voice-card ul li::before {
+      content: "—";
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .tagline-display {
+      margin-top: 32px;
+      background: rgba(0,180,216,0.07);
+      border: 1px solid rgba(0,180,216,0.2);
+      border-radius: var(--radius);
+      padding: 36px;
+      text-align: center;
+    }
+
+    .tagline-display p {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 22px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .tagline-display strong {
+      font-weight: 800;
+      color: var(--cyan);
+    }
+
+    .tagline-display .td-label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 12px;
+    }
+
+    /* ===========================
+       FOOTER
+    =========================== */
+    .brand-footer {
+      border-top: 1px solid rgba(0,180,216,0.18);
+      padding-top: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand-footer p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .brand-footer strong {
+      color: var(--cyan);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <header class="brand-header">
+    <div class="header-logo">
+      <img src="spokesbox-logo.png" alt="Spokesbox Logo" style="height:80px;border-radius:6px;" />
+      <div class="header-meta">
+        <h1>Brand Guidelines</h1>
+        <p>Official Identity System · Version 1.0 · 2026</p>
+      </div>
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨️ Print Brand Guide</button>
+  </header>
+
+
+  <!-- ============================
+       SECTION 1: LOGO VARIATIONS
+  ============================= -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-label">Logo Variations</span>
+      <span class="section-rule"></span>
+    </div>
+
+    <!-- Approved Master Logo -->
+    <div style="text-align:center;margin-bottom:48px;">
+      <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#00b4d8;margin-bottom:16px;">Approved Master Logo</div>
+      <img src="spokesbox-logo.png" alt="Spokesbox Official Logo" style="max-width:480px;width:100%;border-radius:12px;border:1px solid #243050;">
+      <p style="font-family:'Inter',sans-serif;font-size:13px;color:#a0b4c8;margin-top:12px;">This is the official approved logo. Use this file for all digital applications.</p>
+    </div>
+
+    <div class="logo-grid">
+
+      <!-- 1. PRIMARY — cyan on navy -->
+      <div class="logo-card">
+        <div class="logo-card-preview bg-navy">
+          <div class="logo-mark">
+            <svg width="72" height="72" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="35" width="80" height="55" rx="4" ry="4" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+              <polyline points="10,35 50,62 90,35" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+              <!-- X fold lines -->
+              <line x1="10" y1="90" x2="90" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="90" y1="90" x2="10" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="50" y2="8" stroke="#00b4d8" stroke-width="2"/>
+              <line x1="50" y1="32" x2="36" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="64" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="24" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="76" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="14" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="86" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="8" y2="34" stroke="#00b4d8" stroke-width="1"/>
+              <line x1="50" y1="32" x2="92" y2="34" stroke="#00b4d8" stroke-width="1"/>
+            </svg>
+            <div>
+              <div class="brand-name" style="color:#00b4d8;">SPOKESBOX</div>
+              <div class="brand-tagline" style="color:#00b4d8;margin-top:5px;"><strong>YOUR</strong> WORLD IN ONE DAILY <strong>EMAIL</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="logo-card-footer">
+          <span class="logo-card-name">Primary</span>
+          <span class="logo-card-dl">For print use — request vector file</span>
+        </div>
+      </div>
+
+      <!-- 2. REVERSED — white on navy -->
+      <div class="logo-card">
+        <div class="logo-card-preview bg-navy">
+          <div class="logo-mark">
+            <svg width="72" height="72" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="35" width="80" height="55" rx="4" ry="4" fill="none" stroke="#ffffff" stroke-width="3.5"/>
+              <polyline points="10,35 50,62 90,35" fill="none" stroke="#ffffff" stroke-width="3.5"/>
+              <!-- X fold lines -->
+              <line x1="10" y1="90" x2="90" y2="35" stroke="#ffffff" stroke-width="1.5"/>
+              <line x1="90" y1="90" x2="10" y2="35" stroke="#ffffff" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="50" y2="8" stroke="#ffffff" stroke-width="2"/>
+              <line x1="50" y1="32" x2="36" y2="10" stroke="#ffffff" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="64" y2="10" stroke="#ffffff" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="24" y2="16" stroke="#ffffff" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="76" y2="16" stroke="#ffffff" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="14" y2="24" stroke="#ffffff" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="86" y2="24" stroke="#ffffff" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="8" y2="34" stroke="#ffffff" stroke-width="1"/>
+              <line x1="50" y1="32" x2="92" y2="34" stroke="#ffffff" stroke-width="1"/>
+            </svg>
+            <div>
+              <div class="brand-name" style="color:#ffffff;">SPOKESBOX</div>
+              <div class="brand-tagline" style="color:#ffffff;margin-top:5px;"><strong>YOUR</strong> WORLD IN ONE DAILY <strong>EMAIL</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="logo-card-footer">
+          <span class="logo-card-name">Reversed</span>
+          <span class="logo-card-dl">For print use — request vector file</span>
+        </div>
+      </div>
+
+      <!-- 3. DARK — black on white -->
+      <div class="logo-card">
+        <div class="logo-card-preview bg-white">
+          <div class="logo-mark">
+            <svg width="72" height="72" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="35" width="80" height="55" rx="4" ry="4" fill="none" stroke="#111827" stroke-width="3.5"/>
+              <polyline points="10,35 50,62 90,35" fill="none" stroke="#111827" stroke-width="3.5"/>
+              <!-- X fold lines -->
+              <line x1="10" y1="90" x2="90" y2="35" stroke="#111827" stroke-width="1.5"/>
+              <line x1="90" y1="90" x2="10" y2="35" stroke="#111827" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="50" y2="8" stroke="#111827" stroke-width="2"/>
+              <line x1="50" y1="32" x2="36" y2="10" stroke="#111827" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="64" y2="10" stroke="#111827" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="24" y2="16" stroke="#111827" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="76" y2="16" stroke="#111827" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="14" y2="24" stroke="#111827" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="86" y2="24" stroke="#111827" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="8" y2="34" stroke="#111827" stroke-width="1"/>
+              <line x1="50" y1="32" x2="92" y2="34" stroke="#111827" stroke-width="1"/>
+            </svg>
+            <div>
+              <div class="brand-name" style="color:#111827;">SPOKESBOX</div>
+              <div class="brand-tagline" style="color:#333;margin-top:5px;"><strong>YOUR</strong> WORLD IN ONE DAILY <strong>EMAIL</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="logo-card-footer">
+          <span class="logo-card-name">Dark / Print</span>
+          <span class="logo-card-dl">For print use — request vector file</span>
+        </div>
+      </div>
+
+      <!-- 4. ICON ONLY -->
+      <div class="logo-card">
+        <div class="logo-card-preview bg-navy">
+          <div class="icon-only-wrap">
+            <svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="35" width="80" height="55" rx="4" ry="4" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+              <polyline points="10,35 50,62 90,35" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+              <!-- X fold lines -->
+              <line x1="10" y1="90" x2="90" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="90" y1="90" x2="10" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="50" y2="8" stroke="#00b4d8" stroke-width="2"/>
+              <line x1="50" y1="32" x2="36" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="64" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="24" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="76" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="14" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="86" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="8" y2="34" stroke="#00b4d8" stroke-width="1"/>
+              <line x1="50" y1="32" x2="92" y2="34" stroke="#00b4d8" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+        <div class="logo-card-footer">
+          <span class="logo-card-name">Icon Mark</span>
+          <span class="logo-card-dl">For print use — request vector file</span>
+        </div>
+      </div>
+
+      <!-- 5. HORIZONTAL -->
+      <div class="logo-card">
+        <div class="logo-card-preview bg-navy">
+          <div class="logo-mark horizontal">
+            <svg width="54" height="54" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+              <rect x="10" y="35" width="80" height="55" rx="4" ry="4" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+              <polyline points="10,35 50,62 90,35" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+              <!-- X fold lines -->
+              <line x1="10" y1="90" x2="90" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="90" y1="90" x2="10" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="50" y2="8" stroke="#00b4d8" stroke-width="2"/>
+              <line x1="50" y1="32" x2="36" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="64" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="24" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="76" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="14" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="86" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="8" y2="34" stroke="#00b4d8" stroke-width="1"/>
+              <line x1="50" y1="32" x2="92" y2="34" stroke="#00b4d8" stroke-width="1"/>
+            </svg>
+            <div class="brand-text-wrap">
+              <div class="brand-name" style="color:#00b4d8;font-size:22px;">SPOKESBOX</div>
+              <div class="brand-tagline" style="color:#00b4d8;margin-top:4px;"><strong>YOUR</strong> WORLD IN ONE DAILY <strong>EMAIL</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="logo-card-footer">
+          <span class="logo-card-name">Horizontal</span>
+          <span class="logo-card-dl">For print use — request vector file</span>
+        </div>
+      </div>
+
+      <!-- 6. VERTICAL / STACKED -->
+      <div class="logo-card">
+        <div class="logo-card-preview bg-navy">
+          <div class="logo-mark" style="gap:8px;">
+            <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="35" width="80" height="55" rx="4" ry="4" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+              <polyline points="10,35 50,62 90,35" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+              <!-- X fold lines -->
+              <line x1="10" y1="90" x2="90" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="90" y1="90" x2="10" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="50" y2="8" stroke="#00b4d8" stroke-width="2"/>
+              <line x1="50" y1="32" x2="36" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="64" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="24" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="76" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="50" y1="32" x2="14" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="86" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+              <line x1="50" y1="32" x2="8" y2="34" stroke="#00b4d8" stroke-width="1"/>
+              <line x1="50" y1="32" x2="92" y2="34" stroke="#00b4d8" stroke-width="1"/>
+            </svg>
+            <div class="brand-name" style="color:#00b4d8;font-size:22px;">SPOKESBOX</div>
+            <div class="brand-tagline" style="color:#00b4d8;"><strong>YOUR</strong> WORLD IN ONE DAILY <strong>EMAIL</strong></div>
+          </div>
+        </div>
+        <div class="logo-card-footer">
+          <span class="logo-card-name">Vertical</span>
+          <span class="logo-card-dl">For print use — request vector file</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================
+       SECTION 2: COLOR PALETTE
+  ============================= -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-label">Color Palette</span>
+      <span class="section-rule"></span>
+    </div>
+
+    <div class="color-grid">
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#1a2744;border:1px solid rgba(255,255,255,0.08);"></div>
+        <div class="color-info">
+          <div class="color-hex">#1A2744</div>
+          <div class="color-name">Navy Blue</div>
+          <div class="color-values">
+            Primary Background<br>
+            RGB 26, 39, 68<br>
+            CMYK 62, 43, 0, 73
+          </div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#00b4d8;"></div>
+        <div class="color-info">
+          <div class="color-hex">#00B4D8</div>
+          <div class="color-name">Sky Blue</div>
+          <div class="color-values">
+            Primary Brand Color<br>
+            RGB 0, 180, 216<br>
+            CMYK 100, 17, 0, 15
+          </div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#ffffff; border:1px solid rgba(255,255,255,0.15);"></div>
+        <div class="color-info">
+          <div class="color-hex">#FFFFFF</div>
+          <div class="color-name">White</div>
+          <div class="color-values">
+            Secondary / Reversed<br>
+            RGB 255, 255, 255<br>
+            CMYK 0, 0, 0, 0
+          </div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#1a1a2e;"></div>
+        <div class="color-info">
+          <div class="color-hex">#1A1A2E</div>
+          <div class="color-name">Dark Charcoal</div>
+          <div class="color-values">
+            Deep Background Alt<br>
+            RGB 26, 26, 46<br>
+            CMYK 43, 43, 0, 82
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================
+       SECTION 3: TYPOGRAPHY
+  ============================= -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-label">Typography</span>
+      <span class="section-rule"></span>
+    </div>
+
+    <div class="type-list">
+
+      <div class="type-card">
+        <div class="type-meta">
+          <h3>Display</h3>
+          <p>Inter Black · 900<br>Logo &amp; Headlines</p>
+        </div>
+        <div>
+          <div class="type-sample-display">SPOKESBOX</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:8px;font-family:'Inter',sans-serif;">Aa Bb Cc Dd Ee Ff · 0123456789</div>
+        </div>
+      </div>
+
+      <div class="type-card">
+        <div class="type-meta">
+          <h3>Body</h3>
+          <p>Inter Regular · 400<br>Body copy, UI, newsletters</p>
+        </div>
+        <div>
+          <div class="type-sample-body">Your world, curated and delivered every morning before you start your day.</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:8px;font-family:'Inter',sans-serif;">Aa Bb Cc Dd Ee Ff · 0123456789</div>
+        </div>
+      </div>
+
+      <div class="type-card">
+        <div class="type-meta">
+          <h3>Accent</h3>
+          <p>Inter Light · 300<br>Taglines, captions, labels</p>
+        </div>
+        <div>
+          <div class="type-sample-accent">Your world in one daily email</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:8px;font-family:'Inter',sans-serif;">Aa Bb Cc Dd Ee Ff · 0123456789</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================
+       SECTION 4: LOGO USAGE RULES
+  ============================= -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-label">Logo Usage Rules</span>
+      <span class="section-rule"></span>
+    </div>
+
+    <div class="rules-grid">
+
+      <div class="rules-card do">
+        <h3>✅ Do</h3>
+        <ul>
+          <li>Use the logo on approved backgrounds (#1a2744 navy, white, or #1a1a2e charcoal)</li>
+          <li>Maintain clear space on all sides equal to the height of the "S" in SPOKESBOX</li>
+          <li>Use the provided logo files — do not recreate from memory</li>
+          <li>Scale the logo proportionally to preserve aspect ratio</li>
+          <li>Use the correct color variation for each context (primary, dark, reversed)</li>
+        </ul>
+      </div>
+
+      <div class="rules-card dont">
+        <h3>❌ Don't</h3>
+        <ul>
+          <li>Stretch, squish, or otherwise distort the logo in any direction</li>
+          <li>Change the logo colors outside approved brand palette</li>
+          <li>Add drop shadows, glows, gradients, or decorative effects</li>
+          <li>Place the logo on busy photographic or patterned backgrounds</li>
+          <li>Recreate or redraw the logo — always use official source files</li>
+          <li>Rotate or flip the logo at any angle</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================
+       SECTION 5: CLEAR SPACE & SIZING
+  ============================= -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-label">Clear Space &amp; Sizing</span>
+      <span class="section-rule"></span>
+    </div>
+
+    <div class="clearspace-grid">
+
+      <div class="clearspace-card">
+        <div class="clearspace-visual">
+          <div class="clearspace-box">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+              <svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="35" width="80" height="55" rx="4" ry="4" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+                <polyline points="10,35 50,62 90,35" fill="none" stroke="#00b4d8" stroke-width="3.5"/>
+              <!-- X fold lines -->
+              <line x1="10" y1="90" x2="90" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+              <line x1="90" y1="90" x2="10" y2="35" stroke="#00b4d8" stroke-width="1.5"/>
+                <line x1="50" y1="32" x2="50" y2="8" stroke="#00b4d8" stroke-width="2"/>
+                <line x1="50" y1="32" x2="36" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+                <line x1="50" y1="32" x2="64" y2="10" stroke="#00b4d8" stroke-width="1.5"/>
+                <line x1="50" y1="32" x2="24" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+                <line x1="50" y1="32" x2="76" y2="16" stroke="#00b4d8" stroke-width="1.5"/>
+                <line x1="50" y1="32" x2="14" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+                <line x1="50" y1="32" x2="86" y2="24" stroke="#00b4d8" stroke-width="1.2"/>
+                <line x1="50" y1="32" x2="8" y2="34" stroke="#00b4d8" stroke-width="1"/>
+                <line x1="50" y1="32" x2="92" y2="34" stroke="#00b4d8" stroke-width="1"/>
+              </svg>
+              <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:18px;color:#00b4d8;line-height:1;">SPOKESBOX</div>
+            </div>
+          </div>
+          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--cyan);letter-spacing:0.06em;white-space:nowrap;">← x →</div>
+          <div style="position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--cyan);letter-spacing:0.06em;">x</div>
+          <div style="position:absolute;left:-12px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--cyan);">x</div>
+          <div style="position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--cyan);">x</div>
+        </div>
+        <div class="clearspace-desc">
+          <h4>Minimum Clear Space</h4>
+          <p>Maintain a clear zone equal to the cap-height of the letter "S" in SPOKESBOX on all four sides of the logo. No other elements may intrude into this zone.</p>
+        </div>
+      </div>
+
+      <div class="clearspace-card">
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>Context</th>
+              <th>Minimum Size</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Digital / Screen</td>
+              <td style="color:var(--cyan);font-weight:600;">120px wide</td>
+            </tr>
+            <tr>
+              <td>Print / Offset</td>
+              <td style="color:var(--cyan);font-weight:600;">1 inch wide</td>
+            </tr>
+            <tr>
+              <td>Favicon / App Icon</td>
+              <td style="color:var(--cyan);font-weight:600;">Use Icon Mark only</td>
+            </tr>
+            <tr>
+              <td>Large Format / OOH</td>
+              <td style="color:var(--cyan);font-weight:600;">No maximum — use vector</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="clearspace-desc" style="text-align:left;align-self:stretch;">
+          <h4>Why This Matters</h4>
+          <p>Below minimum size, the icon's ray detail and tagline become illegible. At very small sizes, use the Icon Mark alone rather than the full lockup.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================
+       SECTION 6: PRINT-READY ASSETS
+  ============================= -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-label">Print-Ready Assets Reference</span>
+      <span class="section-rule"></span>
+    </div>
+
+    <div class="assets-grid">
+
+      <div class="asset-item">
+        <div class="asset-icon">📄</div>
+        <div class="asset-info">
+          <h4>spokesbox-logo-primary.svg</h4>
+          <p>Cyan on navy — default brand usage</p>
+        </div>
+      </div>
+
+      <div class="asset-item">
+        <div class="asset-icon">🖨️</div>
+        <div class="asset-info">
+          <h4>spokesbox-logo-dark.svg</h4>
+          <p>Black on white — for print / offset</p>
+        </div>
+      </div>
+
+      <div class="asset-item">
+        <div class="asset-icon">📄</div>
+        <div class="asset-info">
+          <h4>spokesbox-logo-reversed.svg</h4>
+          <p>White on navy — reversed placement</p>
+        </div>
+      </div>
+
+      <div class="asset-item">
+        <div class="asset-icon">⬡</div>
+        <div class="asset-info">
+          <h4>spokesbox-icon.svg</h4>
+          <p>Mark only — favicons, app icons, social avatars</p>
+        </div>
+      </div>
+
+      <div class="asset-item">
+        <div class="asset-icon">↔️</div>
+        <div class="asset-info">
+          <h4>spokesbox-logo-horizontal.svg</h4>
+          <p>Horizontal lockup — email headers, banners</p>
+        </div>
+      </div>
+
+      <div class="asset-item">
+        <div class="asset-icon">↕️</div>
+        <div class="asset-info">
+          <h4>spokesbox-logo-vertical.svg</h4>
+          <p>Stacked vertical lockup — square placements</p>
+        </div>
+      </div>
+
+      <div class="asset-item">
+        <div class="asset-icon">📕</div>
+        <div class="asset-info">
+          <h4>spokesbox-brand-guide.pdf</h4>
+          <p>Complete brand guidelines — print-ready PDF</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="assets-note">
+      📦 <strong>Vector files available upon request.</strong> All SVG and PDF source files are provided to authorized partners and vendors. Contact: <a href="mailto:hello@spokesbox.com">hello@spokesbox.com</a>
+    </div>
+  </section>
+
+
+  <!-- ============================
+       SECTION 7: BRAND VOICE
+  ============================= -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-label">Approved Brand Voice</span>
+      <span class="section-rule"></span>
+    </div>
+
+    <div class="voice-grid">
+
+      <div class="voice-card">
+        <h3>Tone</h3>
+        <ul>
+          <li>Personal</li>
+          <li>Warm</li>
+          <li>Curious</li>
+          <li>Smart</li>
+          <li>Trustworthy</li>
+        </ul>
+      </div>
+
+      <div class="voice-card">
+        <h3>We Are</h3>
+        <ul>
+          <li>Your daily companion</li>
+          <li>Curated just for you</li>
+          <li>Effortless to read</li>
+          <li>Consistent and reliable</li>
+          <li>A trusted morning ritual</li>
+        </ul>
+      </div>
+
+      <div class="voice-card">
+        <h3>We Are Not</h3>
+        <ul>
+          <li>Generic or templated</li>
+          <li>Overwhelming or noisy</li>
+          <li>Cold or corporate</li>
+          <li>Clickbait or sensational</li>
+          <li>Impersonal or robotic</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="tagline-display">
+      <p><strong>YOUR</strong> WORLD IN ONE DAILY <strong>EMAIL</strong></p>
+      <div class="td-label">Official tagline — use exactly as written</div>
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="brand-footer">
+    <p><strong>SPOKESBOX</strong> Brand Guidelines · Version 1.0 · 2026</p>
+    <p>Questions? <strong><a href="mailto:hello@spokesbox.com" style="color:var(--cyan);text-decoration:none;">hello@spokesbox.com</a></strong></p>
+  </footer>
+
+</div>
+
+</body>
+</html>
