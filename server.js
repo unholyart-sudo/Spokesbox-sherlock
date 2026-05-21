@@ -2351,6 +2351,7 @@ app.get('/beta-login', (req, res) => {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Spokesbox — Private Beta</title>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{min-height:100vh;display:flex;align-items:center;justify-content:center;
@@ -3548,6 +3549,7 @@ app.get('/unsubscribe', (req, res) => {
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Unsubscribed — Spokesbox</title>
+  <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: Inter, sans-serif; background: #f5f5f5; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
