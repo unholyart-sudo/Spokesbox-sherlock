@@ -1,0 +1,185 @@
+{
+  "stories": [],
+  "jokes": [],
+  "trivia": [],
+  "music": [
+    {
+      "date": "2026-04-23",
+      "artist": "Bruno Mars"
+    },
+    {
+      "date": "2026-04-25",
+      "artist": "Teddy Swims"
+    },
+    {
+      "date": "2026-04-27",
+      "artist": "Kaleo"
+    },
+    {
+      "date": "2026-04-29",
+      "artist": "Måneskin"
+    },
+    {
+      "date": "2026-05-01",
+      "artist": "Gary Clark Jr."
+    },
+    {
+      "date": "2026-05-03",
+      "artist": "Jelly Roll"
+    },
+    {
+      "date": "2026-05-05",
+      "artist": "Post Malone"
+    },
+    {
+      "date": "2026-05-07",
+      "artist": "Shaboozey"
+    },
+    {
+      "date": "2026-05-09",
+      "artist": "Hozier"
+    },
+    {
+      "date": "2026-05-11",
+      "artist": "Jack White"
+    },
+    {
+      "date": "2026-05-13",
+      "artist": "Leon Bridges"
+    },
+    {
+      "date": "2026-05-15",
+      "artist": "Harry Styles"
+    },
+    {
+      "date": "2026-05-17",
+      "artist": "Anderson .Paak"
+    },
+    {
+      "date": "2026-05-19",
+      "artist": "Zach Bryan"
+    }
+  ],
+  "riddles": [
+    {
+      "date": "2026-04-30",
+      "text": "RACECAR palindrome word puzzle",
+      "normalized": "racecar palindrome word puzzle",
+      "hash": "1274b5d76f61"
+    },
+    {
+      "date": "2026-04-30",
+      "text": "SCORE/CORES anagram",
+      "normalized": "score cores anagram",
+      "hash": "45c574e1031a"
+    },
+    {
+      "date": "2026-04-30",
+      "text": "clock what am I riddle",
+      "normalized": "clock what am i riddle",
+      "hash": "ef622f474644"
+    },
+    {
+      "date": "2026-04-30",
+      "text": "multiply-by-3 math pattern (2,6,18,54,162)",
+      "normalized": "multiply 3 math pattern 2 6 18 54 162",
+      "hash": "d16371e62c23"
+    },
+    {
+      "date": "2026-04-30",
+      "text": "shorter when add two letters word puzzle",
+      "normalized": "shorter when add two letters word puzzle",
+      "hash": "01394c831fb4"
+    },
+    {
+      "date": "2026-04-30",
+      "text": "word connection puzzle (soccer/basket/foot + BALL)",
+      "normalized": "word connection puzzle soccer basket foot ball",
+      "hash": "466b52954450"
+    },
+    {
+      "date": "2026-04-30",
+      "text": "rhyming riddle (kick me high soccer ball)",
+      "normalized": "rhyming riddle kick me high soccer ball",
+      "hash": "a500d8d2b1ce"
+    },
+    {
+      "date": "2026-04-30",
+      "text": "lateral thinking puzzle (not twins but triplets)",
+      "normalized": "lateral thinking puzzle not twins but triplets",
+      "hash": "ef6a6a850258"
+    },
+    {
+      "date": "2026-04-30",
+      "text": "map what am I riddle (cities no houses, mountains no trees, water no fish)",
+      "normalized": "map what am i riddle cities no houses mountains no trees water no fish",
+      "hash": "774da363742a"
+    },
+    {
+      "date": "2026-04-30",
+      "text": "odd one out word puzzle (SERVE vs soccer moves)",
+      "normalized": "odd one out word puzzle serve vs soccer moves",
+      "hash": "d69c10c9c26b"
+    },
+    {
+      "date": "2026-05-01",
+      "text": "growing gaps number pattern (3,5,8,12,17,23)",
+      "normalized": "growing gaps number pattern 3 5 8 12 17 23",
+      "hash": "6814478d360e"
+    },
+    {
+      "date": "2026-05-03",
+      "text": "logic deduction (who plays what sport)",
+      "normalized": "logic deduction who plays what sport",
+      "hash": "7e4b8df6ca38"
+    },
+    {
+      "date": "2026-05-05",
+      "text": "footsteps what am I riddle (the more you take the more you leave behind)",
+      "normalized": "footsteps what am i riddle more you take more you leave behind",
+      "hash": "d6f635726bd3"
+    },
+    {
+      "date": "2026-05-07",
+      "text": "Fibonacci sequence math pattern (1,1,2,3,5,8,13,21)",
+      "normalized": "fibonacci sequence math pattern 1 1 2 3 5 8 13 21",
+      "hash": "b34485b7dab8"
+    },
+    {
+      "date": "2026-05-09",
+      "text": "EARTH/HEART anagram word pair",
+      "normalized": "earth heart anagram word pair",
+      "hash": "adeb3c019eae"
+    },
+    {
+      "date": "2026-05-11",
+      "text": "your age what am I riddle",
+      "normalized": "your age what am i riddle",
+      "hash": "21d53dfc51b6"
+    },
+    {
+      "date": "2026-05-13",
+      "text": "emoji math puzzle (⚽+⚽=10, ⚽+🏀=8, find 🏀=3)",
+      "normalized": "emoji math puzzle 10 8 find 3",
+      "hash": "1dd38bd61296"
+    },
+    {
+      "date": "2026-05-15",
+      "text": "cryptic clue (keyboard - keys no locks no room enter cant go inside)",
+      "normalized": "cryptic clue keyboard keys no locks no room enter cant go inside",
+      "hash": "59ed60c60732"
+    },
+    {
+      "date": "2026-05-17",
+      "text": "cube numbers math pattern (1,8,27,64,125)",
+      "normalized": "cube numbers math pattern 1 8 27 64 125",
+      "hash": "6504520b71b7"
+    },
+    {
+      "date": "2026-05-19",
+      "text": "NIGHT/THING anagram",
+      "normalized": "night thing anagram",
+      "hash": "429a0bd3e055"
+    }
+  ]
+}
