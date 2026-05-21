@@ -51,13 +51,24 @@
       z-index: 100;
       box-shadow: 0 2px 16px rgba(0,0,0,0.2);
     }
-    .topbar-logo {
+    .topbar-back {
       text-decoration: none;
+      color: rgba(255,255,255,0.55);
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0;
+      white-space: nowrap;
+      padding: 4px 8px 4px 0;
+      transition: color 0.15s;
+    }
+    .topbar-back:hover { color: #fff; }
+    .topbar-logo {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
     }
     .topbar-divider { color: rgba(255,255,255,0.2); margin: 0 4px; }
-    .topbar-title   { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; }
+    .topbar-title   { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .topbar-step    {
       margin-left: auto;
       color: rgba(255,255,255,0.45);
@@ -667,7 +678,9 @@
     @media (max-width: 640px) {
       .left-panel    { padding: 28px 20px 32px; }
       .step-question { font-size: 22px; }
-      .topbar        { padding: 0 20px; }
+      .topbar        { padding: 0 16px; gap: 8px; }
+      .topbar-divider--desktop { display: none; }
+      .topbar-title--desktop   { display: none; }
     }
   </style>
 </head>
@@ -675,11 +688,12 @@
 
 <!-- Top bar -->
 <header class="topbar">
-  <a href="/" class="topbar-logo">
-    <img src="/spokesbox-logo.png?v=2" srcset="/spokesbox-logo@2x.png?v=2 2x" alt="Spokesbox" style="height:36px;width:auto;max-width:140px;display:block;">
-  </a>
-  <span class="topbar-divider">·</span>
-  <span class="topbar-title">Build your newsletter</span>
+  <a href="/" class="topbar-back">← Back</a>
+  <div class="topbar-logo">
+    <img src="/spokesbox-logo.png?v=2" srcset="/spokesbox-logo@2x.png?v=2 2x" alt="Spokesbox" style="height:32px;width:auto;max-width:130px;display:block;">
+  </div>
+  <span class="topbar-divider topbar-divider--desktop">·</span>
+  <span class="topbar-title topbar-title--desktop">Build your newsletter</span>
   <span class="topbar-step" id="stepIndicator"></span>
 </header>
 
@@ -796,7 +810,7 @@
       <!-- Email header -->
       <div class="pe-header">
         <div class="pe-brand">
-          <img src="/spokesbox-logo.png" alt="Spokesbox" style="height:40px;width:auto;display:block;margin:0 auto;">
+          <img src="/spokesbox-logo.png?v=2" srcset="/spokesbox-logo@2x.png?v=2 2x" alt="Spokesbox" style="width:160px;max-width:70%;height:auto;display:block;margin:0 auto;">
         </div>
         <div class="pe-greeting" id="peGreeting">Good morning! ☀️</div>
         <div class="pe-meta" id="peMeta">Ready at 7:00 AM</div>

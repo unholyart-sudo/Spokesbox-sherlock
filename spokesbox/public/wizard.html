@@ -51,13 +51,24 @@
       z-index: 100;
       box-shadow: 0 2px 16px rgba(0,0,0,0.2);
     }
-    .topbar-logo {
+    .topbar-back {
       text-decoration: none;
+      color: rgba(255,255,255,0.55);
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0;
+      white-space: nowrap;
+      padding: 4px 8px 4px 0;
+      transition: color 0.15s;
+    }
+    .topbar-back:hover { color: #fff; }
+    .topbar-logo {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
     }
     .topbar-divider { color: rgba(255,255,255,0.2); margin: 0 4px; }
-    .topbar-title   { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; }
+    .topbar-title   { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .topbar-step    {
       margin-left: auto;
       color: rgba(255,255,255,0.45);
@@ -403,42 +414,6 @@
     .sam-skip a { color: var(--gray); text-decoration: underline; cursor: pointer; }
     .sam-skip a:hover { color: var(--navy); }
 
-    /* Sam follow-up questions panel */
-    #samFollowup { animation: stepIn 0.3s cubic-bezier(0.22,1,0.36,1) both; }
-    .sam-followup-header {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
-    }
-    .sam-followup-badge {
-      font-size: 11px; font-weight: 700; color: var(--teal);
-      text-transform: uppercase; letter-spacing: 1px;
-      background: #f0fdfc; border: 1.5px solid #99e6da;
-      border-radius: 50px; padding: 3px 10px; flex-shrink: 0;
-    }
-    .sam-followup-intro-text {
-      font-size: 13.5px; color: var(--gray); line-height: 1.5;
-    }
-    .sam-followup-q {
-      background: #f8fffe; border: 1.5px solid #c6f0eb;
-      border-radius: 10px; padding: 12px 14px;
-      font-size: 13.5px; color: #1a3a38; line-height: 1.6;
-      margin-bottom: 9px;
-    }
-    .sam-followup-q::before { content: '\25B6\FE0E\00A0'; font-size: 10px; color: var(--teal); }
-    #samFollowupTextarea {
-      width: 100%; min-height: 96px;
-      border: 1.5px solid var(--border); border-radius: 14px;
-      padding: 14px 16px; font-size: 15px; font-family: inherit;
-      color: var(--navy); background: #fff; resize: vertical;
-      transition: border-color 0.2s; line-height: 1.6; margin-top: 4px;
-    }
-    #samFollowupTextarea:focus { outline: none; border-color: var(--teal); }
-    #samFollowupTextarea::placeholder { color: #9ca3af; }
-    .sam-followup-skip {
-      text-align: center; font-size: 12px; color: var(--gray); margin-top: 6px;
-    }
-    .sam-followup-skip a { color: var(--gray); text-decoration: underline; cursor: pointer; }
-    .sam-followup-skip a:hover { color: var(--navy); }
-
     /* Sam guidance panel — prompt bullets + quick-insert chips */
     .sam-guide {
       border: 1.5px solid var(--border); border-radius: 12px;
@@ -703,7 +678,9 @@
     @media (max-width: 640px) {
       .left-panel    { padding: 28px 20px 32px; }
       .step-question { font-size: 22px; }
-      .topbar        { padding: 0 20px; }
+      .topbar        { padding: 0 16px; gap: 8px; }
+      .topbar-divider--desktop { display: none; }
+      .topbar-title--desktop   { display: none; }
     }
   </style>
 </head>
@@ -711,11 +688,12 @@
 
 <!-- Top bar -->
 <header class="topbar">
-  <a href="/" class="topbar-logo">
-    <img src="/spokesbox-logo.png?v=2" srcset="/spokesbox-logo@2x.png?v=2 2x" alt="Spokesbox" style="height:36px;width:auto;max-width:140px;display:block;">
-  </a>
-  <span class="topbar-divider">·</span>
-  <span class="topbar-title">Build your newsletter</span>
+  <a href="/" class="topbar-back">← Back</a>
+  <div class="topbar-logo">
+    <img src="/spokesbox-logo.png?v=2" srcset="/spokesbox-logo@2x.png?v=2 2x" alt="Spokesbox" style="height:32px;width:auto;max-width:130px;display:block;">
+  </div>
+  <span class="topbar-divider topbar-divider--desktop">·</span>
+  <span class="topbar-title topbar-title--desktop">Build your newsletter</span>
   <span class="topbar-step" id="stepIndicator"></span>
 </header>
 
@@ -808,29 +786,8 @@
       <div class="step-nav">
         <button class="btn-next" id="samSubmitBtn" onclick="handleSamSubmit()">Tell Sam →</button>
       </div>
-      <div class="sam-skip" id="samSkipLink">
+      <div class="sam-skip">
         <a onclick="skipSam()">Skip for now — continue without a Sam brief</a>
-      </div>
-
-      <!-- Follow-up questions panel (hidden until /api/sam-onboarding/followup returns questions) -->
-      <div id="samFollowup" style="display:none;" aria-live="polite">
-        <div class="sam-followup-header">
-          <span class="sam-followup-badge">Sam</span>
-          <span class="sam-followup-intro-text" id="samFollowupIntroText">
-            Got it. A few quick things to help me focus:
-          </span>
-        </div>
-        <div id="samFollowupQuestions"></div>
-        <textarea id="samFollowupTextarea"
-          placeholder="Your answers…"
-          rows="4" maxlength="2000"></textarea>
-        <div class="sam-char-hint"><span id="samFollowupCharCount">0</span> / 2000</div>
-        <div class="step-nav">
-          <button class="btn-next" id="samFollowupBtn" onclick="handleSamFollowupSubmit()">Got it →</button>
-        </div>
-        <div class="sam-followup-skip">
-          <a onclick="skipSamFollowup()">Skip — just use what I already wrote</a>
-        </div>
       </div>
     </div>
 
@@ -853,7 +810,7 @@
       <!-- Email header -->
       <div class="pe-header">
         <div class="pe-brand">
-          <img src="/spokesbox-logo.png" alt="Spokesbox" style="height:40px;width:auto;display:block;margin:0 auto;">
+          <img src="/spokesbox-logo.png?v=2" srcset="/spokesbox-logo@2x.png?v=2 2x" alt="Spokesbox" style="width:160px;max-width:70%;height:auto;display:block;margin:0 auto;">
         </div>
         <div class="pe-greeting" id="peGreeting">Good morning! ☀️</div>
         <div class="pe-meta" id="peMeta">Ready at 7:00 AM</div>
@@ -3265,63 +3222,20 @@ function showMeetSam() {
   const errEl = document.getElementById('samError');
   if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
 
-  // Reset guidance panel to collapsed
+  // Reset guidance panel to collapsed on each show
   const guideBody  = document.getElementById('samGuideBody');
   const guideArrow = document.getElementById('samGuideArrow');
   const guideBtn   = document.getElementById('samGuideToggle');
   if (guideBody)  guideBody.style.display = 'none';
   if (guideArrow) guideArrow.classList.remove('open');
   if (guideBtn)   guideBtn.setAttribute('aria-expanded', 'false');
-
-  // Reset follow-up panel
-  const followupPanel = document.getElementById('samFollowup');
-  const fta           = document.getElementById('samFollowupTextarea');
-  const fCharCount    = document.getElementById('samFollowupCharCount');
-  const fqContainer   = document.getElementById('samFollowupQuestions');
-  const submitBtn     = document.getElementById('samSubmitBtn');
-  const skipLinkEl    = document.getElementById('samSkipLink');
-  if (followupPanel) followupPanel.style.display = 'none';
-  if (fta)           fta.value = '';
-  if (fCharCount)    fCharCount.textContent = '0';
-  if (fqContainer)   fqContainer.innerHTML = '';
-  if (submitBtn)     { submitBtn.style.display = ''; submitBtn.disabled = false; submitBtn.textContent = 'Tell Sam →'; }
-  if (skipLinkEl)    skipLinkEl.style.display = '';
-  W.samInitialText = '';
-}
-
-// ── Sam onboarding: core submit path ───────────────────────────────────────────────
-// Called by:
-//   handleSamSubmit        — follow-up failed / empty questions
-//   handleSamFollowupSubmit — user answered follow-up (combined text)
-//   skipSamFollowup         — user skipped follow-up answers (initial text only)
-// NEVER called on the skipSam() path (no brief at all).
-async function finalizeSam(combinedText) {
-  // Always keep W.answers.custom_profile_text in sync with what we send
-  const profile = parseFreeText(combinedText);
-  W.derived.custom_profile      = profile;
-  W.answers.custom_profile_text = combinedText;
-  W.answers._derived_profile    = profile;
-  applyCustomProfileToPreview(profile);
-
-  // Submit to /api/sam-onboarding (fire-and-forget — server responds immediately)
-  try {
-    await fetch('/api/sam-onboarding', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: W.session_id, onboarding_text: combinedText })
-    });
-  } catch (e) {
-    console.warn('[Sam] /api/sam-onboarding submit failed (non-fatal):', e.message);
-  }
-
-  continuePastSam();
 }
 
 async function handleSamSubmit() {
-  const ta    = document.getElementById('samTextarea');
-  const btn   = document.getElementById('samSubmitBtn');
+  const ta   = document.getElementById('samTextarea');
+  const btn  = document.getElementById('samSubmitBtn');
   const errEl = document.getElementById('samError');
-  const text  = ta ? ta.value.trim() : '';
+  const text = ta ? ta.value.trim() : '';
 
   if (!text || text.length < 30) {
     if (ta) { ta.classList.add('error'); setTimeout(() => ta.classList.remove('error'), 1600); ta.focus(); }
@@ -3329,96 +3243,30 @@ async function handleSamSubmit() {
     return;
   }
 
-  if (btn) { btn.disabled = true; btn.textContent = 'Thinking…'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending to Sam…'; }
   if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
 
-  // Persist initial profile immediately — survives all paths
+  // Persist custom profile to all state layers before network round-trip
   const samProfile = parseFreeText(text);
   W.derived.custom_profile      = samProfile;
   W.answers.custom_profile_text = text;
   W.answers._derived_profile    = samProfile;
-  W.samInitialText              = text;   // stash: all paths need this
   applyCustomProfileToPreview(samProfile);
 
-  // Call /followup with 8s client-side timeout
-  let questions = [];
   try {
-    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    const timer = controller ? setTimeout(() => controller.abort(), 8000) : null;
-    const fetchOpts = {
+    await fetch('/api/sam-onboarding', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ session_id: W.session_id, onboarding_text: text })
-    };
-    if (controller) fetchOpts.signal = controller.signal;
-    const res = await fetch('/api/sam-onboarding/followup', fetchOpts);
-    if (timer) clearTimeout(timer);
-    if (res.ok) {
-      const data = await res.json();
-      questions = Array.isArray(data.questions) ? data.questions : [];
-    }
-  } catch (e) {
-    console.warn('[Sam] /followup request failed or timed out:', e.message);
-    questions = []; // fall through — finalizeSam called below
-  }
-
-  if (questions.length >= 2) {
-    showSamFollowup(questions);
-  } else {
-    // No questions, failure, timeout, or empty list — ALWAYS submit initial text
-    await finalizeSam(W.samInitialText);
-  }
-}
-
-// Render follow-up question cards and show the panel
-function showSamFollowup(questions) {
-  // Hide original submit + skip while follow-up is active
-  const btn      = document.getElementById('samSubmitBtn');
-  const skipLink = document.getElementById('samSkipLink');
-  if (btn)      btn.style.display = 'none';
-  if (skipLink) skipLink.style.display = 'none';
-
-  // Populate question cards
-  const qContainer = document.getElementById('samFollowupQuestions');
-  if (qContainer) {
-    qContainer.innerHTML = questions
-      .map(q => `<div class="sam-followup-q">${esc(q.text)}</div>`)
-      .join('');
-  }
-
-  // Show the panel
-  const panel = document.getElementById('samFollowup');
-  if (panel) panel.style.display = '';
-
-  // Wire char count for follow-up textarea
-  const fta = document.getElementById('samFollowupTextarea');
-  if (fta) {
-    fta.addEventListener('input', () => {
-      const c = document.getElementById('samFollowupCharCount');
-      if (c) c.textContent = fta.value.length;
     });
-    setTimeout(() => fta.focus(), 120);
+    // Response is fire-and-forget on the server — success or fail, continue Wizard
+  } catch (e) {
+    console.warn('[Meet Sam] sam-onboarding request failed (non-fatal):', e.message);
   }
+
+  continuePastSam();
 }
 
-// User answered follow-up: combine initial + answers, then finalizeSam
-async function handleSamFollowupSubmit() {
-  const fta         = document.getElementById('samFollowupTextarea');
-  const followupText = fta ? fta.value.trim() : '';
-  const combined    = followupText
-    ? W.samInitialText + '\n\nFollow-up answers:\n' + followupText
-    : W.samInitialText;
-  const btn = document.getElementById('samFollowupBtn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Sending to Sam…'; }
-  await finalizeSam(combined);
-}
-
-// User skips follow-up: submit initial text only (brief still created)
-async function skipSamFollowup() {
-  await finalizeSam(W.samInitialText);
-}
-
-// User skips Sam entirely: no brief, continue Wizard
 function skipSam() {
   continuePastSam();
 }
