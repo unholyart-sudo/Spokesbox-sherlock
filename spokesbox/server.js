@@ -342,6 +342,86 @@ db.exec(`
   );
   CREATE INDEX IF NOT EXISTS idx_user_brief_history_sub_ver
     ON user_brief_history(subscriber_id, brief_version);
+
+  -- ── Brief Tuning PR 1 ──────────────────────────────────────────────────────
+
+  CREATE TABLE IF NOT EXISTS brief_profiles (
+    subscriber_id  INTEGER PRIMARY KEY REFERENCES subscribers(id) ON DELETE CASCADE,
+    version        INTEGER NOT NULL DEFAULT 1,
+    created_at     INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000),
+    updated_at     INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
+  );
+
+  CREATE TABLE IF NOT EXISTS brief_interests (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    subscriber_id  INTEGER NOT NULL REFERENCES subscribers(id) ON DELETE CASCADE,
+    bucket         TEXT    NOT NULL,
+    subtopic       TEXT,
+    specificity    TEXT,
+    weight         REAL    NOT NULL DEFAULT 1.0,
+    depth          TEXT    NOT NULL DEFAULT 'standard'
+                     CHECK(depth IN ('headline', 'standard', 'deep')),
+    notes          TEXT,
+    source         TEXT    NOT NULL DEFAULT 'user_feedback'
+                     CHECK(source IN ('user_feedback', 'sam_onboarding_seed', 'manual')),
+    confidence     TEXT    NOT NULL DEFAULT 'high'
+                     CHECK(confidence IN ('high', 'medium', 'low')),
+    is_exclusion   INTEGER NOT NULL DEFAULT 0,
+    created_at     INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000),
+    updated_at     INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
+  );
+  CREATE INDEX IF NOT EXISTS idx_brief_interests_sub
+    ON brief_interests(subscriber_id, is_exclusion, weight);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_brief_interests_unique
+    ON brief_interests(subscriber_id, bucket, COALESCE(subtopic, ''));
+
+  CREATE TABLE IF NOT EXISTS brief_entities (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    interest_id    INTEGER NOT NULL REFERENCES brief_interests(id) ON DELETE CASCADE,
+    entity_type    TEXT    NOT NULL
+                     CHECK(entity_type IN ('team','person','company','ticker','place','topic')),
+    entity_value   TEXT    NOT NULL,
+    weight         REAL    NOT NULL DEFAULT 1.0,
+    created_at     INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
+  );
+  CREATE INDEX IF NOT EXISTS idx_brief_entities_interest
+    ON brief_entities(interest_id);
+
+  CREATE TABLE IF NOT EXISTS brief_feedback (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    subscriber_id  INTEGER NOT NULL REFERENCES subscribers(id) ON DELETE CASCADE,
+    token_id       TEXT,
+    action         TEXT    NOT NULL
+                     CHECK(action IN ('more','less','mute','unmute','add','remove','edit')),
+    context_bucket TEXT,
+    context_label  TEXT,
+    context_date   TEXT,
+    applied_at     INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
+  );
+  CREATE INDEX IF NOT EXISTS idx_brief_feedback_sub_date
+    ON brief_feedback(subscriber_id, applied_at);
+
+  CREATE TABLE IF NOT EXISTS tune_tokens (
+    id             TEXT    PRIMARY KEY,
+    subscriber_id  INTEGER NOT NULL REFERENCES subscribers(id) ON DELETE CASCADE,
+    action         TEXT    NOT NULL,
+    payload        TEXT,
+    issued_at      INTEGER NOT NULL,
+    expires_at     INTEGER NOT NULL,
+    used_at        INTEGER,
+    use_count      INTEGER NOT NULL DEFAULT 0,
+    max_uses       INTEGER NOT NULL DEFAULT 1
+  );
+  CREATE INDEX IF NOT EXISTS idx_tune_tokens_sub
+    ON tune_tokens(subscriber_id, expires_at);
+
+  CREATE TABLE IF NOT EXISTS brief_source_suggestions (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    subscriber_id  INTEGER NOT NULL REFERENCES subscribers(id) ON DELETE CASCADE,
+    bucket         TEXT    NOT NULL,
+    suggested_source TEXT  NOT NULL,
+    created_at     INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
+  );
 `);
 
 // ─── DB Migration Helper ───────────────────────────────────────────────────────
