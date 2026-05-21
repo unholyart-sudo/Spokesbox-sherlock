@@ -39,21 +39,47 @@ function buildTodoPreheader(sections) {
 }
 
 // Status badge colors
-const STATUS_STYLE = {
-  done:        'background:#d1fae5;color:#065f46;',
-  complete:    'background:#d1fae5;color:#065f46;',
-  paid:        'background:#d1fae5;color:#065f46;',
-  pending:     'background:#fef3c7;color:#92400e;',
-  'in progress':'background:#dbeafe;color:#1e40af;',
-  unpaid:      'background:#fee2e2;color:#991b1b;',
-  overdue:     'background:#fee2e2;color:#991b1b;',
-};
 
 function statusBadge(status) {
   if (!status || status.toLowerCase() === 'open') return '';
-  const style = STATUS_STYLE[status.toLowerCase()] || 'background:#e5e7eb;color:#374151;';
-  return `<span style="${style}font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;margin-left:8px;">${status}</span>`;
+  const s = status.toLowerCase();
+  let style;
+  if (s.includes('unpaid') || s.includes('overdue') || s.includes('⚠️')) {
+    style = 'background:#3a1f1f;color:#ffb4a2;';
+  } else if (s.includes('pending') || s.includes('waiting') || s.includes('tbd')) {
+    style = 'background:#3a2f1a;color:#f4d06f;';
+  } else if (s.includes('paid') || s.includes('done') || s.includes('complete') || s.includes('✅')) {
+    style = 'background:#183025;color:#8fe1b2;';
+  } else if (s.includes('active') || s.includes('received') || s.includes('in progress')) {
+    style = 'background:#1e2a45;color:#b8c7ff;';
+  } else {
+    style = 'background:#2a2d3a;color:#c0c0c0;';
+  }
+  return `<span style="${style}font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-left:8px;">${status}</span>`;
 }
+
+// Build a "Top Priority" block from the highest-urgency items
+function buildTopPriorityBlock(sections) {
+  const urgentItems = [];
+  for (const sec of (sections || [])) {
+    for (const it of (sec.items || [])) {
+      const s = (it.status || '').toLowerCase();
+      if (s.includes('unpaid') || s.includes('overdue') || s.includes('⚠️') || s.includes('blocked')) {
+        urgentItems.push(it.item);
+      }
+    }
+  }
+  if (urgentItems.length === 0) return '';
+  const items = urgentItems.slice(0, 3).map((item, i) =>
+    `<div style="padding:5px 0;font-size:15px;color:#d4cfc4;line-height:1.6;"><strong style="color:#f4d06f;">${i + 1}.</strong> ${item}</div>`
+  ).join('');
+  return `
+    <div style="background:#1a1c24;border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:16px 20px;margin-bottom:20px;">
+      <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;margin-bottom:10px;font-weight:700;">⚡ TOP PRIORITY TODAY</div>
+      ${items}
+    </div>`;
+}
+
 
 function buildDate(dateStr) {
   if (dateStr) return dateStr;
@@ -69,10 +95,11 @@ function buildTodoEmailHTML(sections, opts = {}) {
   const date      = buildDate(opts.date);
   const recipient = opts.recipient || 'Jride';
 
+  const topPriorityBlock = buildTopPriorityBlock(sections);
   const sectionsHTML = sections.map(sec => {
     const rows = (sec.items || []).map(item => `
       <tr style="border-bottom:1px solid rgba(201,168,76,0.1);">
-        <td style="padding:9px 12px;font-size:14px;color:#d4cfc4;line-height:1.5;">
+        <td style="padding:9px 12px;font-size:15px;color:#d4cfc4;line-height:1.6;">
           ${item.item || ''}
           ${statusBadge(item.status)}
           ${item.notes ? `<div style="font-size:12px;color:#6b7a96;margin-top:3px;">${item.notes}</div>` : ''}
@@ -99,7 +126,13 @@ function buildTodoEmailHTML(sections, opts = {}) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Jride TODO — ${date}</title>
-  <style>body,table{background:#07090f!important;}</style>
+  <style>
+  @media only screen and (max-width:620px) {
+    .container { width:100% !important; }
+    .content-pad { padding:20px 16px !important; }
+  }
+  body,table{background:#07090f!important;}
+</style>
 </head>
 <body style="margin:0;padding:0;background:#07090f;font-family:'Helvetica Neue',Arial,sans-serif;">
 
@@ -110,7 +143,7 @@ function buildTodoEmailHTML(sections, opts = {}) {
 
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#07090f;">
     <tr><td align="center" style="padding:28px 16px;">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+      <table width="600" cellpadding="0" cellspacing="0" role="presentation" class="container" style="max-width:600px;width:100%;">
 
         <!-- Header -->
         <tr><td style="background:#0d1121;border:1px solid rgba(201,168,76,0.2);
@@ -126,7 +159,8 @@ function buildTodoEmailHTML(sections, opts = {}) {
         <!-- Content -->
         <tr><td style="background:#07090f;border-left:1px solid rgba(201,168,76,0.1);
                        border-right:1px solid rgba(201,168,76,0.1);padding:24px 28px;">
-          ${sectionsHTML}
+          ${topPriorityBlock}
+      ${sectionsHTML}
         </td></tr>
 
         <!-- Footer -->

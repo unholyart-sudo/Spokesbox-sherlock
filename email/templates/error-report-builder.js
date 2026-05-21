@@ -69,7 +69,10 @@ function buildErrorReportHTML(jobs, opts = {}) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Sherlock Error Report</title>
-  <style>body,table{background:#0f1117!important;}</style>
+  <style>
+@media only screen and (max-width:620px){.container{width:100%!important;}}
+body,table{background:#0f1117!important;}
+</style>
 </head>
 <body style="margin:0;padding:0;background:#0f1117;font-family:'Helvetica Neue',Arial,sans-serif;color:#d0d8f0;">
 
@@ -78,9 +81,9 @@ function buildErrorReportHTML(jobs, opts = {}) {
     ${preheader}
   </span>
 
-  <table width="100%" cellpadding="0" cellspacing="0">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
   <tr><td align="center" style="padding:24px 16px;">
-  <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;">
+  <table width="600" cellpadding="0" cellspacing="0" role="presentation" class="container" style="max-width:600px;">
 
     <!-- Header -->
     <tr><td style="background:#1a1d27;border-radius:12px 12px 0 0;padding:20px 28px 14px;">
@@ -93,6 +96,17 @@ function buildErrorReportHTML(jobs, opts = {}) {
     <tr><td style="background:#1a1d27;padding:16px 28px;">
 
       ${highPriority.length > 0 ? `
+        <!-- Hero alert for first critical failure -->
+        <div style="background:#2a1a1a;border:1.5px solid #e07a4c;border-radius:10px;padding:18px 20px;margin-bottom:16px;">
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#e07a4c;margin-bottom:8px;font-weight:700;">🚨 CRITICAL FAILURE</div>
+          <div style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px;">${highPriority[0].name}</div>
+          <div style="font-size:0.85rem;color:#d0d8f0;margin-bottom:6px;">${highPriority[0].consecutiveErrors} consecutive failures — "${highPriority[0].lastError || 'unknown error'}"</div>
+          <div style="font-size:0.78rem;color:#9ca3af;">Last run: ${fmtTime(highPriority[0].lastRunAt)} · Next: ${fmtTime(highPriority[0].nextRunAt)}</div>
+          <div style="margin-top:8px;padding:8px 12px;background:rgba(224,122,76,0.1);border-radius:6px;font-size:0.78rem;color:#e07a4c;">
+            Suggested: check email send path · verify API key · inspect payload
+          </div>
+        </div>
+        ${highPriority.length > 1 ? `<div style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;color:#e07a4c;margin-bottom:10px;">+ ${highPriority.length - 1} more failure(s)</div>` : ''}
         <div style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;color:#e07a4c;margin-bottom:10px;">🚨 HIGH PRIORITY (${highPriority.length})</div>
         ${highPriority.map(j => jobCard(j, 'rgba(224,122,76,0.12)', '#e07a4c', '#e07a4c', `${j.consecutiveErrors} consecutive failures`)).join('')}
       ` : ''}

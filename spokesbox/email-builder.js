@@ -62,22 +62,23 @@ function buildSubject({ name, brief }) {
 
 // ─── HTML Renderers ─────────────────────────────────────────────────────────
 
-function renderSectionHTML(section) {
+function renderSectionHTML(section, skin) {
+  skin = skin || { labelColor:"#667eea", textColor:"#263142", fontSize:"15px", sectionBg:"#f8faff", sectionBorder:"#e2e8f0" };
   const bullets = (section.bullets || [])
-    .map(b => `<li style="margin-bottom:6px;color:#2d3748;line-height:1.6;">${b}</li>`)
+    .map(b => `<li style="margin-bottom:6px;color:${skin.textColor};line-height:1.65;font-size:${skin.fontSize};">${b}</li>`)
     .join('');
   const links = (section.links || [])
     .map(l => `<a href="${l.url}" style="color:#667eea;font-size:12px;display:inline-block;margin-right:12px;margin-top:4px;">→ ${l.text}</a>`)
     .join('');
 
   return `
-    <div style="padding:16px 32px;border-bottom:1px solid #e2e8f0;">
-      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;
-                  color:#667eea;font-weight:bold;margin-bottom:6px;">
+    <div style="margin:0 16px 10px;background:${skin.sectionBg};border:1px solid ${skin.sectionBorder};border-radius:10px;padding:16px 18px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;
+                  color:${skin.labelColor};font-weight:bold;margin-bottom:6px;">
         ${section.emoji} ${section.title}
       </div>
       ${section.summary
-        ? `<p style="font-size:14px;color:#4a5568;line-height:1.6;margin:0 0 8px 0;">${section.summary}</p>`
+        ? `<p style="font-size:${skin.fontSize};color:${skin.textColor};line-height:1.6;margin:0 0 8px 0;">${section.summary}</p>`
         : ''}
       ${bullets
         ? `<ul style="padding-left:18px;margin:6px 0;">${bullets}</ul>`
@@ -88,6 +89,21 @@ function renderSectionHTML(section) {
 
 function buildSpokesboxEmailHTML(brief, subscriber) {
   const { email = '', token = '', name = '' } = subscriber || {};
+  const isKids = brief.audience === 'kids' || name === 'Avi';
+  // Kid skin overrides
+  const skin = isKids ? {
+    bg: '#f4f8ff', header: '#1d4ed8', accent: '#f59e0b', textColor: '#1f2937',
+    mutedColor: '#64748b', sectionBg: '#ffffff', sectionBorder: '#dbeafe',
+    labelColor: '#2563eb', fontSize: '16px', fontFamily: 'Arial, Verdana, sans-serif',
+    logo: '⭐ AVI\'S DAILY BRIEF', logoSub: 'YOUR PERSONALIZED KIDS BRIEF',
+    signal: false,
+  } : {
+    bg: '#fff', header: '#1a2744', accent: '#667eea', textColor: '#263142',
+    mutedColor: '#718096', sectionBg: '#f8faff', sectionBorder: '#e2e8f0',
+    labelColor: '#667eea', fontSize: '15px', fontFamily: "Arial,'Helvetica Neue',sans-serif",
+    logo: '📬 SPOKESBOX', logoSub: 'YOUR PERSONALIZED DAILY BRIEF',
+    signal: true,
+  };
   const unsubLink = `${BASE_URL}/unsubscribe?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`;
   const date = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
@@ -95,48 +111,63 @@ function buildSpokesboxEmailHTML(brief, subscriber) {
   });
   const subject = buildSubject({ name, brief });
 
-  const sectionsHTML = (brief.sections || []).map(renderSectionHTML).join('');
+  const sectionsHTML = (brief.sections || []).map(s => renderSectionHTML(s, skin)).join('');
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <style>@media only screen and (max-width:620px) {
+    .container { width:100% !important; }
+    .content-pad { padding:18px 16px !important; }
+    .stack { display:block !important; width:100% !important; }
+  }</style>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Your Spokesbox Brief</title>
 </head>
-<body style="margin:0;padding:0;background:#f0f4f8;font-family:Georgia,serif;">
+<body style="margin:0;padding:0;background:#f0f4f8;font-family:${skin.fontFamily};">
 
   <!-- Preheader (hidden) -->
   <span style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#f0f4f8;">
     ${buildDynamicPreheader(brief)}
   </span>
 
-  <div style="max-width:600px;margin:0 auto;background:#fff;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#eef3f8;">
+  <tr><td align="center" style="padding:20px 12px;">
+  <table width="600" cellpadding="0" cellspacing="0" role="presentation" class="container" style="max-width:600px;width:100%;background:#fff;border-radius:12px;overflow:hidden;">
 
     <!-- Header -->
-    <div style="background:#1a2744;padding:24px 32px;text-align:center;">
-      <div style="color:#fff;font-size:26px;font-weight:bold;letter-spacing:2px;">📬 SPOKESBOX</div>
-      <div style="color:#a0aec0;font-size:12px;margin-top:4px;">Your personalized daily brief</div>
-    </div>
+    <tr><td style="background:${skin.header};padding:20px 28px;text-align:center;">
+      <div style="color:#fff;font-size:22px;font-weight:800;letter-spacing:1px;">${skin.logo}</div>
+      <div style="color:#a0aec0;font-size:11px;margin-top:3px;letter-spacing:0.05em;">${skin.logoSub}</div>
+    </td></tr>
 
     <!-- Greeting -->
-    <div style="padding:24px 32px 8px;">
-      <p style="font-size:18px;color:#1a2744;margin:0;">
-        ${brief.greeting}${name ? `, <strong>${name.split(' ')[0]}</strong>` : ''}! ☀️
+    <tr><td class="content-pad" style="padding:20px 24px 8px;">
+      <p style="font-size:17px;color:#1a2744;font-weight:600;margin:0 0 2px;">
+        ${isKids ? `Here's what's happening today, <strong>${name.split(' ')[0]}</strong>! 🌟` : `${brief.greeting}${name ? `, <strong>${name.split(' ')[0]}</strong>` : ''}! ☀️`}
       </p>
-      <p style="font-size:13px;color:#718096;margin:4px 0 0;">${date} · Your personalized brief is ready</p>
-    </div>
+      <p style="font-size:12px;color:#718096;margin:0;">${date}</p>
+    </td></tr>
+
+    <!-- Today's Signal callout -->
+    ${(()=>{
+      const topSignals = (brief.sections||[]).filter(s=>s.id!=='joke' && s.summary).slice(0,2)
+        .map(s=>(s.summary||'').replace(/<[^>]+>/g,'').split(/[!?]/)[0].split('.')[0].trim()).filter(Boolean);
+      if(!topSignals.length || !skin.signal) return '';
+      return '<tr><td style="padding:0 24px 12px;"><div style="background:#f6f8ff;border-left:4px solid #667eea;border-radius:8px;padding:12px 16px;"><p style="margin:0;color:#1a2744;font-size:14px;line-height:1.55;">' + topSignals.join('. ') + '.</p></div></td></tr>';
+    })()}
 
     <!-- Sections -->
-    ${sectionsHTML}
+    <tr><td style="padding:4px 8px;">${sectionsHTML}</td></tr>
 
     <!-- Closing -->
     ${brief.closing
-      ? `<div style="padding:16px 32px;"><p style="font-size:14px;color:#4a5568;font-style:italic;margin:0;">${brief.closing}</p></div>`
+      ? `<tr><td style="padding:12px 24px;"><p style="font-size:14px;color:#4a5568;font-style:italic;margin:0;">${brief.closing}</p></td></tr>`
       : ''}
 
     <!-- Footer -->
-    <div style="background:#f7fafc;padding:20px 32px;border-top:1px solid #e2e8f0;text-align:center;">
+    <tr><td style="background:#f7fafc;padding:18px 24px;border-top:1px solid #e2e8f0;text-align:center;">
       <p style="font-size:11px;color:#a0aec0;margin:0;">
         You're receiving this because you signed up at spokesbox.com
       </p>
@@ -145,9 +176,11 @@ function buildSpokesboxEmailHTML(brief, subscriber) {
         &nbsp;·&nbsp;
         <a href="${BASE_URL}" style="color:#667eea;">spokesbox.com</a>
       </p>
-    </div>
+    </td></tr>
 
-  </div>
+  </table>
+  </td></tr>
+  </table>
 </body>
 </html>`;
 }

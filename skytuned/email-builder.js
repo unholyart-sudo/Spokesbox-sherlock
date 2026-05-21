@@ -102,7 +102,7 @@ function renderSection(labelEmoji, labelText, bodyHtml) {
 }
 
 function renderBullet(text) {
-  return `<div style="font-size:14px;color:#c0cce0;line-height:1.65;padding:6px 0;
+  return `<div style="font-size:15px;color:#c0cce0;line-height:1.65;padding:6px 0;
                       border-bottom:1px solid #1a2035;">${text}</div>`;
 }
 
@@ -135,9 +135,18 @@ function buildSkyTunedEmailHTML(content, subscriber) {
     renderBullet(`<strong style="color:#ffffff;">🚀 ${p.mission}</strong> — ${p.date}${p.notes ? ` · ${p.notes}` : ''}`)
   ).join('') || renderBullet('<span style="color:#6b7a96;">No launches scheduled in the next 48 hours.</span>');
 
-  const marketHtml = (content.marketSnapshot||[]).map(m =>
-    renderBullet(`<strong style="color:#ffffff;">${m.ticker}</strong> ${m.price} <span style="color:${m.change.startsWith('-') ? '#f87171' : '#4ade80'};">${m.change}</span>`)
-  ).join('');
+  const marketHtml = `<table width="100%" cellpadding="0" cellspacing="0" role="presentation">` +
+    (content.marketSnapshot||[]).map(m => {
+      const isUp = m.change && !m.change.trim().startsWith('-');
+      const dir  = isUp ? '↑' : '↓';
+      const clr  = isUp ? '#4ade80' : '#f87171';
+      return `<tr style="border-bottom:1px solid #1a2035;">
+        <td style="padding:7px 0;font-size:13px;font-weight:700;color:#c9a84c;width:55px;">${m.ticker}</td>
+        <td style="padding:7px 4px;font-size:13px;color:#d0d8f0;width:70px;">${m.price}</td>
+        <td style="padding:7px 0;font-size:13px;color:${clr};">${dir} ${m.change}</td>
+        ${m.note ? `<td style="padding:7px 0;font-size:12px;color:#6b7a96;">${m.note}</td>` : '<td></td>'}
+      </tr>`;
+    }).join('') + '</table>';
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -145,7 +154,14 @@ function buildSkyTunedEmailHTML(content, subscriber) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>SkyTuned · Your Daily Orbit</title>
-  <style>body,table{background:#07090f!important;}</style>
+  <style>
+  @media only screen and (max-width:620px) {
+    .container { width:100% !important; }
+    .content-pad { padding:20px !important; }
+    .stack { display:block !important; width:100% !important; margin-bottom:8px !important; }
+  }
+  body,table{background:#07090f!important;}
+</style>
 </head>
 <body style="margin:0;padding:0;background:#07090f;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
 
@@ -154,9 +170,9 @@ function buildSkyTunedEmailHTML(content, subscriber) {
     ${buildPreheader(content)}
   </span>
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#07090f;padding:24px 0;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#07090f;padding:24px 0;">
     <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+      <table width="600" cellpadding="0" cellspacing="0" role="presentation" class="container" style="max-width:600px;width:100%;">
 
         <!-- Logo -->
         <tr><td style="background:#000000;text-align:center;padding:24px 0 8px;">
@@ -176,9 +192,35 @@ function buildSkyTunedEmailHTML(content, subscriber) {
           </span>
         </td></tr>
 
+
+        <!-- Mission board strip -->
+        <tr><td style="padding:0 0 8px 0;">
+          <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+              <td width="33%" style="padding:8px 6px 8px 0;">
+                <div style="background:#0d1121;border:1px solid rgba(201,168,76,0.25);border-radius:6px;padding:10px 12px;">
+                  <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#8899bb;margin-bottom:4px;">🚀 Launch Watch</div>
+                  <div style="font-size:12px;font-weight:600;color:#c0cce0;line-height:1.3;">\${(content.onThePad||[{mission:'No launches'}])[0]?.mission?.slice(0,22) || 'No launches'}</div>
+                </div>
+              </td>
+              <td width="33%" style="padding:8px 3px;">
+                <div style="background:#0d1121;border:1px solid rgba(201,168,76,0.25);border-radius:6px;padding:10px 12px;">
+                  <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#8899bb;margin-bottom:4px;">🌤️ Space Wx</div>
+                  <div style="font-size:12px;font-weight:600;color:#c0cce0;line-height:1.3;">\${(content.spaceWeather||'').split(' ').slice(0,5).join(' ')}</div>
+                </div>
+              </td>
+              <td width="33%" style="padding:8px 0 8px 6px;">
+                <div style="background:#0d1121;border:1px solid rgba(201,168,76,0.25);border-radius:6px;padding:10px 12px;">
+                  <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#8899bb;margin-bottom:4px;">📈 Markets</div>
+                  <div style="font-size:12px;font-weight:600;color:#c0cce0;line-height:1.3;">\${(()=>{const m=(content.marketSnapshot||[])[0];return m?\`\${m.ticker} \${m.change}\`:'-';})()}</div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
         <!-- Content card -->
         <tr><td style="background:#0d1121;border-radius:8px;overflow:hidden;">
-          <table width="100%" cellpadding="0" cellspacing="0">
+          <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
 
             <!-- 1. Today's Lead -->
             ${renderSection('🔭', "Today's Lead", leadHtml)}
@@ -191,15 +233,15 @@ function buildSkyTunedEmailHTML(content, subscriber) {
 
             <!-- 4. Tonight's Sky -->
             ${renderSection('🌙', "Tonight's Sky",
-              `<div style="font-size:14px;color:#c0cce0;line-height:1.7;">${content.tonightsSky}</div>`)}
+              `<div style="font-size:15px;color:#c0cce0;line-height:1.7;">${content.tonightsSky}</div>`)}
 
             <!-- 5. Space Weather -->
             ${renderSection('🌤️', 'Space Weather',
-              `<div style="font-size:14px;color:#c0cce0;line-height:1.7;">${content.spaceWeather}</div>`)}
+              `<div style="font-size:15px;color:#c0cce0;line-height:1.7;">${content.spaceWeather}</div>`)}
 
             <!-- 6. Social Buzz -->
             ${content.socialBuzz ? renderSection('💬', 'Social Buzz',
-              `<div style="font-size:14px;color:#c0cce0;line-height:1.7;">${content.socialBuzz}</div>`) : ''}
+              `<div style="font-size:15px;color:#c0cce0;line-height:1.7;">${content.socialBuzz}</div>`) : ''}
 
             <!-- 7. On the Pad -->
             ${renderSection('🚀', 'On the Pad', padHtml)}

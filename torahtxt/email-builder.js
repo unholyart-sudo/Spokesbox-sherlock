@@ -103,12 +103,17 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
     .map(line => {
       const t = line.trim();
       if (!t) return '';
+      // Render reflection/italic lines (starting with _) as styled callout
+      if (t.startsWith('_') && t.endsWith('_')) {
+        const txt = t.slice(1, -1);
+        return '<div style="border-left:3px solid #c9a84c;padding:12px 0 12px 18px;margin:20px 0;color:#f2ece0;font-style:italic;font-size:14px;line-height:1.65;">' + txt + '</div>';
+      }
       if (t.startsWith('•')) {
-        return `<li style="color:#d4cfc4;font-size:1.05rem;line-height:1.8;margin-bottom:0.75em;padding-left:0.5em;">${
+        return `<li style="color:#d4cfc4;font-size:15px;line-height:1.75;margin-bottom:0.75em;padding-left:0.5em;">${
           t.slice(1).trim().replace(/\*(.*?)\*/g, '<em style="color:#c9a84c;">$1</em>')
         }</li>`;
       }
-      return `<p style="color:#d4cfc4;font-size:1.1rem;line-height:1.9;margin:0 0 1.1em 0;">${
+      return `<p style="color:#d4cfc4;font-size:15px;line-height:1.75;margin:0 0 1em 0;">${
         t.replace(/\*(.*?)\*/g, '<em style="color:#c9a84c;">$1</em>')
       }</p>`;
     })
@@ -132,7 +137,15 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>TorahTxt — Daily D'var Torah</title>
-  <style>body,table{background:#1a1c2e!important;}</style>
+  <style>
+  @media only screen and (max-width:620px) {
+    .container { width:100% !important; }
+    .content-pad { padding:22px 20px !important; }
+    .stack { display:block !important; width:100% !important; margin-bottom:10px !important; }
+    .center-mobile { text-align:center !important; }
+  }
+  body,table{background:#1a1c2e!important;}
+</style>
 </head>
 <body style="margin:0;padding:0;background:#1a1c2e;font-family:Georgia,serif;color:#f2ece0;">
 
@@ -141,9 +154,9 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
     ${preheaderText.replace(/</g,'&lt;')}
   </span>
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1c2e;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#1a1c2e;">
     <tr><td align="center" style="padding:32px 16px;">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+      <table width="600" cellpadding="0" cellspacing="0" role="presentation" class="container" style="max-width:600px;width:100%;">
 
         <!-- Logo + tagline -->
         <tr><td style="text-align:center;padding-bottom:8px;">
@@ -165,7 +178,7 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
           <p style="color:#6b7a96;font-size:0.8rem;letter-spacing:0.1em;
                     text-transform:uppercase;margin:0 0 4px 0;">${date}</p>
           <h2 style="color:#c9a84c;font-family:Georgia,serif;margin:0 0 24px 0;
-                     font-size:1.3rem;">Parashat ${parasha}</h2>
+                     font-size:1.25rem;">Parashat ${parasha}</h2>
           <div style="height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);
                       margin-bottom:28px;"></div>
 
@@ -188,7 +201,7 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
           <!-- CTAs -->
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
-              <td style="text-align:center;padding:0 8px;">
+              <td class="stack" style="text-align:center;padding:0 8px;">
                 <a href="${BASE_URL}/#signup"
                    style="display:inline-block;background:transparent;border:1px solid rgba(201,168,76,0.4);
                           color:#c9a84c;text-decoration:none;padding:10px 20px;border-radius:6px;

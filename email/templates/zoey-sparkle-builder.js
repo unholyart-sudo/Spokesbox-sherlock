@@ -39,13 +39,13 @@ function buildZoeyHTML(content) {
   const preheader = buildPreheader(content);
 
   const artStepsHTML = (artTechnique?.steps || [])
-    .map((s, i) => `<li style="margin-bottom:6px;color:#4a2060;">${i + 1}. ${s}</li>`)
+    .map((s, i) => `<li style="margin-bottom:7px;color:#3f2a3d;font-size:16px;line-height:1.6;">${i + 1}. ${s}</li>`)
     .join('');
 
   const sec = (emoji, title, body) => `
     <div style="padding:16px 24px;border-bottom:2px dashed #f0c4e4;">
       <div style="font-size:17px;font-weight:bold;color:#e91e8c;margin-bottom:8px;">${emoji} ${title}</div>
-      <div style="font-size:15px;color:#4a2060;line-height:1.7;">${body}</div>
+      <div style="font-size:16px;color:#3f2a3d;line-height:1.7;">${body}</div>
     </div>`;
 
   const tryBlock = (text) => text
@@ -56,6 +56,7 @@ function buildZoeyHTML(content) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <style>@media only screen and (max-width:620px){.container{width:100%!important;}.content-pad{padding:18px!important;}}</style>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Zoey's Daily Sparkle</title>
 </head>
@@ -66,9 +67,9 @@ function buildZoeyHTML(content) {
     ${preheader}
   </span>
 
-  <table width="100%" cellpadding="0" cellspacing="0">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff7fb;">
   <tr><td align="center" style="padding:20px 12px;">
-  <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#fff;border-radius:16px;overflow:hidden;border:2px solid #f48fb1;">
+  <table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;background:#fff;border-radius:16px;overflow:hidden;border:2px solid #f48fb1;">
 
     <!-- Header -->
     <tr><td style="background:linear-gradient(135deg,#f48fb1,#ce93d8);padding:24px 20px;text-align:center;">
@@ -92,8 +93,8 @@ function buildZoeyHTML(content) {
     ${math ? `
     <div style="padding:16px 24px;border-bottom:2px dashed #f0c4e4;">
       <div style="font-size:17px;font-weight:bold;color:#e91e8c;margin-bottom:8px;">🧮 Math Challenge</div>
-      <div style="font-size:15px;color:#4a2060;line-height:1.7;margin-bottom:10px;">${math.question}</div>
-      <div style="background:#f8e7ff;border-radius:8px;padding:10px 14px;font-size:14px;color:#6a1b9a;">
+      <div style="font-size:16px;color:#3f2a3d;line-height:1.7;margin-bottom:10px;">${math.question}</div>
+      <div style="background:#fff0f8;border:1.5px dashed #e91e8c;border-radius:10px;padding:12px 16px;font-size:15px;color:#6a1b9a;">
         <strong>Answer:</strong> ${math.answer}
       </div>
     </div>` : ''}
@@ -101,15 +102,15 @@ function buildZoeyHTML(content) {
     ${tongueTwister ? `
     <div style="padding:16px 24px;border-bottom:2px dashed #f0c4e4;">
       <div style="font-size:17px;font-weight:bold;color:#e91e8c;margin-bottom:6px;">👅 Tongue Twister</div>
-      <div style="font-size:15px;font-style:italic;color:#4a2060;margin-bottom:6px;">"${tongueTwister}"</div>
+      <div style="font-size:15px;font-style:italic;color:#3f2a3d;margin-bottom:6px;">"${tongueTwister}"</div>
       <div style="font-size:13px;color:#9c27b0;">Try saying it 3 times fast! 😄</div>
     </div>` : ''}
 
     ${joke ? `
     <div style="padding:16px 24px;border-bottom:2px dashed #f0c4e4;">
       <div style="font-size:17px;font-weight:bold;color:#e91e8c;margin-bottom:8px;">😄 Joke of the Day</div>
-      <div style="font-size:15px;color:#4a2060;"><strong>Q:</strong> ${joke.question}</div>
-      <div style="font-size:15px;color:#4a2060;margin-top:4px;"><strong>A:</strong> ${joke.answer}</div>
+      <div style="font-size:16px;color:#3f2a3d;"><strong>Q:</strong> ${joke.question}</div>
+      <div style="font-size:16px;color:#3f2a3d;margin-top:4px;"><strong>A:</strong> ${joke.answer}</div>
     </div>` : ''}
 
     <!-- Sweet dreams -->
