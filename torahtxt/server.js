@@ -247,6 +247,10 @@ app.get('/api/podcast/today', (req, res) => {
   if (existsSync(metaPath)) {
     try {
       const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+      // Do not expose dry-run or accidental test episodes
+      if (meta.dry_run === true || meta.accidental === true || meta.status === 'dry-run' || meta.status === 'accidental-test') {
+        return res.json({ available: false });
+      }
       title    = meta.title || title;
       duration = meta.duration_estimate_formatted || null;
     } catch(e) {}

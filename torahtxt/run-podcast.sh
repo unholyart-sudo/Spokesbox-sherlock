@@ -20,4 +20,4 @@ source "$ENV_FILE"
 set +a
 
 cd "$SCRIPT_DIR"
-node generate-podcast.js 2>&1
+node generate-podcast.js "$@" 2>&1

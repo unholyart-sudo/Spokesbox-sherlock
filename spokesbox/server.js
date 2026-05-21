@@ -11,7 +11,7 @@ const crypto = require('crypto');
 const https = require('https');
 const { loadSignals } = require('./lib/load_signals');
 const { getBrief, saveBrief, getBriefHistory, deleteBrief } = require('./lib/user_brief');
-const { generateBriefFromOnboarding, updateBriefFromReply } = require('./lib/brief_llm');
+const { generateBriefFromOnboarding, updateBriefFromReply, generateFollowupQuestions } = require('./lib/brief_llm');
 const { PROFILE_FIELDS, BRANCH_FIELDS } = require('./lib/profile_fields');
 
 // ── Content Moderation ──────────────────────────────────────────
@@ -3188,6 +3188,34 @@ app.post('/api/sam-onboarding', async (req, res) => {
       console.error(`[sam-onboarding] Brief generation failed for subscriber ${sub.id} (non-fatal):`, err.message);
     }
   });
+});
+
+// ─── Sam Follow-Up Questions ──────────────────────────────────────────────────
+// Returns 2–4 domain-specific questions based on the subscriber's initial text.
+// Blocking (wizard waits); times out after 8 s client-side.
+// Always returns 200 — { questions: [] } on LLM failure so client never breaks.
+app.post('/api/sam-onboarding/followup', async (req, res) => {
+  const { session_id, onboarding_text } = req.body || {};
+
+  if (!session_id) return res.status(400).json({ error: 'session_id required' });
+  if (!onboarding_text || typeof onboarding_text !== 'string') {
+    return res.status(400).json({ error: 'onboarding_text required' });
+  }
+
+  const text = onboarding_text.trim();
+  if (text.length < 10) return res.status(400).json({ error: 'onboarding_text too short' });
+  if (text.length > 6000) return res.status(400).json({ error: 'onboarding_text too long' });
+
+  const session = db.prepare('SELECT * FROM wizard_sessions WHERE session_id = ?').get(session_id);
+  if (!session) return res.status(404).json({ error: 'Session not found' });
+
+  try {
+    const questions = await generateFollowupQuestions(text);
+    return res.json({ questions });
+  } catch (err) {
+    console.warn('[sam-onboarding/followup] LLM failed — returning empty questions:', err.message);
+    return res.json({ questions: [] });
+  }
 });
 
 // ─── Sample Newsletter — post-onboarding preview (auth via session_id) ────────
