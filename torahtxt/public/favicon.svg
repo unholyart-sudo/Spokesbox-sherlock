@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="18" fill="#0a0a0a"/>
+  <!-- Telegram-style paper plane, gold -->
+  <g transform="translate(18,18) scale(0.64)">
+    <path d="M95.5 7.5L4.5 42.5c-2.8 1.1-2.7 2.7-0.5 3.4l23.3 7.3 54-34c2.5-1.5 4.8-0.7 3 1.5L40 56.5l-1 19c1.5 0 2.1-0.7 2.9-1.5l7-6.8 23 17c4.2 2.3 7.2 1.1 8.3-3.9l15-70.7c1.5-6-2.3-8.7-7.7-6.1z"
+      fill="#c9a84c"/>
+  </g>
+</svg>

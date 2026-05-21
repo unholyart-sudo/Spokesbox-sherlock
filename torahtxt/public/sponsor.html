@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=1774537955" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=1774537955" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=1774537955" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=1774537955" />
+  <link rel="apple-touch-icon" sizes="512x512" href="/favicon-512.png?v=1774537955" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sponsor a Day — TorahTxt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --navy: #0a0f1e; --gold: #c9a84c; --gold-light: #e8d08a; --text: #e8e0d0; --muted: #a09880; --card: #131929; --border: #2a3450; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--navy); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { color: var(--gold-light); }
+
+    /* Nav */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--gold); }
+    .nav-links { display: flex; gap: 1.5rem; font-size: 0.9rem; }
+
+    /* Hero */
+    .hero { text-align: center; padding: 4rem 1.5rem 2rem; }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); color: var(--gold); margin-bottom: 1rem; }
+    .hero p { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 1rem; line-height: 1.7; }
+    .candle { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+    /* Form */
+    .form-section { max-width: 680px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+    .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; }
+    .form-card h2 { font-family: 'Playfair Display', serif; color: var(--gold); margin-bottom: 2rem; font-size: 1.5rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    label { display: block; color: var(--gold); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    input, select, textarea { width: 100%; background: #0d1525; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 1rem; padding: 0.85rem 1rem; transition: border-color 0.2s; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
+    select option { background: #0d1525; }
+    textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+
+    .btn-submit { width: 100%; background: var(--gold); color: var(--navy); border: none; border-radius: 8px; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; padding: 1rem; cursor: pointer; transition: all 0.2s; margin-top: 0.5rem; }
+    .btn-submit:hover { background: var(--gold-light); transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .donation-note { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2); border-radius: 10px; padding: 1.2rem; margin-top: 1.5rem; text-align: center; }
+    .donation-note p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .donation-note a { color: var(--gold); font-weight: 600; }
+
+    .success-msg { display: none; background: rgba(201,168,76,0.12); border: 1px solid var(--gold); border-radius: 10px; padding: 1.5rem; text-align: center; margin-top: 1.5rem; }
+    .success-msg.show { display: block; }
+    .success-msg h3 { color: var(--gold); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; }
+    .success-msg p { color: var(--muted); font-size: 0.95rem; }
+
+    .error-msg { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; padding: 1rem; text-align: center; margin-top: 1rem; color: #ff9090; font-size: 0.9rem; }
+    .error-msg.show { display: block; }
+
+    /* Sample */
+    .sample-section { max-width: 680px; margin: 0 auto 4rem; padding: 0 1.5rem; }
+    .sample-section h3 { font-family: 'Playfair Display', serif; color: var(--gold); margin-bottom: 1rem; font-size: 1.2rem; }
+    .sample-msg { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; font-size: 0.95rem; line-height: 1.7; color: var(--text); }
+    .sample-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/"><img src="/images/logo-final.png" alt="TorahTxt" style="height:4.5rem;width:auto;border-radius:4px;"></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/sponsor">Sponsor</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <span class="candle">🕯️</span>
+    <h1>Sponsor a Day</h1>
+    <p>Dedicate a daily Torah message in memory of a loved one, in honor of someone special, or for a refuah shleimah. Your dedication will be included in that day's message sent to all TorahTxt subscribers.</p>
+  </div>
+
+  <div class="form-section">
+    <div class="form-card">
+      <h2>Dedication Details</h2>
+      <form id="sponsorForm">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name (Sponsor)</label>
+            <input type="text" id="sponsorName" placeholder="e.g. The Green Family" required />
+          </div>
+          <div class="form-group">
+            <label>Your Email</label>
+            <input type="email" id="sponsorEmail" placeholder="for confirmation" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Dedication Type</label>
+          <select id="dedicationType" required>
+            <option value="">Select a dedication type...</option>
+            <option value="In Memory Of">In Memory Of (לע״נ)</option>
+            <option value="L'ilui Nishmat">L'ilui Nishmat (לעילוי נשמת)</option>
+            <option value="In Honor Of">In Honor Of (לכבוד)</option>
+            <option value="Refuah Shleimah">Refuah Shleimah (רפואה שלמה)</option>
+            <option value="In Celebration Of">In Celebration Of</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Honoree Name</label>
+          <input type="text" id="honoreeName" placeholder="e.g. Rivka bat Avraham, or John Smith" required />
+        </div>
+
+        <div class="form-group">
+          <label>Preferred Date</label>
+          <input type="date" id="sponsorDate" required />
+        </div>
+
+        <div class="form-group">
+          <label>Personal Note (optional)</label>
+          <textarea id="personalNote" placeholder="Any additional context or message for our records (not included in the SMS)..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">🕯️ Submit Sponsorship</button>
+
+        <div class="donation-note">
+          <p>TorahTxt is free and runs on donations. If you'd like to support the service, <a href="https://paypal.me/greeninkad" target="_blank">make a donation here</a>. Any amount is appreciated — $18 (chai) is a meaningful gift. 🙏</p>
+        </div>
+
+        <div class="success-msg" id="successMsg">
+          <h3>🕯️ Todah Rabbah!</h3>
+          <p>Your sponsorship has been received. The dedication will be included in that day's TorahTxt message sent to all subscribers. May it be a merit for the soul you've honored.</p>
+        </div>
+        <div class="error-msg" id="errorMsg"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="sample-section">
+    <h3>What subscribers will receive</h3>
+    <div class="sample-msg">
+      <div class="sample-label">Sample sponsored message</div>
+      Today's D'var Torah is sponsored L'ilui Nishmat <strong>Rivka bat Avraham</strong> by <strong>The Green Family</strong>. 🕯️<br><br>
+      📖 <em>Parshat Lech Lecha: Abraham set out without knowing his destination — only that G-d was with him. Sometimes faith means moving before you can see the full path. Have a meaningful day. 🙏</em>
+    </div>
+  </div>
+
+    <footer style="text-align:center;padding:3rem 1.5rem 2rem;border-top:1px solid rgba(201,168,76,0.15);background:#07090f;">
+    <img src="/images/logo-final.png" alt="TorahTxt" style="height:40px;width:auto;display:block;margin:0 auto 1.25rem;">
+    <div style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;font-size:0.9rem;">
+      <a href="/#signup" style="color:#9a8a70;text-decoration:none;">Subscribe</a>
+      <a href="/today" style="color:#9a8a70;text-decoration:none;">Today</a>
+      <a href="/archive" style="color:#9a8a70;text-decoration:none;">Archive</a>
+      <a href="/our-approach.html" style="color:#9a8a70;text-decoration:none;">Our Approach</a>
+      <a href="/sponsor.html" style="color:#9a8a70;text-decoration:none;">Sponsor</a>
+      <a href="/privacy.html" style="color:#9a8a70;text-decoration:none;">Privacy</a>
+      <a href="mailto:info@torahtxt.com" style="color:#9a8a70;text-decoration:none;">Contact</a>
+    </div>
+    <div style="margin-bottom:1rem;font-size:0.82rem;">
+      🕯️ <a href="/in-memory" style="color:#c9a84c;text-decoration:none;">Dedicated in memory of Michael Green, of Blessed Memory</a>
+    </div>
+    <div style="color:#6b7a96;font-size:0.78rem;">
+      © <script>document.write(new Date().getFullYear())</script> TorahTxt. Made with ❤️ and Torah.
+    </div>
+  </footer>
+
+  <script>
+    // Set min date to tomorrow
+    const dateInput = document.getElementById('sponsorDate');
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.min = tomorrow.toISOString().split('T')[0];
+
+    document.getElementById('sponsorForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const successMsg = document.getElementById('successMsg');
+      const errorMsg = document.getElementById('errorMsg');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      errorMsg.classList.remove('show');
+
+      const payload = {
+        sponsor_name: document.getElementById('sponsorName').value,
+        email: document.getElementById('sponsorEmail').value,
+        type: document.getElementById('dedicationType').value,
+        honoree_name: document.getElementById('honoreeName').value,
+        date: document.getElementById('sponsorDate').value,
+        note: document.getElementById('personalNote').value,
+      };
+
+      try {
+        const res = await fetch('/sponsor', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (data.success) {
+          successMsg.classList.add('show');
+          document.getElementById('sponsorForm').reset();
+          btn.textContent = '✅ Submitted!';
+        } else {
+          errorMsg.textContent = data.message || 'Something went wrong. Please try again.';
+          errorMsg.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = '🕯️ Submit Sponsorship';
+        }
+      } catch (err) {
+        errorMsg.textContent = 'Connection error. Please try again.';
+        errorMsg.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = '🕯️ Submit Sponsorship';
+      }
+    });
+  </script>
+</body>
+</html>

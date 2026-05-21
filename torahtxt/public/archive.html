@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Torah Archive — TorahTxt</title>
+  <link rel="canonical" href="https://torahtxt.com/archive" />
+  <!-- Static fallback meta for crawlers -->
+  <meta name="description" content="Browse every Torah teaching sent by TorahTxt — daily wisdom, D'var Torah, and more. Search by parasha or topic." />
+  <meta property="og:title" content="Torah Archive — TorahTxt" />
+  <meta property="og:description" content="Browse every Torah teaching sent by TorahTxt — daily wisdom, D'var Torah, and more." />
+  <meta property="og:image" content="https://torahtxt.com/images/og-v9.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://torahtxt.com/archive" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TorahTxt" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Torah Archive — TorahTxt" />
+  <meta name="twitter:description" content="Browse every Torah teaching sent by TorahTxt." />
+  <meta name="twitter:image" content="https://torahtxt.com/images/og-v9.jpg" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="/favicon-512.png" />
+  <meta name="theme-color" content="#07090f" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #07090f;
+      --bg2: #0d1017;
+      --gold: #c9a84c;
+      --gold-dim: rgba(201,168,76,0.18);
+      --gold-glow: rgba(201,168,76,0.35);
+      --text: #e8e0d0;
+      --text-dim: #9a8a70;
+      --text-muted: #6b5f4e;
+      --card-bg: #0f1218;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      border-bottom: 1px solid var(--gold-dim);
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-header a.logo {
+      text-decoration: none;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .site-header nav a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 1.5rem;
+      transition: color 0.2s;
+    }
+    .site-header nav a:hover { color: var(--gold); }
+    .site-header nav a.active { color: var(--gold); }
+
+    /* ── Page container ── */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* ── Views ── */
+    #view-list, #view-entry { display: none; }
+    #view-list.active, #view-entry.active { display: block; }
+
+    /* ── List view heading ── */
+    .archive-heading {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .archive-heading h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--gold);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+    .archive-heading p {
+      margin-top: 0.6rem;
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* ── Search ── */
+    .search-wrap {
+      position: relative;
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+    }
+    .search-wrap input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      background: var(--card-bg);
+      border: 1px solid var(--gold-dim);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-wrap input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-dim);
+    }
+    .search-wrap input::placeholder { color: var(--text-muted); }
+    .search-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 1rem;
+    }
+
+    /* ── Parasha group ── */
+    .parasha-group { margin-bottom: 2.5rem; }
+    .parasha-header {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--gold-dim);
+    }
+
+    /* ── Card grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 620px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Entry card ── */
+    .entry-card {
+      background: var(--card-bg);
+      border: 1px solid var(--gold-dim);
+      border-radius: 10px;
+      padding: 1.1rem 1.2rem;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+    .entry-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 18px var(--gold-glow);
+      transform: translateY(-2px);
+    }
+    .entry-card .card-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .entry-card .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+    .entry-card .card-snippet {
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── Shimmer loading ── */
+    .shimmer-card {
+      background: var(--card-bg);
+      border: 1px solid var(--gold-dim);
+      border-radius: 10px;
+      padding: 1.1rem 1.2rem;
+      overflow: hidden;
+    }
+    .shimmer-line {
+      height: 14px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #1a1e28 25%, #242834 50%, #1a1e28 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      margin-bottom: 0.65rem;
+    }
+    .shimmer-line.short { width: 40%; }
+    .shimmer-line.medium { width: 70%; }
+    .shimmer-line.tall { height: 48px; }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-dim);
+    }
+    .empty-state .emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty-state p { font-size: 1rem; }
+
+    /* ── Single entry view ── */
+    .entry-back {
+      margin-bottom: 2rem;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      transition: opacity 0.2s;
+    }
+    .btn-back:hover { opacity: 0.8; }
+
+    .entry-type-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      border: 1px solid var(--gold-dim);
+      border-radius: 4px;
+      padding: 0.2rem 0.55rem;
+      margin-bottom: 1rem;
+    }
+    .entry-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+    .entry-date {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .entry-divider {
+      height: 1px;
+      background: var(--gold-dim);
+      margin: 1.75rem 0;
+    }
+
+    .entry-body {
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+    .entry-body p { margin-bottom: 1.1rem; }
+    .entry-body em { color: var(--gold); font-style: italic; }
+    .entry-body ul {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 1.1rem;
+    }
+    .entry-body ul li {
+      padding: 0.25rem 0 0.25rem 1.5rem;
+      position: relative;
+      color: var(--text);
+    }
+    .entry-body ul li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+    }
+
+    /* Prev/Next nav */
+    .entry-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+    .btn-nav {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--gold-dim);
+      border-radius: 8px;
+      color: var(--gold);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .btn-nav:hover { border-color: var(--gold); box-shadow: 0 0 12px var(--gold-glow); }
+    .btn-nav:disabled { opacity: 0.35; cursor: default; }
+    .btn-nav.prev { text-align: left; }
+    .btn-nav.next { text-align: right; }
+
+    /* Share section */
+    .share-section {
+      margin-top: 2.5rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--gold-dim);
+      border-radius: 10px;
+    }
+    .share-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      margin-bottom: 0.9rem;
+    }
+    .share-buttons {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .btn-share {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.1rem;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-share:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-copy {
+      background: var(--gold-dim);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+    }
+    .btn-whatsapp {
+      background: #25d366;
+      border: 1px solid #25d366;
+      color: #fff;
+    }
+    .btn-copy.copied { background: rgba(100,200,100,0.15); border-color: #4caf50; color: #4caf50; }
+
+    /* CTA */
+    .entry-cta {
+      margin-top: 2.5rem;
+      text-align: center;
+      padding: 2rem;
+      border: 1px solid var(--gold-dim);
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0d1017 0%, #11151f 100%);
+    }
+    .entry-cta p {
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .btn-cta {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      background: var(--gold);
+      color: #07090f;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--gold-dim);
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .footer-logo { margin-bottom: 0.5rem; }
+    .footer-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      margin: 1.25rem auto;
+      max-width: 300px;
+    }
+    .footer-tagline {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .footer-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 1.25rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <a href="/" class="logo">📖 TorahTxt</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/our-approach.html">Our Approach</a>
+      <a href="/archive" class="active">Archive</a>
+    </nav>
+  </header>
+
+  <!-- List View -->
+  <div id="view-list">
+    <div class="page">
+      <div class="archive-heading">
+        <h1>Torah Archive</h1>
+        <p>Every teaching, every morning.</p>
+      </div>
+
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search by parasha, topic, or keyword…" autocomplete="off" />
+      </div>
+
+      <div id="entries-container">
+        <!-- Shimmer placeholders -->
+        <div class="cards-grid" id="shimmer-grid">
+          ${Array(6).fill(0).map(() => `
+          <div class="shimmer-card">
+            <div class="shimmer-line short"></div>
+            <div class="shimmer-line medium"></div>
+            <div class="shimmer-line tall"></div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <div id="empty-state" class="empty-state" style="display:none;">
+        <div class="emoji">📜</div>
+        <p>No teachings found for that search.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Entry View -->
+  <div id="view-entry">
+    <div class="page">
+      <div class="entry-back">
+        <button class="btn-back" id="btn-back">← Back to Archive</button>
+      </div>
+
+      <div id="entry-content">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">
+      <img src="/images/logo-final.png" alt="TorahTxt" style="height:auto;width:180px;max-width:80%;object-fit:contain;display:block;margin:0 auto 8px;">
+    </div>
+    <div class="footer-divider"></div>
+    <p class="footer-tagline">
+      Daily Torah wisdom delivered to your phone, every morning.<br>
+      Free forever. Powered by love of learning.
+    </p>
+    <div class="footer-links">
+      <a href="/#signup">Subscribe</a>
+      <a href="/#how-it-works">How It Works</a>
+      <a href="/our-approach.html">Our Approach</a>
+      <a href="/archive">Archive</a>
+      <a href="/sponsor.html">Sponsor</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:info@torahtxt.com">Contact</a>
+    </div>
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(201,168,76,0.15);font-size:0.82rem;color:#9a8a70;">
+      🕯️ <a href="/in-memory" style="color:#c9a84c;text-decoration:none;">Dedicated in memory of Michael Green, of Blessed Memory</a>
+    </div>
+    <div class="footer-copy">
+      © <span id="copy-year"></span> TorahTxt. Made with ❤️ and Torah.
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('copy-year').textContent = new Date().getFullYear();
+
+    // ── State ──────────────────────────────────────────────────────────────────
+    let allEntries = [];
+    let currentEntry = null;
+    let searchQuery = '';
+
+    // ── Routing ───────────────────────────────────────────────────────────────
+    function getPathDate() {
+      const m = window.location.pathname.match(/^\/archive\/(\d{4}-\d{2}-\d{2})$/);
+      return m ? m[1] : null;
+    }
+
+    function route() {
+      const date = getPathDate();
+      if (date) {
+        showEntry(date);
+      } else {
+        showList();
+      }
+    }
+
+    window.addEventListener('popstate', route);
+
+    function navigate(url) {
+      history.pushState({}, '', url);
+      route();
+      window.scrollTo(0, 0);
+    }
+
+    document.getElementById('btn-back').addEventListener('click', () => navigate('/archive'));
+
+    // ── SEO helpers ───────────────────────────────────────────────────────────
+    function setMeta(title, description, url, jsonLd) {
+      document.title = title;
+      setMetaTag('name', 'description', description);
+      setMetaTag('property', 'og:title', title);
+      setMetaTag('property', 'og:description', description);
+      setMetaTag('property', 'og:url', url);
+      setMetaTag('name', 'twitter:title', title);
+      setMetaTag('name', 'twitter:description', description);
+      let canon = document.querySelector('link[rel="canonical"]');
+      if (!canon) { canon = document.createElement('link'); canon.rel = 'canonical'; document.head.appendChild(canon); }
+      canon.href = url;
+      // JSON-LD
+      let ldEl = document.getElementById('json-ld');
+      if (!ldEl) { ldEl = document.createElement('script'); ldEl.type = 'application/ld+json'; ldEl.id = 'json-ld'; document.head.appendChild(ldEl); }
+      ldEl.textContent = JSON.stringify(jsonLd);
+    }
+
+    function setMetaTag(attr, key, value) {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) { el = document.createElement('meta'); el.setAttribute(attr, key); document.head.appendChild(el); }
+      el.setAttribute('content', value);
+    }
+
+    // ── List view ─────────────────────────────────────────────────────────────
+    async function showList() {
+      document.getElementById('view-list').classList.add('active');
+      document.getElementById('view-entry').classList.remove('active');
+
+      setMeta(
+        'Torah Archive — TorahTxt',
+        'Browse every Torah teaching sent by TorahTxt — daily wisdom, D\'var Torah, and more.',
+        'https://torahtxt.com/archive',
+        { "@context": "https://schema.org", "@type": "CollectionPage", "name": "Torah Archive", "url": "https://torahtxt.com/archive" }
+      );
+
+      if (allEntries.length === 0) {
+        await loadEntries();
+      } else {
+        renderList();
+      }
+    }
+
+    async function loadEntries() {
+      try {
+        const res = await fetch('/api/archive');
+        allEntries = await res.json();
+        renderList();
+      } catch (err) {
+        document.getElementById('entries-container').innerHTML = '<p style="color:#9a8a70;text-align:center">Failed to load archive. Please try again.</p>';
+      }
+    }
+
+    function renderList() {
+      const query = searchQuery.toLowerCase().trim();
+      const filtered = query
+        ? allEntries.filter(e =>
+            (e.parasha || '').toLowerCase().includes(query) ||
+            (e.title || '').toLowerCase().includes(query) ||
+            (e.snippet || '').toLowerCase().includes(query)
+          )
+        : allEntries;
+
+      const container = document.getElementById('entries-container');
+      const emptyEl = document.getElementById('empty-state');
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyEl.style.display = 'block';
+        return;
+      }
+      emptyEl.style.display = 'none';
+
+      // Group by parasha (preserve order: newest first overall, but group together)
+      const groups = {};
+      const groupOrder = [];
+      for (const entry of filtered) {
+        if (!groups[entry.parasha]) {
+          groups[entry.parasha] = [];
+          groupOrder.push(entry.parasha);
+        }
+        groups[entry.parasha].push(entry);
+      }
+
+      let html = '';
+      for (const parasha of groupOrder) {
+        const entries = groups[parasha];
+        html += `<div class="parasha-group">
+          <div class="parasha-header">${escHtml(parasha)}</div>
+          <div class="cards-grid">`;
+        for (const e of entries) {
+          html += `<div class="entry-card" data-date="${e.date}" tabindex="0" role="article">
+            <div class="card-meta">${escHtml(e.day)} · ${escHtml(e.type)}</div>
+            <div class="card-title">${escHtml(e.title || e.parasha)}</div>
+            <div class="card-snippet">${escHtml(e.snippet)}</div>
+          </div>`;
+        }
+        html += `</div></div>`;
+      }
+
+      container.innerHTML = html;
+
+      // Attach click/keyboard handlers
+      container.querySelectorAll('.entry-card').forEach(card => {
+        const date = card.dataset.date;
+        card.addEventListener('click', () => navigate('/archive/' + date));
+        card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') navigate('/archive/' + date); });
+      });
+    }
+
+    document.getElementById('search-input').addEventListener('input', e => {
+      searchQuery = e.target.value;
+      if (allEntries.length > 0) renderList();
+    });
+
+    // ── Single entry view ─────────────────────────────────────────────────────
+    async function showEntry(date) {
+      document.getElementById('view-list').classList.remove('active');
+      document.getElementById('view-entry').classList.add('active');
+
+      const contentEl = document.getElementById('entry-content');
+      contentEl.innerHTML = '<div style="text-align:center;padding:3rem;color:#9a8a70;">Loading…</div>';
+
+      try {
+        const res = await fetch('/api/archive/' + date);
+        if (!res.ok) {
+          contentEl.innerHTML = '<div style="text-align:center;padding:3rem;"><p style="color:#9a8a70;font-size:1.1rem;">Teaching not found.</p><button class="btn-back" onclick="navigate(\'/archive\')">← Back to Archive</button></div>';
+          return;
+        }
+        const entry = await res.json();
+        currentEntry = entry;
+        renderEntry(entry);
+      } catch (err) {
+        contentEl.innerHTML = '<p style="color:#9a8a70;text-align:center">Failed to load. Please try again.</p>';
+      }
+    }
+
+    function renderEntry(e) {
+      const url = 'https://torahtxt.com/archive/' + e.date;
+      const snippet = (e.snippet || '').slice(0, 160);
+
+      setMeta(
+        (e.title || e.parasha) + ' — TorahTxt',
+        snippet,
+        url,
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": e.title || e.parasha,
+          "datePublished": e.date,
+          "description": snippet,
+          "publisher": { "@type": "Organization", "name": "TorahTxt", "url": "https://torahtxt.com" },
+          "url": url
+        }
+      );
+
+      const bodyHtml = renderBody(e.fullContent || e.message || '');
+      const waText = encodeURIComponent((e.title || e.parasha) + '\n\n' + (e.snippet || '') + '\n\n' + url);
+
+      const html = `
+        <div class="entry-type-badge">${escHtml(e.type || 'D\'var Torah')}</div>
+        <h1 class="entry-title">${escHtml(e.title || e.parasha)}</h1>
+        <div class="entry-date">${escHtml(e.dateFormatted)}</div>
+        <div class="entry-divider"></div>
+        <div class="entry-body">${bodyHtml}</div>
+        <div class="entry-divider"></div>
+
+        <!-- Prev / Next -->
+        <div class="entry-nav">
+          <button class="btn-nav prev" id="btn-prev" ${e.prev ? '' : 'disabled'}>
+            ${e.prev ? '← Previous' : ''}
+          </button>
+          <button class="btn-nav next" id="btn-next" ${e.next ? '' : 'disabled'}>
+            ${e.next ? 'Next →' : ''}
+          </button>
+        </div>
+
+        <!-- Share -->
+        <div class="share-section">
+          <h3>Share this teaching</h3>
+          <div class="share-buttons">
+            <button class="btn-share btn-copy" id="btn-copy">📋 Copy Link</button>
+            <a class="btn-share btn-whatsapp" href="https://wa.me/?text=${waText}" target="_blank" rel="noopener">💬 Share on WhatsApp</a>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="entry-cta">
+          <p>Get Torah wisdom like this every morning — free, by SMS or email.</p>
+          <a href="https://torahtxt.com/#signup" class="btn-cta">Subscribe Free →</a>
+        </div>
+      `;
+
+      document.getElementById('entry-content').innerHTML = html;
+
+      if (e.prev) {
+        document.getElementById('btn-prev').addEventListener('click', () => navigate('/archive/' + e.prev));
+      }
+      if (e.next) {
+        document.getElementById('btn-next').addEventListener('click', () => navigate('/archive/' + e.next));
+      }
+
+      // Copy link
+      document.getElementById('btn-copy').addEventListener('click', () => {
+        navigator.clipboard.writeText(url).then(() => {
+          const btn = document.getElementById('btn-copy');
+          btn.textContent = '✓ Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = '📋 Copy Link'; btn.classList.remove('copied'); }, 2000);
+        });
+      });
+    }
+
+    // ── Content rendering ─────────────────────────────────────────────────────
+    function renderBody(text) {
+      if (!text) return '';
+      const paragraphs = text.split(/\n\n+/);
+      return paragraphs.map(para => {
+        const trimmed = para.trim();
+        if (!trimmed) return '';
+
+        // Check if paragraph is a bullet block
+        const lines = trimmed.split('\n');
+        const isBulletBlock = lines.every(l => l.trim().startsWith('•') || l.trim() === '');
+        if (isBulletBlock) {
+          const items = lines
+            .filter(l => l.trim().startsWith('•'))
+            .map(l => `<li>${inlineFormat(l.replace(/^•\s*/, '').trim())}</li>`)
+            .join('');
+          return `<ul>${items}</ul>`;
+        }
+
+        return `<p>${inlineFormat(trimmed)}</p>`;
+      }).join('');
+    }
+
+    function inlineFormat(text) {
+      // *italic* → <em>
+      return escHtml(text).replace(/\*(.*?)\*/g, '<em>$1</em>');
+    }
+
+    // ── Utilities ─────────────────────────────────────────────────────────────
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    route();
+  </script>
+</body>
+</html>
