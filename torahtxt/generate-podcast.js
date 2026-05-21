@@ -33,77 +33,178 @@ const DEEPSEEK_API_KEY    = process.env.DEEPSEEK_API_KEY;
 const PRIMARY_MODEL   = { provider: 'deepseek', model: 'deepseek-chat',   apiKey: () => DEEPSEEK_API_KEY,   host: 'api.deepseek.com',   path: '/v1/chat/completions',   style: 'openai' };
 const FALLBACK_MODEL  = { provider: 'anthropic', model: 'claude-sonnet-4-6', apiKey: () => ANTHROPIC_API_KEY, host: 'api.anthropic.com', path: '/v1/messages', style: 'anthropic' };
 
-// ─── HEBREW PRONUNCIATION MAP ───────────────────────────────────────────────
-// Used to create a TTS-optimised version of the script.
-// Keys are case-insensitive regex patterns; values are phonetic substitutions.
-// The human-readable script.md is saved unmodified; ElevenLabs receives script_tts.md.
+// ─── HEBREW PRONUNCIATION SYSTEM ────────────────────────────────────────────
+// Externalised to pronunciation-map.json — edit that file, not this code.
+// script.md is saved human-readable; ElevenLabs receives script_tts.md only.
 
-const PRONUNCIATION_MAP = [
-  // Parasha / Parshot
-  [/\bParshat\b/gi,             'Par-shat'],
-  [/\bParashat\b/gi,            'Par-ah-shat'],
-  [/\bParasha\b/gi,             'Par-ah-shah'],
-  [/\bParsha\b/gi,              'Par-shah'],
-  // Torah / foundational terms
-  [/\bTorah\b/gi,               'Toe-rah'],
-  [/\bMitzvah\b/gi,             'Mits-vah'],
-  [/\bMitzvot\b/gi,             'Mits-vote'],
-  [/\bHashem\b/gi,              'Hah-shem'],
-  [/\bShechina\b/gi,            'Sh-khee-nah'],
-  [/\bShechinah\b/gi,           'Sh-khee-nah'],
-  // Books / People
-  [/\bBamidbar\b/gi,            'Bah-mid-bar'],
-  [/\bBereshit\b/gi,            'Beh-reh-sheet'],
-  [/\bShemot\b/gi,              'Sh-mote'],
-  [/\bVayikra\b/gi,             'Vah-yik-rah'],
-  [/\bDevarim\b/gi,             'Deh-vah-reem'],
-  [/\bMoshe\b/gi,               'Moe-sheh'],
-  [/\bAvraham\b/gi,             'Av-rah-ham'],
-  [/\bYitzchak\b/gi,            'Yits-chak'],
-  [/\bYaakov\b/gi,              'Yah-ah-kov'],
-  [/\bYosef\b/gi,               'Yo-sef'],
-  [/\bDavid HaMelech\b/gi,      'Dah-vid Hah-meh-lekh'],
-  // Institutions / places
-  [/\bMishkan\b/gi,             'Mish-kahn'],
-  [/\bTabernacle\b/gi,          'Tab-er-na-kl'],
-  [/\bShabbat\b/gi,             'Shah-baht'],
-  [/\bShabbos\b/gi,             'Shah-bis'],
-  // Commentators
-  [/\bRashi\b/gi,               'Rah-shee'],
-  [/\bRamban\b/gi,              'Rahm-bahn'],
-  [/\bRambam\b/gi,              'Rahm-bahm'],
-  [/\bSfat Emet\b/gi,           'Sfaht Eh-met'],
-  [/\bSfas Emes\b/gi,           'Sfahs Eh-mes'],
-  [/\bHirsch\b/gi,              'Hirsh'],
-  // Concepts
-  [/\bD'var Torah\b/gi,         'D-var Toe-rah'],
-  [/\bDvar Torah\b/gi,          'D-var Toe-rah'],
-  [/\bBnei Yisrael\b/gi,        "B'nay Yis-rah-el"],
-  [/\bB'nei Yisrael\b/gi,       "B'nay Yis-rah-el"],
-  [/\bEretz Yisrael\b/gi,       'Eh-rets Yis-rah-el'],
-  [/\bBeit HaMikdash\b/gi,      'Bayt Hah-mik-dash'],
-  [/\bTeshuvah\b/gi,            'T-shoo-vah'],
-  [/\bChesed\b/gi,              'Kheh-sed'],
-  [/\bEmet\b/gi,                'Eh-met'],
-  [/\bTzaddik\b/gi,             'Tsah-dik'],
-  [/\bTzedakah\b/gi,            'Tsed-ah-kah'],
-  [/\bDavening\b/gi,            'Dah-ven-ing'],
-  [/\bDaven\b/gi,               'Dah-ven'],
-  [/\bNeshama\b/gi,             'N-shah-mah'],
-  [/\bNeshamot\b/gi,            'N-shah-mote'],
-  [/\bHalachah\b/gi,            'Hah-lah-khah'],
-  [/\bHalacha\b/gi,             'Hah-lah-khah'],
-  [/\bKiddush Hashem\b/gi,      'Ki-dush Hah-shem'],
-  [/\bKiddush\b/gi,             'Ki-dush'],
-  [/\bHavdalah\b/gi,            'Hav-dah-lah'],
-];
+const PRONUNCIATION_MAP_PATH = path.join(__dirname, 'pronunciation-map.json');
 
-function applyPronunciationMap(text) {
-  let out = text;
-  for (const [pattern, replacement] of PRONUNCIATION_MAP) {
-    out = out.replace(pattern, replacement);
+/**
+ * Load pronunciation-map.json and return a flat sorted array of
+ * [escapedRegex, replacement, originalTerm] entries, longest phrase first.
+ */
+function loadPronunciationMap() {
+  let raw;
+  try {
+    raw = JSON.parse(fs.readFileSync(PRONUNCIATION_MAP_PATH, 'utf8'));
+  } catch (e) {
+    throw new Error(`Failed to load pronunciation-map.json: ${e.message}`);
   }
-  return out;
+
+  // Merge multi_word and single_word sections
+  const merged = { ...raw.multi_word, ...raw.single_word };
+
+  // Build entries sorted longest-first so phrases beat their component words
+  return Object.entries(merged)
+    .sort(([a], [b]) => b.length - a.length)
+    .map(([term, phonetic]) => {
+      // Escape regex special chars in the term
+      const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Use word boundary \b where the boundary makes sense;
+      // for terms starting/ending with ' we relax it to (?<![\w'])
+      const pattern = new RegExp(`(?<![\\w'])${escaped}(?![\\w'])`, 'gi');
+      return { pattern, phonetic, term };
+    });
+}
+
+/**
+ * Apply the pronunciation map to a text string.
+ * Returns { text, stats } where stats tracks per-term replacement counts.
+ * Does NOT modify URLs (http/https links) or markdown link syntax.
+ */
+function applyPronunciationMap(text, entries) {
+  // Protect URLs from replacement: replace with placeholders
+  const urlPlaceholders = [];
+  let protected_ = text.replace(/https?:\/\/[^\s)>"]+/g, (url) => {
+    const idx = urlPlaceholders.push(url) - 1;
+    return `__URL_${idx}__`;
+  });
+
+  const termCounts = {};
+  for (const { pattern, phonetic, term } of entries) {
+    let count = 0;
+    protected_ = protected_.replace(pattern, (match) => {
+      count++;
+      return phonetic;
+    });
+    if (count > 0) termCounts[term] = { phonetic, count };
+  }
+
+  // Restore URLs
+  const result = protected_.replace(/__URL_(\d+)__/g, (_, i) => urlPlaceholders[i]);
+
+  const termsReplaced = Object.entries(termCounts).map(([from, { phonetic, count }]) => ({
+    from, to: phonetic, count
+  }));
+  const knownReplacementsCount = termsReplaced.reduce((s, t) => s + t.count, 0);
+
+  return { text: result, stats: { known_replacements_count: knownReplacementsCount, terms_replaced: termsReplaced } };
+}
+
+/**
+ * Detect capitalized words in the script that:
+ *   - Look like transliterated Hebrew (common endings, consonant clusters)
+ *   - Are NOT already in the pronunciation map
+ *   - Are NOT common English words
+ *
+ * Returns array of suspected unknown Hebrew/Torah terms.
+ */
+function detectPossibleHebrewTerms(text, mapEntries) {
+  // Build a set of all known terms (lowercased) for fast lookup
+  const knownLower = new Set(mapEntries.map(e => e.term.toLowerCase()));
+
+  // Common English words to exclude from flagging
+  const ENGLISH_WHITELIST = new Set([
+    'the','and','but','not','for','are','with','this','that','from','have',
+    'they','been','will','when','what','which','were','your','more','also',
+    'into','than','then','its','our','his','her','him','who','may','all',
+    'one','two','three','four','five','six','seven','eight','nine','ten',
+    'can','did','has','had','was','had','let','get','set','put','yet',
+    'day','day','days','time','life','way','man','men','god','him','sir',
+    'act','ask','bar','bit','big','box','boy','car','cut','eat','eye',
+    'far','few','give','go','good','great','heart','help','home','house',
+    'just','keep','kind','know','land','late','lead','left','love','made',
+    'make','mean','mind','much','must','name','need','next','night','now',
+    'open','over','own','part','place','play','point','power','right','said',
+    'same','see','self','show','side','small','some','soon','still','such',
+    'take','tell','thing','think','those','through','today','together','told',
+    'took','true','turn','under','upon','used','very','view','want','well',
+    'went','whole','words','work','world','would','year','years','yet',
+    'above','about','after','again','against','always','another','around',
+    'because','before','being','between','come','could','each','even',
+    'every','first','found','given','going','great','human','important',
+    'israel','jewish','rabbi','people','ancient','practice','teaching',
+    'scripture','blessing','prayer','community','holy','sacred','divine',
+    'study','wisdom','justice','truth','peace','soul','spirit','learn',
+    'follow','observe','remember','light','bring','offer','return',
+    'weekly','daily','night','morning','evening','friday','saturday',
+    'sunday','monday','tuesday','wednesday','thursday','welcome','here',
+    'today','this','been','since','while','though','indeed','truly',
+    'deeply','simply','gently','clearly','perhaps','whether','within',
+    'without','during','called','known','given','shown','found','heard',
+    'seen','said','told','made','become','became','having','taking',
+    'making','giving','seeking','finding','knowing','learning','living',
+    'asking','telling','seeing','hearing','feeling','thinking','working',
+    'doing','going','being','coming','saying','looking','turning','keeping',
+    'bringing','building','creating','opening','closing','starting','ending',
+    'michael','green','dedicated','memory','lived','showed','studied','text',
+    'there','tonight','today','tomorrow','yesterday','always','never','often',
+    'welcome','hello','good','great','wonderful','beautiful','important','special',
+    'throughout','sometimes','perhaps','certainly','especially','particularly',
+    'together','however','therefore','moreover','furthermore','finally','clearly',
+    'remember','consider','reflect','imagine','think','feel','believe','understand',
+    'family','children','father','mother','brother','sister','friend','teacher',
+    'israel','jewish','rabbi','people','ancient','practice','teaching','community',
+    'lesson','source','meaning','message','insight','reflection','thought',
+    'moment','story','example','question','answer','idea','concept','theme',
+    'level','depth','aspect','nature','essence','form','pattern','cycle',
+    'number','measure','scale','weight','strength','heart','mind','body'
+  ]);
+
+  // Hebrew-like pattern: capitalized word with common Hebrew endings or consonant clusters
+  const HEBREW_ENDINGS  = /(?:ot|im|ah|ei|at|enu|cha|ut|it|et|nu|ayim|eim)$/i;
+  // Hebrew transliteration digraphs: kh, tz, ts, zv, zh — NOT 'ch','sh' alone (too common in English)
+  const HEBREW_CLUSTERS = /(?:kh|tz(?!e)|chok|vah|zot|eim$|ayim$)/i;
+  const WORD_RE         = /\b([A-Z][a-z]{2,}(?:\s+[A-Z][a-z]+)?)\b/g;
+
+  // Also build a set of all individual words within known multi-word phrases
+  // so we don't flag sub-phrases like "Tikkun Leil" (part of "Tikkun Leil Shavuot")
+  const knownWords = new Set();
+  for (const entry of mapEntries) {
+    const parts = entry.term.split(/\s+/);
+    if (parts.length > 1) {
+      parts.forEach(p => knownWords.add(p.toLowerCase()));
+    }
+  }
+
+  const candidates = new Set();
+  let match;
+  while ((match = WORD_RE.exec(text)) !== null) {
+    const word = match[1];
+    const lower = word.toLowerCase();
+    if (knownLower.has(lower)) continue;           // already in map as exact phrase
+    if (ENGLISH_WHITELIST.has(lower)) continue;    // common English word
+    if (word.length < 4) continue;                 // too short to flag
+
+    // Skip "The X" patterns where X is already a known term
+    const parts = word.split(/\s+/);
+    if (parts.length >= 2) {
+      const firstLower = parts[0].toLowerCase();
+      const restLower  = parts.slice(1).join(' ').toLowerCase();
+      if (firstLower === 'the' && (knownLower.has(restLower) || knownWords.has(restLower))) continue;
+      // Skip if every component word is already known (sub-phrase detection)
+      if (parts.every(p => knownLower.has(p.toLowerCase()) || knownWords.has(p.toLowerCase()))) continue;
+    } else {
+      // Single word: skip if it's a component of a known multi-word phrase
+      if (knownWords.has(lower)) continue;
+    }
+
+    if (HEBREW_ENDINGS.test(word) || HEBREW_CLUSTERS.test(word)) {
+      candidates.add(word);
+    }
+  }
+
+  return [...candidates].sort();
 }
 
 const WORKSPACE_ROOT = path.resolve(__dirname, '..');
@@ -329,7 +430,7 @@ async function generateAudio(script, outputPath) {
 
 // ─── STEP 4: WRITE METADATA ──────────────────────────────────────────────────
 
-function writeMetadata(outDir, date, lesson, parshaName, dateLabel, scriptPath, ttsPath, audioPath, audioBytes, status, scriptModel, fallbackReason) {
+function writeMetadata(outDir, date, lesson, parshaName, dateLabel, scriptPath, ttsPath, audioPath, audioBytes, status, scriptModel, fallbackReason, pronunciationStats) {
   const wordCount  = (lesson.script || '').split(/\s+/).filter(Boolean).length;
   const estMinutes = Math.round(wordCount / 135); // ~135 wpm natural pace
   const estSeconds = Math.round((wordCount / 135) * 60);
@@ -360,6 +461,14 @@ function writeMetadata(outDir, date, lesson, parshaName, dateLabel, scriptPath, 
     status,
     generated_at:   new Date().toISOString(),
     dry_run:        DRY_RUN,
+    // Pronunciation preflight stats
+    pronunciation: pronunciationStats ? {
+      map_version:              pronunciationStats.map_version,
+      known_replacements_count: pronunciationStats.known_replacements_count,
+      terms_replaced:           pronunciationStats.terms_replaced,
+      unknown_terms:            pronunciationStats.unknown_terms,
+      tts_script_path:          ttsPath,
+    } : null,
     // RSS-ready fields for future use
     rss_ready: {
       enclosure_type: 'audio/mpeg',
@@ -419,10 +528,38 @@ async function main() {
   fs.writeFileSync(scriptPath, scriptMd);
   log(`✓ Script saved: ${scriptPath}`);
 
-  // Apply pronunciation map and save TTS version
-  const ttsSafe = applyPronunciationMap(scriptText);
+  // ── Pronunciation preflight ──
+  let pronunciationMapEntries;
+  let mapVersion = 'unknown';
+  try {
+    const rawMap = JSON.parse(fs.readFileSync(PRONUNCIATION_MAP_PATH, 'utf8'));
+    mapVersion = rawMap._version || 'unknown';
+    pronunciationMapEntries = loadPronunciationMap();
+  } catch (err) {
+    log(`⚠ Could not load pronunciation-map.json: ${err.message} — using empty map`);
+    pronunciationMapEntries = [];
+  }
+
+  const { text: ttsSafe, stats: pStats } = applyPronunciationMap(scriptText, pronunciationMapEntries);
+  const unknownTerms = detectPossibleHebrewTerms(scriptText, pronunciationMapEntries);
+
+  const pronunciationStats = {
+    map_version: mapVersion,
+    known_replacements_count: pStats.known_replacements_count,
+    terms_replaced: pStats.terms_replaced,
+    unknown_terms: unknownTerms,
+  };
+
+  // Log preflight summary
+  if (unknownTerms.length === 0) {
+    log(`✓ Pronunciation preflight: ${pStats.known_replacements_count} replacements, 0 unknown terms, script_tts.md sent to ElevenLabs`);
+  } else {
+    log(`⚠ Pronunciation preflight: ${pStats.known_replacements_count} replacements, ${unknownTerms.length} unknown terms: ${unknownTerms.join(', ')}`);
+    log(`  → Add these to pronunciation-map.json if pronunciation matters`);
+  }
+
   const ttsPath = path.join(outDir, 'script_tts.md');
-  const ttsMd = `# TorahTxt Daily Podcast — TTS Version — ${TODAY}\n**${lesson.title}**\n*${parshaName} · ${dateLabel}*\n\n> This file is the ElevenLabs-ready pronunciation version. Do not use for human reading.\n\n---\n\n${ttsSafe}\n`;
+  const ttsMd = `# TorahTxt Daily Podcast — TTS Version — ${TODAY}\n**${lesson.title}**\n*${parshaName} · ${dateLabel}*\n\n> This file is the ElevenLabs-ready pronunciation version. Do not use for human reading.\n> Pronunciation map version: ${mapVersion} | Replacements: ${pStats.known_replacements_count}\n\n---\n\n${ttsSafe}\n`;
   fs.writeFileSync(ttsPath, ttsMd);
   log(`✓ TTS script saved: ${ttsPath}`);
 
@@ -457,7 +594,8 @@ async function main() {
     audioBytes,
     status,
     scriptModel,
-    fallbackReason
+    fallbackReason,
+    pronunciationStats
   );
   log(`✓ Metadata saved: ${metaPath}`);
 
@@ -473,6 +611,17 @@ async function main() {
   if (audioBytes) console.log(`  Audio size:  ${Math.round(audioBytes / 1024)} KB`);
   console.log(`  Metadata:    ${metaPath}`);
   console.log(`  Log:         ${LOG_FILE}`);
+  // Pronunciation summary
+  if (pronunciationStats) {
+    console.log(`  Pronunciation:`);
+    console.log(`    Replacements: ${pronunciationStats.known_replacements_count}`);
+    if (pronunciationStats.unknown_terms.length > 0) {
+      console.log(`    \u26a0 Unknown terms: ${pronunciationStats.unknown_terms.join(', ')}`);
+      console.log(`    \u2192 Add to pronunciation-map.json`);
+    } else {
+      console.log(`    Unknown terms: none`);
+    }
+  }
   console.log('─────────────────────────────────────────\n');
 }
 
