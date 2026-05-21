@@ -20,18 +20,44 @@ const FROM_EMAIL       = 'jared@jaredgreen.com';
 const FROM_NAME        = 'Spokesbox';
 const REPLY_TO         = 'sherlock.claw@gmail.com';
 const BASE_URL         = 'https://spokesbox.com';
-const PREHEADER        = "Your personalized brief: the stories and signals Sam is watching for you today.";
+const DEFAULT_PREHEADER = 'Your personalized brief is ready.';
+
+// Build a content-specific preheader from the actual section summaries
+function buildDynamicPreheader(brief) {
+  if (!brief || !Array.isArray(brief.sections) || brief.sections.length === 0) {
+    return DEFAULT_PREHEADER;
+  }
+  const topSections = brief.sections
+    .filter(s => s.id !== 'joke' && s.summary)
+    .slice(0, 3);
+  if (topSections.length === 0) return DEFAULT_PREHEADER;
+  const snippets = topSections.map(s => {
+    // Split on sentence-ending punctuation, but NOT on decimal points (e.g. 0.4%)
+    const first = (s.summary || '')
+      .replace(/(\d)\.(\d)/g, '$1·$2') // protect decimals
+      .split(/[.!?]/)[0]
+      .replace(/·/g, '.')
+      .trim();
+    return first.length > 10 ? first.slice(0, 60) : null;
+  }).filter(Boolean);
+  return snippets.join(' · ').slice(0, 150) || DEFAULT_PREHEADER;
+}
 
 // ─── Subject ────────────────────────────────────────────────────────────────
 
-function buildSubject({ name, date }) {
+// Content-specific, short subject: "Jared: markets, tech, South Orange"
+function buildSubject({ name, brief }) {
   const firstName = (name || '').split(' ')[0] || '';
-  const dateShort = date || new Date().toLocaleDateString('en-US', {
-    weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/New_York',
-  });
-  return firstName
-    ? `📬 ${firstName}, your Spokesbox Brief — ${dateShort}`
-    : `📬 Your Spokesbox Brief — ${dateShort}`;
+  const topSections = (brief?.sections || [])
+    .filter(s => s.id !== 'joke')
+    .slice(0, 3)
+    .map(s => (s.title || '').toLowerCase().replace(/[^a-z0-9& ]/gi, '').trim())
+    .filter(Boolean);
+  if (firstName && topSections.length >= 2) {
+    return `${firstName}: ${topSections.slice(0, 2).join(', ')}`.slice(0, 50);
+  }
+  if (firstName) return `${firstName}: your brief`;
+  return 'Your brief today';
 }
 
 // ─── HTML Renderers ─────────────────────────────────────────────────────────
@@ -67,7 +93,7 @@ function buildSpokesboxEmailHTML(brief, subscriber) {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
     timeZone: 'America/New_York',
   });
-  const subject = buildSubject({ name, date });
+  const subject = buildSubject({ name, brief });
 
   const sectionsHTML = (brief.sections || []).map(renderSectionHTML).join('');
 
@@ -82,7 +108,7 @@ function buildSpokesboxEmailHTML(brief, subscriber) {
 
   <!-- Preheader (hidden) -->
   <span style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#f0f4f8;">
-    ${PREHEADER}
+    ${buildDynamicPreheader(brief)}
   </span>
 
   <div style="max-width:600px;margin:0 auto;background:#fff;">
@@ -192,13 +218,13 @@ function buildSpokesboxEmailPayload(briefOrRaw, subscriber, opts = {}) {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
     timeZone: 'America/New_York',
   });
-  const subject = buildSubject({ name: subscriber?.name, date });
+  const subject = buildSubject({ name: subscriber?.name, brief });
   const html    = buildSpokesboxEmailHTML(brief, subscriber);
   const text    = buildSpokesboxEmailText(brief, subscriber);
 
   return {
     subject,
-    preheader: PREHEADER,
+    preheader: buildDynamicPreheader(brief),
     html,
     text,
     metadata: {
@@ -210,7 +236,7 @@ function buildSpokesboxEmailPayload(briefOrRaw, subscriber, opts = {}) {
       from_name:        FROM_NAME,
       reply_to:         REPLY_TO,
       subject,
-      preheader:        PREHEADER,
+      preheader:        buildDynamicPreheader(brief),
     },
   };
 }
@@ -220,5 +246,6 @@ module.exports = {
   buildSpokesboxEmailText,
   buildSpokesboxEmailPayload,
   buildSubject,
-  PREHEADER,
+  buildDynamicPreheader,
+  DEFAULT_PREHEADER,
 };

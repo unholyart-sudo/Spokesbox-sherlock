@@ -20,18 +20,36 @@ const BASE_URL         = process.env.BASE_URL || 'https://torahtxt.com';
 
 // ─── Subject / Preheader ────────────────────────────────────────────────────
 
-function buildSubject({ title, date }) {
-  return `TorahTxt: ${title} — ${date}`;
+// Extract the actual parasha name from the first line of the email content
+// e.g. "Parshat Bamidbar — Each Tribe, Each Mission" → "Bamidbar"
+function extractParashaName(emailContent, fallback) {
+  if (!emailContent) return fallback || 'Weekly Parasha';
+  const firstLine = emailContent.split('\n')[0].trim();
+  // Match "Parshat X", "Parashat X", "Parasha X" at start of line
+  const m = firstLine.match(/^Parshat?a?\s+([^\u2014\u2013\-,]+)/i);
+  if (m) return m[1].trim();
+  return fallback || 'Weekly Parasha';
+}
+
+function buildSubject({ title }) {
+  // Date omitted from subject — moved to preheader for cleaner inbox preview
+  return `TorahTxt: ${title}`;
 }
 
 function buildPreheader({ parasha, message }) {
+  // Reflective, parasha-specific — not a raw content dump
+  const cleanParasha = parasha && !parasha.includes(' ') ? parasha
+    : (parasha || '').split(/\s+/).slice(0, 2).join(' ');
   const firstSentence = (message || '')
     .replace(/\n/g, ' ')
-    .replace(/\[Your Name\]/gi, 'TorahTxt')
+    .replace(/\[Your Name\]/gi, 'the community')
+    .replace(/<[^>]+>/g, '') // strip any HTML
+    .replace(/\*([^*]+)\*/g, '$1') // strip markdown italics
     .replace(/\s+/g, ' ')
     .trim()
-    .slice(0, 120);
-  return `Today's D'var Torah from ${parasha}: ${firstSentence}`;
+    .slice(0, 100)
+    .replace(/[.,:;]\s*$/, '');
+  return `${cleanParasha} teaches: ${firstSentence}.`;
 }
 
 // ─── HTML Builder ───────────────────────────────────────────────────────────
@@ -255,15 +273,17 @@ function buildDailyEmailText({ name, date, parasha, message, email, token, kids 
 function buildDailyEmailPayload({ name, date, parasha, message, token, email, imageUrl, kids, sourceDate, title }) {
   // title is required for subject; fall back to parasha
   const resolvedTitle = title || parasha || 'Daily D\'var Torah';
+  // Extract real parasha name from email content to avoid "Parashat Your Calling..."
+  const resolvedParasha = extractParashaName(message, parasha);
   const resolvedDate  = date || new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
     timeZone: 'America/New_York',
   });
 
-  const subject   = buildSubject({ title: resolvedTitle, date: resolvedDate });
-  const preheader = buildPreheader({ parasha: parasha || 'Weekly Parasha', message });
-  const html      = buildDailyEmailHTML({ name, date: resolvedDate, parasha, message, token, email, imageUrl, kids });
-  const text      = buildDailyEmailText({ name, date: resolvedDate, parasha, message, email, token, kids });
+  const subject   = buildSubject({ title: resolvedTitle });
+  const preheader = buildPreheader({ parasha: resolvedParasha, message });
+  const html      = buildDailyEmailHTML({ name, date: resolvedDate, parasha: resolvedParasha, message, token, email, imageUrl, kids });
+  const text      = buildDailyEmailText({ name, date: resolvedDate, parasha: resolvedParasha, message, email, token, kids });
 
   return {
     subject,

@@ -57,10 +57,20 @@ function hasAstrologyContent(html) {
 // ─── Subject / Preheader ────────────────────────────────────────────────────
 
 function buildSubject({ date }) {
-  return `🚀 SkyTuned · Your Daily Orbit — ${date}`;
+  // Short, hook-first — date in preheader, not subject
+  // Caller may override with a content-specific hook; fallback is the date
+  return `🚀 SkyTuned: Your Daily Orbit`;
 }
 
-const PREHEADER = `Today's top space story, mission watch, sky events, space weather, and market snapshot.`;
+// Preheader is built dynamically from the day's actual lead + sections
+function buildPreheader(content) {
+  const leadSnippet = (content.lead?.headline || '').replace(/<[^>]+>/g, '').trim().slice(0, 60);
+  const padCount    = (content.onThePad || []).filter(p => !p.notes?.includes('No launches')).length;
+  const padStr      = padCount > 0 ? ` · ${padCount} launch${padCount > 1 ? 'es' : ''} on the pad` : '';
+  const marketTop   = (content.marketSnapshot || [])[0];
+  const marketStr   = marketTop ? ` · ${marketTop.ticker} ${marketTop.change}` : '';
+  return `${leadSnippet}${padStr}${marketStr}`.slice(0, 150) || 'Launch watch, mission brief, sky events, space weather, and market moves.';
+}
 
 // ─── Content schema validation ──────────────────────────────────────────────
 
@@ -141,7 +151,7 @@ function buildSkyTunedEmailHTML(content, subscriber) {
 
   <!-- Preheader (hidden) -->
   <span style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#07090f;">
-    ${PREHEADER}
+    ${buildPreheader(content)}
   </span>
 
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#07090f;padding:24px 0;">
@@ -226,58 +236,81 @@ function buildSkyTunedEmailHTML(content, subscriber) {
 
 // ─── Plain-text Builder ─────────────────────────────────────────────────────
 
+// Strip HTML tags from text (for plain-text version of fields that may contain HTML)
+function stripHTML(str) {
+  return (str || '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&mdash;/g, '—')
+    .replace(/&ndash;/g, '–')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function buildSkyTunedEmailText(content, subscriber) {
   const { email = '', token = '' } = subscriber || {};
   const unsubLink = `${BASE_URL}/unsubscribe?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`;
   const hr = '-'.repeat(50);
 
   const missionLines = (content.missionControl||[])
-    .map(i => `  • ${i.label}: ${i.text}`)
+    .map(i => `  • ${stripHTML(i.label)}: ${stripHTML(i.text)}`)
     .join('\n');
 
   const spotlightLines = (content.spotlight?.items||[])
-    .map(i => `  • ${i.text}`)
+    .map(i => `  • ${stripHTML(i.text)}`)
     .join('\n');
 
   const padLines = (content.onThePad||[])
-    .map(p => `  • ${p.mission} — ${p.date}${p.notes ? ` (${p.notes})` : ''}`)
+    .map(p => `  • ${stripHTML(p.mission)} — ${stripHTML(p.date)}${p.notes ? ` (${stripHTML(p.notes)})` : ''}`)
     .join('\n') || '  • No launches in the next 48 hours.';
 
   const marketLines = (content.marketSnapshot||[])
-    .map(m => `  ${m.ticker}: ${m.price} ${m.change}`)
+    .map(m => `  ${stripHTML(m.ticker)}: ${stripHTML(m.price)} ${stripHTML(m.change)}`)
+    .join('\n');
+
+  // Lead links as plain text
+  const leadLinks = (content.lead?.links || [])
+    .map(l => `    ${l.text}: ${l.url}`)
     .join('\n');
 
   return [
-    `SkyTuned · Your Daily Orbit — ${content.date}`,
+    `SkyTuned · Your Daily Orbit`,
+    content.date,
     'Space News. Comprehensive. Daily.',
     '='.repeat(50),
     '',
-    `🔭 TODAY'S LEAD: ${content.lead.headline}`,
+    `TODAY'S LEAD`,
     hr,
-    content.lead.body,
+    stripHTML(content.lead.headline),
     '',
-    `📡 MISSION CONTROL`,
+    stripHTML(content.lead.body),
+    leadLinks ? `\n${leadLinks}` : '',
+    '',
+    `MISSION CONTROL`,
     hr,
     missionLines,
     '',
-    `🔬 SPOTLIGHT: ${content.spotlight.title}`,
+    `SPOTLIGHT: ${stripHTML(content.spotlight.title)}`,
     hr,
     spotlightLines,
     '',
-    `🌙 TONIGHT'S SKY`,
+    `TONIGHT'S SKY`,
     hr,
-    content.tonightsSky,
+    stripHTML(content.tonightsSky),
     '',
-    `🌤️ SPACE WEATHER`,
+    `SPACE WEATHER`,
     hr,
-    content.spaceWeather,
+    stripHTML(content.spaceWeather),
     '',
-    content.socialBuzz ? `💬 SOCIAL BUZZ\n${hr}\n${content.socialBuzz}\n` : '',
-    `🚀 ON THE PAD`,
+    content.socialBuzz ? `SOCIAL BUZZ\n${hr}\n${stripHTML(content.socialBuzz)}\n` : '',
+    `ON THE PAD`,
     hr,
     padLines,
     '',
-    `📈 MARKET SNAPSHOT`,
+    `MARKET SNAPSHOT`,
     hr,
     marketLines,
     '',
@@ -296,13 +329,16 @@ function buildSkyTunedEmailPayload(content, subscriber) {
     throw new Error(`SkyTuned content validation failed:\n  ${errors.join('\n  ')}`);
   }
 
-  const subject   = buildSubject({ date: content.date });
+  const subject   = content.subjectHook
+    ? `🚀 SkyTuned: ${content.subjectHook}`
+    : buildSubject({ date: content.date });
+  const preheader = buildPreheader(content);
   const html      = buildSkyTunedEmailHTML(content, subscriber);
   const text      = buildSkyTunedEmailText(content, subscriber);
 
   return {
     subject,
-    preheader: PREHEADER,
+    preheader,
     html,
     text,
     metadata: {
@@ -314,7 +350,7 @@ function buildSkyTunedEmailPayload(content, subscriber) {
       from_name:        FROM_NAME,
       reply_to:         REPLY_TO,
       subject,
-      preheader:        PREHEADER,
+      preheader:        preheader,
     },
   };
 }
@@ -325,5 +361,5 @@ module.exports = {
   buildSkyTunedEmailPayload,
   validateContent,
   hasAstrologyContent,
-  PREHEADER,
+  buildPreheader,
 };

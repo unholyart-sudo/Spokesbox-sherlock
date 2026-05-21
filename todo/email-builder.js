@@ -19,7 +19,24 @@ const TEMPLATE_VERSION = '1.0.0';
 const PROJECT          = 'todo';
 const FROM_EMAIL       = 'jared@jaredgreen.com';
 const FROM_NAME        = 'Sherlock';
-const PREHEADER        = "Today's open tasks, deadlines, money items, and follow-ups.";
+function buildTodoPreheader(sections) {
+  const urgentItems = [];
+  for (const sec of (sections || [])) {
+    for (const it of (sec.items || [])) {
+      const s = (it.status || '').toLowerCase();
+      if (s.includes('unpaid') || s.includes('overdue') || s.includes('⚠️')) {
+        // Truncate at word boundary
+      const truncated = it.item.slice(0, 45);
+      urgentItems.push(truncated.lastIndexOf(" ") > 10 ? truncated.slice(0, truncated.lastIndexOf(" ")) : truncated);
+      }
+    }
+  }
+  if (urgentItems.length > 0) {
+    return `Needs attention: ${urgentItems.slice(0, 2).join(', ')}.`.slice(0, 150);
+  }
+  const sectionNames = (sections || []).slice(0, 3).map(s => s.section.replace(/^[^\w]+/, '').trim().split('.')[0]).join(', ');
+  return `${sectionNames} — and more.`.slice(0, 150);
+}
 
 // Status badge colors
 const STATUS_STYLE = {
@@ -88,7 +105,7 @@ function buildTodoEmailHTML(sections, opts = {}) {
 
   <!-- Preheader (hidden) -->
   <span style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#07090f;">
-    ${PREHEADER}
+    ${buildTodoPreheader(sections)}
   </span>
 
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#07090f;">
@@ -160,15 +177,22 @@ function buildTodoEmailText(sections, opts = {}) {
 
 function buildTodoEmailPayload(sections, opts = {}) {
   const date    = buildDate(opts.date);
-  const subject = `📋 Jride TODO List — ${new Date().toLocaleDateString('en-US', {
-    month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York',
-  })}`;
+  // Count items needing attention (unpaid, overdue, pending, blocked)
+  const urgentStatuses = ['unpaid', 'overdue', 'pending', 'blocked', '⚠️ unpaid', 'due'];
+  const urgentCount = sections.reduce((n, sec) =>
+    n + sec.items.filter(it => urgentStatuses.some(s => (it.status||'').toLowerCase().includes(s))).length, 0
+  );
+  const subjectLine = urgentCount > 0
+    ? `TODO: ${urgentCount} item${urgentCount > 1 ? 's' : ''} need attention`
+    : `TODO: your list`;
+  const subject = subjectLine;
+  const preheader = buildTodoPreheader(sections);
   const html    = buildTodoEmailHTML(sections, opts);
   const text    = buildTodoEmailText(sections, opts);
 
   return {
     subject,
-    preheader: PREHEADER,
+    preheader,
     html,
     text,
     metadata: {
@@ -180,7 +204,7 @@ function buildTodoEmailPayload(sections, opts = {}) {
       from_name:        FROM_NAME,
       reply_to:         null,
       subject,
-      preheader:        PREHEADER,
+      preheader,
       private:          true,
     },
   };
