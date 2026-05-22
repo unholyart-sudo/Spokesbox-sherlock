@@ -9,3 +9,6 @@ google-vertex-service-account.json
 *.enc
 production-critical/
 backup.log
+
+# Spokesbox send ledger — runtime files, not source
+spokesbox/send-ledger/*.json
