@@ -1,7 +1,72 @@
 {
-  "stories": [],
-  "jokes": [],
-  "trivia": [],
+  "stories": [
+    {
+      "date": "2026-05-21",
+      "title": "Arsenal Crowned Premier League Champions for First Time in 22 Years",
+      "topic_hash": "5c17fa03e6d5",
+      "url_hash": "6bcb31586b45",
+      "url": "https://www.theguardian.com/football/live/2026/may/19/arsenal-premier-league-champions-first-time-in-22-years-live-reaction",
+      "normalized": "soccer"
+    },
+    {
+      "date": "2026-05-21",
+      "title": "2026 MLS NEXT Cup Kicks Off May 23 in Salt Lake City",
+      "topic_hash": "5c17fa03e6d5",
+      "url_hash": "51fd365c6104",
+      "url": "https://www.mlssoccer.com/mlsnext/news/2026-mls-next-cup-presented-by-allstate-kicks-off-may-23-with-top-clubs-battling-for-titles",
+      "normalized": "soccer"
+    },
+    {
+      "date": "2026-05-22",
+      "title": "MLS Makes iPhone TV History — LA Galaxy vs Dynamo Shot Entirely on iPhone 17 Pro",
+      "topic_hash": "5c17fa03e6d5",
+      "url_hash": "8f82c1e12fa7",
+      "url": "https://www.forbes.com/sites/ianquillen/2026/05/22/mls-making-iphone-tv-history-but-cant-shake-basic-production-hiccups/",
+      "normalized": "soccer"
+    },
+    {
+      "date": "2026-05-22",
+      "title": "2026 MLS NEXT Cup Kicks Off May 23 in Salt Lake City",
+      "topic_hash": "5c17fa03e6d5",
+      "url_hash": "9eb20f9e45b6",
+      "url": "https://www.rsl.com/news/2026-mls-next-cup-presented-by-allstate-kicks-off-may-23-as-real-salt-lake-academy-battles-for-title-on-home-soil",
+      "normalized": "soccer"
+    }
+  ],
+  "jokes": [
+    {
+      "date": "2026-05-21",
+      "text": "Why cant Cinderella play soccer? Because she keeps running away from the ball!",
+      "normalized": "why cant cinderella play soccer because she keeps running away from ball",
+      "hash": "6ed3e777925a"
+    },
+    {
+      "date": "2026-05-22",
+      "text": "What has 22 legs and loves to kick? A soccer team!",
+      "normalized": "what 22 legs loves kick soccer team",
+      "hash": "39e408e378b1"
+    }
+  ],
+  "trivia": [
+    {
+      "date": "2026-05-21",
+      "question": "What is a group of flamingos called?",
+      "answer": "A flamboyance",
+      "category": "Animals",
+      "question_hash": "82b096736087",
+      "answer_hash": "df053bbbc287",
+      "normalized_q": "what group flamingos called"
+    },
+    {
+      "date": "2026-05-22",
+      "question": "What comes next in the pattern: 2, 6, 18, 54, ???",
+      "answer": "162",
+      "category": "Math",
+      "question_hash": "c4a4dcf410a3",
+      "answer_hash": "ae1e7198bc30",
+      "normalized_q": "what comes next pattern 2 6 18 54"
+    }
+  ],
   "music": [
     {
       "date": "2026-04-23",
@@ -58,6 +123,14 @@
     {
       "date": "2026-05-19",
       "artist": "Zach Bryan"
+    },
+    {
+      "date": "2026-05-21",
+      "artist": "Katy Perry"
+    },
+    {
+      "date": "2026-05-22",
+      "artist": "Imagine Dragons"
     }
   ],
   "riddles": [
@@ -180,6 +253,18 @@
       "text": "NIGHT/THING anagram",
       "normalized": "night thing anagram",
       "hash": "429a0bd3e055"
+    },
+    {
+      "date": "2026-05-21",
+      "text": "letter sequence O T T F F S S E N - first letters of numbers one through nine",
+      "normalized": "letter sequence o t t f f s s e n first letters numbers one through nine",
+      "hash": "d1a76e201edc"
+    },
+    {
+      "date": "2026-05-22",
+      "text": "2-6-18-54 geometric sequence multiply by 3 math pattern",
+      "normalized": "2 6 18 54 geometric sequence multiply 3 math pattern",
+      "hash": "60b1e6c2db26"
     }
   ]
 }
