@@ -29,10 +29,28 @@ LOG="/tmp/watchdog.log"
 DATE=$(date '+%Y-%m-%d %H:%M:%S')
 LAUNCHD_UID=$(id -u)
 
+tail_stderr_for_service() {
+  local name="$1"
+  local err_path="$2"
+
+  echo "" >> "$LOG"
+  echo "---- ${name} stderr: last 20 lines ----" >> "$LOG"
+
+  if [ -n "$err_path" ] && [ -f "$err_path" ]; then
+    tail -20 "$err_path" >> "$LOG"
+  else
+    echo "No stderr log found at: ${err_path:-unknown}" >> "$LOG"
+  fi
+
+  echo "---- end ${name} stderr ----" >> "$LOG"
+  echo "" >> "$LOG"
+}
+
 check_and_kick() {
   local name="$1"
   local port="$2"
   local label="$3"  # launchd service label
+  local err_path="$4"  # stderr log path from plist StandardErrorPath
 
   # HTTP healthcheck — accepts 2xx/3xx/4xx as healthy.
   # Only 5xx or connection failure (000) indicates a problem.
@@ -62,10 +80,12 @@ check_and_kick() {
     # kickstart -k forces an immediate restart.
     launchctl kickstart -k "gui/${LAUNCHD_UID}/${label}" 2>/dev/null
     echo "$DATE [$name] No PID on port — kickstarted via launchd" >> "$LOG"
+    # Capture stderr inline so crash reason is visible without manual log hunting.
+    tail_stderr_for_service "$name" "$err_path"
   fi
 }
 
-check_and_kick "skytuned"   "3001" "com.skytuned.server"
-check_and_kick "torahtxt"   "3000" "com.torahtxt.server"
-check_and_kick "spokesbox"  "3002" "com.spokesbox.server"
-check_and_kick "rarity-art" "3005" "com.rarity.server"
+check_and_kick "skytuned"   "3001" "com.skytuned.server"  "/tmp/skytuned-error.log"
+check_and_kick "torahtxt"   "3000" "com.torahtxt.server"   "/tmp/torahtxt-error.log"
+check_and_kick "spokesbox"  "3002" "com.spokesbox.server"  "/tmp/spokesbox-error.log"
+check_and_kick "rarity-art" "3005" "com.rarity.server"     "/tmp/rarity-error.log"
