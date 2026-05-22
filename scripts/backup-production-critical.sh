@@ -87,6 +87,10 @@ copy_if_exists "package-lock.json"            "${SNAPSHOT}/plain"
 copy_if_exists "MEMORY.md"                    "${SNAPSHOT}/plain"
 copy_if_exists "COST_CONTROL.md"              "${SNAPSHOT}/plain"
 copy_if_exists "EMAIL_OUTPUT_STANDARD.md"     "${SNAPSHOT}/plain"
+copy_if_exists "OPENCLAW_OPS.md"              "${SNAPSHOT}/plain"
+
+# Memory directory (daily notes, design specs, heartbeat state — untracked by git)
+copy_if_exists "memory"                       "${SNAPSHOT}/plain"
 
 # Scripts
 copy_if_exists "scripts/safe-git-reset.sh"            "${SNAPSHOT}/plain/scripts"
@@ -110,6 +114,7 @@ copy_if_exists "migrations" "${SNAPSHOT}/plain"
 PLIST_DEST="${SNAPSHOT}/plain/LaunchAgents"
 mkdir -p "$PLIST_DEST"
 for plist in \
+  "$HOME/Library/LaunchAgents/ai.openclaw.gateway.plist" \
   "$HOME/Library/LaunchAgents/com.spokesbox.server.plist" \
   "$HOME/Library/LaunchAgents/com.torahtxt.server.plist" \
   "$HOME/Library/LaunchAgents/com.skytuned.server.plist" \
@@ -165,29 +170,47 @@ else
     fi
   }
 
-  # .env files
+  # .env files — explicit known paths
   for env_file in .env .env.local .env.production .env.development; do
     [ -f "$env_file" ] && stage_secret "$env_file" "root"
   done
   for env_file in spokesbox/.env spokesbox/.env.local spokesbox/.env.production; do
     [ -f "$env_file" ] && stage_secret "$env_file" "spokesbox"
   done
-  for env_file in torahtxt/.env.podcast; do
+  for env_file in torahtxt/.env torahtxt/.env.podcast torahtxt/.env.local; do
     [ -f "$env_file" ] && stage_secret "$env_file" "torahtxt"
   done
+  for env_file in skytuned/.env skytuned/.env.local; do
+    [ -f "$env_file" ] && stage_secret "$env_file" "skytuned"
+  done
+
+  # .env catch-all — find any .env* files workspace-wide not already staged
+  log "── Scanning for additional .env files..."
+  while IFS= read -r -d '' env_file; do
+    rel="${env_file#$WORKSPACE/}"
+    dir=$(dirname "$rel")
+    dest_check="${SECRET_STAGING}/${dir}/$(basename "$env_file")"
+    if [ ! -e "$dest_check" ]; then
+      stage_secret "$rel" "$dir"
+    fi
+  done < <(find "$WORKSPACE" \( -name '.env' -o -name '.env.*' -o -name '*.env' \) \
+    ! -path '*/node_modules/*' ! -path '*/.git/*' -print0 2>/dev/null)
+
+  # DB catch-all — find any *.db or *.sqlite not already staged
+  log "── Scanning for additional databases..."
+  while IFS= read -r -d '' db_file; do
+    rel="${db_file#$WORKSPACE/}"
+    dir=$(dirname "$rel")
+    dest_check="${SECRET_STAGING}/${dir}/$(basename "$db_file")"
+    if [ ! -e "$dest_check" ]; then
+      stage_secret "$rel" "$dir"
+    fi
+  done < <(find "$WORKSPACE" \( -name '*.db' -o -name '*.sqlite' -o -name '*.db3' \) \
+    ! -path '*/node_modules/*' ! -path '*/.git/*' -print0 2>/dev/null)
 
   # Service account JSON
   stage_secret "google-service-account.json"        "root"
   stage_secret "google-vertex-service-account.json" "root"
-
-  # Databases
-  for db in \
-    "skytuned/subscribers.db" \
-    "torahtxt/subscribers.db" \
-    "spokesbox/subscribers.db" \
-    "rarity-art/rarity.db"; do
-    stage_secret "$db" "$(dirname "$db")"
-  done
 
   # data/ directories
   for data_dir in data spokesbox/data torahtxt/data; do

@@ -56,6 +56,40 @@ Run `check-openclaw-gateway.sh` after any observed silence to confirm status.
 
 ---
 
+## Production-Critical Backup
+
+**Script:** `scripts/backup-production-critical.sh`
+**Destination:** `~/Dropbox/OpenClaw Backups/production-critical/YYYY-MM-DD_HH-MM-SS/`
+
+### What runs without a passphrase (plain backup)
+Safe to run anytime. No secrets in output:
+- `MEMORY.md`, `COST_CONTROL.md`, `OPENCLAW_OPS.md`, `watchdog.sh`
+- `server.js`, `package.json`, `package-lock.json`
+- `scripts/` (backup + reset scripts)
+- `spokesbox/server.js`, `spokesbox/public/`, `spokesbox/lib/`
+- `lib/`, `email/`, `public/`
+- `memory/` directory (daily notes, design specs — untracked by git)
+- All 7 launchd plists (including `ai.openclaw.gateway.plist`)
+
+### What requires `PRODUCTION_BACKUP_PASSPHRASE` (encrypted backup)
+Without this passphrase **these are NOT backed up** and will be lost on rebuild:
+- `spokesbox/.env`, `torahtxt/.env.podcast`, `skytuned/.env`, any other `.env*`
+- `google-service-account.json`, `google-vertex-service-account.json`
+- `skytuned/subscribers.db`, `torahtxt/subscribers.db`, `spokesbox/subscribers.db`
+- Any other `*.db` / `*.sqlite` files under workspace
+
+To enable: `export PRODUCTION_BACKUP_PASSPHRASE="your-passphrase"` then run script.
+
+### Cron export (separate)
+Run after any cron changes:
+```bash
+# Via agent — ask: "export cron config to Dropbox"
+# Output: ~/Dropbox/OpenClaw Backups/cron-exports/cron-export-TIMESTAMP.json
+# All secrets are redacted in the export
+```
+
+---
+
 ## Health Check Script
 
 **Location:** `scripts/check-openclaw-gateway.sh`
