@@ -58,15 +58,15 @@ function buildPreheader({ parasha, message }) {
 function buildDigDeeperSection(parasha) {
   const q = encodeURIComponent(parasha || '');
   return `
-    <div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);
+    <div style="background:#fdf8ee;border:1px solid #e5d9b0;
                 border-radius:8px;padding:20px 24px;margin:0 0 24px 0;">
-      <p style="color:#c9a84c;font-size:0.8rem;letter-spacing:0.1em;
+      <p style="color:#8b7340;font-size:0.8rem;letter-spacing:0.1em;
                 text-transform:uppercase;margin:0 0 12px 0;font-weight:bold;">📚 Dig Deeper</p>
       <table width="100%" cellpadding="0" cellspacing="0">
-        <tr><td style="padding:0 0 7px 0;"><a href="https://www.sefaria.org/search#query=parashat+${q}" style="color:#c9a84c;">📖 <strong>Sefaria</strong></a><span style="color:#6b7a96;font-size:0.82rem;"> — Full Torah text + commentaries</span></td></tr>
-        <tr><td style="padding:0 0 7px 0;"><a href="https://www.chabad.org/search/keyword_cdo/kid/8928/jewish/Parsha.htm" style="color:#c9a84c;">🕍 <strong>Chabad.org</strong></a><span style="color:#6b7a96;font-size:0.82rem;"> — Chassidic insights + weekly guides</span></td></tr>
-        <tr><td style="padding:0 0 7px 0;"><a href="https://www.aish.com/tp/" style="color:#c9a84c;">🔥 <strong>Aish.com</strong></a><span style="color:#6b7a96;font-size:0.82rem;"> — Inspiring Torah perspectives</span></td></tr>
-        <tr><td><a href="https://torah.org/torah/" style="color:#c9a84c;">📜 <strong>Torah.org</strong></a><span style="color:#6b7a96;font-size:0.82rem;"> — Weekly shiurim + in-depth study</span></td></tr>
+        <tr><td style="padding:0 0 7px 0;"><a href="https://www.sefaria.org/search#query=parashat+${q}" style="color:#8b7340;">📖 <strong>Sefaria</strong></a><span style="color:#6b7280;font-size:0.82rem;"> — Full Torah text + commentaries</span></td></tr>
+        <tr><td style="padding:0 0 7px 0;"><a href="https://www.chabad.org/search/keyword_cdo/kid/8928/jewish/Parsha.htm" style="color:#8b7340;">🕍 <strong>Chabad.org</strong></a><span style="color:#6b7280;font-size:0.82rem;"> — Chassidic insights + weekly guides</span></td></tr>
+        <tr><td style="padding:0 0 7px 0;"><a href="https://www.aish.com/tp/" style="color:#8b7340;">🔥 <strong>Aish.com</strong></a><span style="color:#6b7280;font-size:0.82rem;"> — Inspiring Torah perspectives</span></td></tr>
+        <tr><td><a href="https://torah.org/torah/" style="color:#8b7340;">📜 <strong>Torah.org</strong></a><span style="color:#6b7280;font-size:0.82rem;"> — Weekly shiurim + in-depth study</span></td></tr>
       </table>
     </div>`;
 }
@@ -85,11 +85,11 @@ function buildKidsSection(kids) {
   }
   if (!kidsHtml.trim()) return '';
   return `
-    <div style="background:rgba(255,215,0,0.05);border:2px solid rgba(201,168,76,0.3);
+    <div style="background:#fdf8ee;border:2px solid #e5d9b0;
                 border-radius:12px;padding:22px 24px;margin:0 0 24px 0;">
-      <p style="color:#c9a84c;font-size:0.8rem;letter-spacing:0.1em;
+      <p style="color:#8b7340;font-size:0.8rem;letter-spacing:0.1em;
                 text-transform:uppercase;margin:0 0 10px 0;font-weight:bold;">👑 Torah for Kids</p>
-      <p style="color:#d4cfc4;font-size:1rem;line-height:1.8;margin:0;">${kidsHtml}</p>
+      <p style="color:#374151;font-size:1rem;line-height:1.8;margin:0;">${kidsHtml}</p>
     </div>`;
 }
 
@@ -106,15 +106,15 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
       // Render reflection/italic lines (starting with _) as styled callout
       if (t.startsWith('_') && t.endsWith('_')) {
         const txt = t.slice(1, -1);
-        return '<div style="border-left:3px solid #c9a84c;padding:12px 0 12px 18px;margin:20px 0;color:#f2ece0;font-style:italic;font-size:14px;line-height:1.65;">' + txt + '</div>';
+        return '<div style="border-left:3px solid #c9a84c;padding:12px 0 12px 18px;margin:20px 0;color:#374151;font-style:italic;font-size:14px;line-height:1.65;">' + txt + '</div>';
       }
       if (t.startsWith('•')) {
-        return `<li style="color:#d4cfc4;font-size:15px;line-height:1.75;margin-bottom:0.75em;padding-left:0.5em;">${
-          t.slice(1).trim().replace(/\*(.*?)\*/g, '<em style="color:#c9a84c;">$1</em>')
+        return `<li style="color:#374151;font-size:15px;line-height:1.75;margin-bottom:0.75em;padding-left:0.5em;">${
+          t.slice(1).trim().replace(/\*(.*?)\*/g, '<em style="color:#8b7340;">$1</em>')
         }</li>`;
       }
-      return `<p style="color:#d4cfc4;font-size:15px;line-height:1.75;margin:0 0 1em 0;">${
-        t.replace(/\*(.*?)\*/g, '<em style="color:#c9a84c;">$1</em>')
+      return `<p style="color:#374151;font-size:15px;line-height:1.75;margin:0 0 1em 0;">${
+        t.replace(/\*(.*?)\*/g, '<em style="color:#8b7340;">$1</em>')
       }</p>`;
     })
     .join('\n')
@@ -144,17 +144,17 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
     .stack { display:block !important; width:100% !important; margin-bottom:10px !important; }
     .center-mobile { text-align:center !important; }
   }
-  body,table{background:#1a1c2e!important;}
+  body,table{background:#f5f4ef!important;}
 </style>
 </head>
-<body style="margin:0;padding:0;background:#1a1c2e;font-family:Georgia,serif;color:#f2ece0;">
+<body style="margin:0;padding:0;background:#f5f4ef;font-family:Georgia,serif;color:#1a1a2a;">
 
   <!-- Preheader (hidden) -->
-  <span style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#1a1c2e;">
+  <span style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#f5f4ef;">
     ${preheaderText.replace(/</g,'&lt;')}
   </span>
 
-  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#1a1c2e;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f5f4ef;">
     <tr><td align="center" style="padding:32px 16px;">
       <table width="600" cellpadding="0" cellspacing="0" role="presentation" class="container" style="max-width:600px;width:100%;">
 
@@ -165,19 +165,19 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
         </td></tr>
         <tr><td style="text-align:center;padding-bottom:24px;">
           <span style="font-family:Georgia,serif;font-size:0.9rem;font-style:italic;
-                       color:#e2c46a;letter-spacing:0.05em;">Divine Inspiration. Delivered Daily.</span>
+                       color:#8b7340;letter-spacing:0.05em;">Divine Inspiration. Delivered Daily.</span>
         </td></tr>
 
         ${dailyImage}
 
         <!-- Card -->
-        <tr><td style="background:#0d1121;border:1px solid rgba(201,168,76,0.2);
+        <tr><td style="background:#ffffff;border:1px solid #e5e0d5;
                        border-radius:${cardRadius};padding:36px;">
 
           <!-- Date + Parasha -->
-          <p style="color:#6b7a96;font-size:0.8rem;letter-spacing:0.1em;
+          <p style="color:#6b7280;font-size:0.8rem;letter-spacing:0.1em;
                     text-transform:uppercase;margin:0 0 4px 0;">${date}</p>
-          <h2 style="color:#c9a84c;font-family:Georgia,serif;margin:0 0 24px 0;
+          <h2 style="color:#8b7340;font-family:Georgia,serif;margin:0 0 24px 0;
                      font-size:1.25rem;">Parashat ${parasha}</h2>
           <div style="height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);
                       margin-bottom:28px;"></div>
@@ -186,11 +186,11 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
           ${messageHtml}
 
           <!-- View online -->
-          <p style="text-align:center;margin:28px 0;font-size:0.85rem;color:#6b7a96;">
+          <p style="text-align:center;margin:28px 0;font-size:0.85rem;color:#6b7280;">
             <a href="${BASE_URL}/today" style="color:#c9a84c;">View this online</a>
           </p>
 
-          <div style="height:1px;background:rgba(201,168,76,0.12);margin:0 0 24px 0;"></div>
+          <div style="height:1px;background:#e5e0d5;margin:0 0 24px 0;"></div>
 
           <!-- Dig Deeper -->
           ${buildDigDeeperSection(parasha)}
@@ -203,31 +203,31 @@ function buildDailyEmailHTML({ name, date, parasha, message, token, email, image
             <tr>
               <td class="stack" style="text-align:center;padding:0 8px;">
                 <a href="${BASE_URL}/#signup"
-                   style="display:inline-block;background:transparent;border:1px solid rgba(201,168,76,0.4);
-                          color:#c9a84c;text-decoration:none;padding:10px 20px;border-radius:6px;
+                   style="display:inline-block;background:transparent;border:1px solid #c9a84c;
+                          color:#8b7340;text-decoration:none;padding:10px 20px;border-radius:6px;
                           font-size:0.85rem;">📱 Get Text Messages</a>
               </td>
               <td style="text-align:center;padding:0 8px;">
                 <a href="${BASE_URL}/sponsor"
-                   style="display:inline-block;background:transparent;border:1px solid rgba(201,168,76,0.4);
-                          color:#c9a84c;text-decoration:none;padding:10px 20px;border-radius:6px;
+                   style="display:inline-block;background:transparent;border:1px solid #c9a84c;
+                          color:#8b7340;text-decoration:none;padding:10px 20px;border-radius:6px;
                           font-size:0.85rem;">🕯️ Sponsor a Day</a>
               </td>
             </tr>
           </table>
 
-          <div style="height:1px;background:rgba(201,168,76,0.12);margin:24px 0;"></div>
+          <div style="height:1px;background:#e5e0d5;margin:24px 0;"></div>
 
           <!-- Footer -->
-          <p style="color:#6b7a96;font-size:0.75rem;text-align:center;margin:0;line-height:1.8;">
+          <p style="color:#6b7280;font-size:0.75rem;text-align:center;margin:0;line-height:1.8;">
             You're receiving this because you subscribed to TorahTxt.<br>
-            <a href="${unsubLink}" style="color:#c9a84c;">Unsubscribe</a>
+            <a href="${unsubLink}" style="color:#8b7340;">Unsubscribe</a>
             &nbsp;·&nbsp;
-            <a href="${BASE_URL}" style="color:#c9a84c;">torahtxt.com</a>
+            <a href="${BASE_URL}" style="color:#8b7340;">torahtxt.com</a>
           </p>
         </td></tr>
 
-        <tr><td style="text-align:center;padding-top:20px;color:#6b7a96;font-size:0.75rem;">
+        <tr><td style="text-align:center;padding-top:20px;color:#6b7280;font-size:0.75rem;">
           © TorahTxt · Divine Inspiration. Delivered Daily.
         </td></tr>
 

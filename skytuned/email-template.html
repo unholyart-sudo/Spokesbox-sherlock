@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyTuned · Your Daily Orbit</title>
+</head>
+<body style="margin:0;padding:0;background:#f0f4f8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;">
+  <tr>
+    <td align="center" style="padding:24px 12px;">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+        <!-- ── LOGO HEADER ── -->
+        <tr>
+          <td style="background:#ffffff;text-align:center;padding:24px 0 0;border-radius:8px 8px 0 0;border-top:3px solid #c9a84c;">
+            <img src="https://skytuned.com/logo-space-v2.jpg" alt="SkyTuned" width="280" style="display:block;margin:0 auto;">
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#ffffff;text-align:center;padding:8px 0 16px;">
+            <span style="font-size:11px;letter-spacing:2px;color:#6b7280;text-transform:uppercase;">Space News. Comprehensive. Daily.</span>
+          </td>
+        </tr>
+
+        <!-- ── DATE BAR ── -->
+        <tr>
+          <td style="background:#f8fafc;padding:12px 24px;border-top:2px solid #c9a84c;border-bottom:1px solid #e5e7eb;">
+            <p style="margin:0;color:#c9a84c;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;">{{DATE_LINE}}</p>
+          </td>
+        </tr>
+
+        <!-- ── TODAY'S LEAD ── -->
+        <tr>
+          <td style="background:#ffffff;padding:24px 24px 8px;">
+            <h2 style="margin:0 0 12px;color:#c9a84c;font-size:12px;letter-spacing:2px;text-transform:uppercase;">🌌 Today's Lead</h2>
+            <h1 style="margin:0 0 12px;color:#111827;font-size:21px;line-height:1.35;font-weight:700;">{{LEAD_HEADLINE}}</h1>
+            <p style="margin:0 0 20px;color:#374151;font-size:15px;line-height:1.65;">{{LEAD_BODY}}</p>
+            <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;">
+          </td>
+        </tr>
+
+        <!-- ── MISSION CONTROL ── -->
+        <!-- Sub-sections: 🚀 Launches | 🏢 Private Sector | 📈 Markets | 🌎 Government & Agencies | 💰 Funding -->
+        <!-- Each sub-section: <p> label + <ul> bullets, then final <hr> -->
+        <tr>
+          <td style="background:#ffffff;padding:20px 24px 8px;">
+            <h2 style="margin:0 0 16px;color:#c9a84c;font-size:12px;letter-spacing:2px;text-transform:uppercase;">📡 Mission Control</h2>
+            {{MISSION_CONTROL_SECTIONS}}
+            <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;">
+          </td>
+        </tr>
+
+        <!-- ── SPOTLIGHT (day-of-week deep-dive) ── -->
+        <tr>
+          <td style="background:#ffffff;padding:20px 24px 8px;">
+            <h2 style="margin:0 0 4px;color:#c9a84c;font-size:12px;letter-spacing:2px;text-transform:uppercase;">{{SPOTLIGHT_LABEL}}</h2>
+            <p style="margin:0 0 14px;color:#6b7280;font-size:11px;letter-spacing:1px;text-transform:uppercase;">{{SPOTLIGHT_EYEBROW}}</p>
+            <h3 style="margin:0 0 14px;color:#111827;font-size:18px;line-height:1.35;font-weight:700;">{{SPOTLIGHT_HEADLINE}}</h3>
+            {{SPOTLIGHT_BODY}}
+            <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;">
+          </td>
+        </tr>
+
+        <!-- ── TONIGHT'S SKY ── -->
+        <tr>
+          <td style="background:#ffffff;padding:20px 24px 8px;">
+            <h2 style="margin:0 0 14px;color:#c9a84c;font-size:12px;letter-spacing:2px;text-transform:uppercase;">🌙 Tonight's Sky</h2>
+            <ul style="margin:0 0 10px;padding-left:20px;color:#374151;font-size:14px;line-height:1.7;">
+              {{TONIGHT_ITEMS}}
+            </ul>
+            <p style="margin:0 0 20px;font-size:13px;color:#6b7280;">📚 <a href="https://skytuned.com/stargazing.html" style="color:#c9a84c;text-decoration:none;">Full stargazing guide at skytuned.com/stargazing.html</a></p>
+            <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;">
+          </td>
+        </tr>
+
+        <!-- ── SPACE WEATHER ── -->
+        <tr>
+          <td style="background:#ffffff;padding:20px 24px 8px;">
+            <h2 style="margin:0 0 14px;color:#c9a84c;font-size:12px;letter-spacing:2px;text-transform:uppercase;">⚡ Space Weather</h2>
+            <p style="margin:0 0 20px;color:#374151;font-size:14px;line-height:1.7;">{{SPACE_WEATHER_BODY}}</p>
+            <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;">
+          </td>
+        </tr>
+
+        <!-- ── SOCIAL BUZZ ── -->
+        <!-- Each card: single-row table with border-left:3px solid #c9a84c -->
+        <tr>
+          <td style="background:#ffffff;padding:20px 24px 8px;">
+            <h2 style="margin:0 0 14px;color:#c9a84c;font-size:12px;letter-spacing:2px;text-transform:uppercase;">📲 Social Buzz</h2>
+            {{SOCIAL_BUZZ_CARDS}}
+            <p style="margin:0 0 20px;font-size:13px;color:#6b7280;">📲 <a href="https://skytuned.com/social.html" style="color:#c9a84c;text-decoration:none;">Full social roundup at skytuned.com/social.html</a></p>
+            <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;">
+          </td>
+        </tr>
+
+        <!-- ── ON THE PAD — LAUNCH SCHEDULE ── -->
+        <!-- Each row: date (gold, bold) | mission+vehicle+site | optional ⭐ -->
+        <tr>
+          <td style="background:#ffffff;padding:20px 24px 8px;">
+            <h2 style="margin:0 0 14px;color:#c9a84c;font-size:12px;letter-spacing:2px;text-transform:uppercase;">🚀 On the Pad — Next 7 Days</h2>
+            <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;color:#374151;border-collapse:collapse;">
+              {{LAUNCH_ROWS}}
+            </table>
+            <p style="margin:8px 0 20px;font-size:11px;color:#6b7280;">⭐ = High-interest watch event</p>
+            <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;">
+          </td>
+        </tr>
+
+        <!-- ── MARKET SNAPSHOT ── -->
+        <!-- 4 columns: Ticker | Price | Change | Note -->
+        <tr>
+          <td style="background:#ffffff;padding:20px 24px 20px;">
+            <h2 style="margin:0 0 14px;color:#c9a84c;font-size:12px;letter-spacing:2px;text-transform:uppercase;">📈 Market Snapshot</h2>
+            <p style="margin:0 0 12px;font-size:11px;color:#6b7280;">{{MARKET_TIMESTAMP}}</p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;color:#374151;border-collapse:collapse;">
+              <tr style="background:#1a2744;">
+                <td style="padding:8px 10px;color:#ffffff;font-weight:700;border-radius:4px 0 0 0;">Ticker</td>
+                <td style="padding:8px 10px;color:#ffffff;font-weight:700;">Price</td>
+                <td style="padding:8px 10px;color:#ffffff;font-weight:700;">Change</td>
+                <td style="padding:8px 10px;color:#ffffff;font-weight:700;border-radius:0 4px 0 0;">Note</td>
+              </tr>
+              {{MARKET_ROWS}}
+            </table>
+          </td>
+        </tr>
+
+        <!-- ── FOOTER ── -->
+        <tr>
+          <td style="background:#f8fafc;padding:20px 24px 24px;border-radius:0 0 8px 8px;text-align:center;border-top:1px solid #e5e7eb;">
+            <p style="margin:0 0 8px;color:#6b7280;font-size:12px;">
+              You're receiving SkyTuned because you signed up at
+              <a href="https://skytuned.com" style="color:#c9a84c;text-decoration:none;">skytuned.com</a>
+            </p>
+            <p style="margin:0 0 8px;color:#6b7280;font-size:12px;">
+              <a href="https://skytuned.com/unsubscribe?email={{EMAIL}}&token={{TOKEN}}" style="color:#6b7280;text-decoration:none;">Unsubscribe</a>
+               · 
+              <a href="https://skytuned.com" style="color:#6b7280;text-decoration:none;">Visit SkyTuned</a>
+            </p>
+            <p style="margin:0;color:#9ca3af;font-size:11px;">© 2026 SkyTuned · Space News. Comprehensive. Daily.</p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
