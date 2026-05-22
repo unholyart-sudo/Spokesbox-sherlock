@@ -1,9 +1,20 @@
 
 # TorahTxt podcast audio — not committed unless explicitly approved
 podcasts/daily-torah/**/*.mp3
-.env.podcast
+
+# Environment files — never commit secrets
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+
+# Service account and credentials — never commit
 google-service-account.json
 google-vertex-service-account.json
+*.pem
+*.key
+*.p12
 
 # Backup artifacts — never commit
 *.enc
