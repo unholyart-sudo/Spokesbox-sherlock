@@ -100,3 +100,40 @@ curl -i http://localhost:3002/
 wc -l spokesbox/server.js      # should be > 3900 lines
 wc -l server.js                # stale root copy, always shorter
 ```
+
+---
+
+## Cron Architecture — Active Senders
+
+| Cron ID | Name | Schedule | Status | Recipients |
+|---|---|---|---|---|
+| `e727f97e` | Spokesbox Daily Brief | 7:00 AM ET daily | ✅ **ACTIVE** | Jride, Avi, Bob, rarityadvisors, jaredgreen |
+| `edc6e0e8` | Spokesbox — Hourly Newsletter Send | Every hour ET | ❌ **DISABLED** | All DB subscribers by delivery_time |
+
+**`edc6e0e8` must remain disabled.** It was the source of duplicate/stale-template emails
+on May 22, 2026. Re-enabling it requires explicit approval.
+
+---
+
+## SendGrid Key Audit Log
+
+| Date | Action | Key Prefix | Notes |
+|---|---|---|---|
+| 2026-05-22 | **Revoked** | `SG.n2gtwOpWS1exvlH...` | Old key — was embedded in disabled cron `edc6e0e8` and old `spokesbox/.env`. Manually revoked by Jride at app.sendgrid.com/settings/api_keys. |
+| 2026-05-22 | **Active** | `SG.a7Y4...` | Canonical key — in `spokesbox/.env` and cron `e727f97e` payload. Verified working (HTTP 200 on SendGrid profile endpoint). |
+
+**Current canonical key prefix:** `SG.a7Y4...`
+Used by: cron `e727f97e` + `spokesbox/.env` (server transactional emails)
+
+---
+
+## Send Ledger (Idempotency)
+
+Each daily cron run writes a per-recipient ledger to:
+`spokesbox/send-ledger/YYYY-MM-DD.json`
+
+Before sending to any recipient, the cron checks if `status: "sent"` already exists for
+that email today. If yes, the recipient is skipped. This prevents duplicate sends if the
+cron fires twice.
+
+Ledger files are gitignored (runtime data). The directory is tracked via `.gitkeep`.
