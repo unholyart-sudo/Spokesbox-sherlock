@@ -4,3 +4,8 @@ podcasts/daily-torah/**/*.mp3
 .env.podcast
 google-service-account.json
 google-vertex-service-account.json
+
+# Backup artifacts — never commit
+*.enc
+production-critical/
+backup.log
