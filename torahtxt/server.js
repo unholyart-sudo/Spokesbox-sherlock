@@ -29,7 +29,7 @@ function parseCSVRow(row) {
   }
   return fields;
 }
-const { initDb, addSubscriber, removeSubscriberByToken, removeSubscriberByPhone, getActiveSubscribers, getSubscriberCount, addEmailSubscriber, removeEmailSubscriberByToken, removeEmailSubscriberByEmail, getActiveEmailSubscribers, getEmailSubscriberCount } = require('./db');
+const { initDb, addSubscriber, removeSubscriberByToken, removeSubscriberByPhone, getActiveSubscribers, getSubscriberCount, addEmailSubscriber, lookupEmailSubscriberByToken, removeEmailSubscriberByToken, removeEmailSubscriberByEmail, getActiveEmailSubscribers, getEmailSubscriberCount } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -407,62 +407,123 @@ app.post('/subscribe/email', async (req, res) => {
   });
 });
 
-// Unsubscribe via email link
+// ─── Shared unsubscribe page styles ────────────────────────────────────────
+const _unsubStyles = `
+  body { font-family: sans-serif; background: #07090f; color: #c9a84c;
+         display: flex; align-items: center; justify-content: center;
+         min-height: 100vh; margin: 0; text-align: center; }
+  .box { max-width: 440px; padding: 2rem; }
+  h1   { font-size: 1.8rem; margin-bottom: 1rem; }
+  h2   { font-size: 1.4rem; margin-bottom: 1rem; }
+  p    { color: #d4cfc4; line-height: 1.7; margin-bottom: 1rem; }
+  a    { color: #c9a84c; }
+  .star { font-size: 3rem; display: block; margin-bottom: 1rem; }
+  .btn-confirm {
+    display: inline-block; margin: 1rem 0 0.5rem;
+    padding: 0.75rem 1.75rem; border: none; border-radius: 6px;
+    background: #c9a84c; color: #07090f; font-size: 1rem;
+    font-weight: bold; cursor: pointer; text-decoration: none;
+  }
+  .btn-confirm:hover { background: #e0bb5e; }
+  .link-cancel { display: block; margin-top: 0.75rem; font-size: 0.9rem; color: #8b7340; }
+`;
+
+// ─── Step 1: GET /unsubscribe/email — show confirmation page, DO NOT deactivate ─
+// Safe against email link pre-fetchers and scanner bots (GET never writes DB).
 app.get('/unsubscribe/email', (req, res) => {
   const { email, token } = req.query;
 
   if (!email || !token) {
-    return res.status(400).send('<h2 style="color:#c9a84c;background:#07090f;padding:2rem;font-family:sans-serif;">Invalid unsubscribe link.</h2>');
+    return res.status(400).send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Error - TorahTxt</title><style>${_unsubStyles}</style></head><body><div class="box"><span class="star">⚠️</span><h2>Invalid unsubscribe link.</h2><p>This link is missing required fields. Please use the link from your email.</p><a href="/">Return home</a></div></body></html>`);
   }
 
-  const removed = removeEmailSubscriberByToken(email, token);
+  // Validate token against DB — read-only, no changes
+  const subscriber = lookupEmailSubscriberByToken(email, token);
+
+  if (!subscriber) {
+    // Token/email mismatch or email not found at all
+    return res.status(404).send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Not Found - TorahTxt</title><style>${_unsubStyles}</style></head><body><div class="box"><span class="star">✡️</span><h2>Invalid or expired unsubscribe link.</h2><p>We couldn't find an active subscription matching this link.</p><p>You may already be unsubscribed. <a href="/">Return home</a>.</p></div></body></html>`);
+  }
+
+  if (subscriber.active === 0) {
+    // Already inactive — idempotent, show already-unsubscribed page
+    return res.send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Already Unsubscribed - TorahTxt</title><style>${_unsubStyles}</style></head><body><div class="box"><span class="star">✡️</span><h2>You're already unsubscribed.</h2><p>This address is not receiving TorahTxt emails.</p><p>Want to rejoin? <a href="/">Visit our website</a>.</p></div></body></html>`);
+  }
+
+  // Active subscriber — show confirmation page (POST required to actually deactivate)
+  const safeEmail = email.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unsubscribe - TorahTxt</title>
+  <style>${_unsubStyles}</style>
+</head>
+<body>
+  <div class="box">
+    <span class="star">✡️</span>
+    <h1>Unsubscribe from TorahTxt?</h1>
+    <p>You're currently receiving daily Torah wisdom and parasha insights at<br>
+       <strong style="color:#c9a84c;">${safeEmail}</strong>.</p>
+    <p style="color:#d4cfc4;">Are you sure you want to stop receiving these messages?</p>
+    <form method="POST" action="/unsubscribe/email/confirm">
+      <input type="hidden" name="email" value="${safeEmail}">
+      <input type="hidden" name="token" value="${token.replace(/"/g, '')}">      <button type="submit" class="btn-confirm">Yes, unsubscribe me</button>
+    </form>
+    <a href="/" class="link-cancel">Keep me subscribed — return home</a>
+  </div>
+</body>
+</html>`);
+});
+
+// ─── Step 2: POST /unsubscribe/email/confirm — actual deactivation ───────────
+// Only a genuine browser form submission reaches here.
+// Email scanners and link pre-fetchers use GET only, never POST.
+app.post('/unsubscribe/email/confirm', (req, res) => {
+  const { email, token } = req.body;
+
+  if (!email || !token) {
+    return res.status(400).send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Error - TorahTxt</title><style>${_unsubStyles}</style></head><body><div class="box"><span class="star">⚠️</span><h2>Invalid request.</h2><p>Missing email or token. Please use the link from your email.</p></div></body></html>`);
+  }
+
+  // Re-validate token on POST (defence in depth)
+  const subscriber = lookupEmailSubscriberByToken(email, token);
+
+  if (!subscriber) {
+    return res.status(404).send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Not Found - TorahTxt</title><style>${_unsubStyles}</style></head><body><div class="box"><span class="star">✡️</span><h2>Invalid or expired unsubscribe link.</h2><p>We couldn't verify your subscription. You may already be unsubscribed.</p><a href="/">Return home</a></div></body></html>`);
+  }
+
+  if (subscriber.active === 0) {
+    // Already unsubscribed — idempotent success
+    return res.send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Already Unsubscribed - TorahTxt</title><style>${_unsubStyles}</style></head><body><div class="box"><span class="star">✡️</span><h2>You're already unsubscribed.</h2><p>This address is not receiving TorahTxt emails.</p><p>Want to rejoin? <a href="/">Visit our website</a>.</p></div></body></html>`);
+  }
+
+  // Deactivate — writes unsubscribed_at and unsubscribe_method='confirmed_click'
+  const removed = removeEmailSubscriberByToken(email, token, 'confirmed_click');
 
   if (removed) {
+    console.log(`[unsubscribe] confirmed_click: ${email} at ${new Date().toISOString()}`);
     res.send(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unsubscribed - TorahTxt</title>
-  <style>
-    body { font-family: sans-serif; background: #07090f; color: #c9a84c; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
-    .box { max-width: 420px; padding: 2rem; }
-    h1 { font-size: 2rem; margin-bottom: 1rem; }
-    p { color: #d4cfc4; line-height: 1.7; margin-bottom: 1rem; }
-    a { color: #c9a84c; }
-    .star { font-size: 3rem; display: block; margin-bottom: 1rem; }
-  </style>
+  <style>${_unsubStyles}</style>
 </head>
 <body>
   <div class="box">
     <span class="star">✡️</span>
-    <h1>You've been unsubscribed</h1>
-    <p>You will no longer receive TorahTxt email messages. We're sad to see you go!</p>
-    <p>Want to rejoin? <a href="/">Visit our website</a>.</p>
+    <h1>You've been unsubscribed.</h1>
+    <p>You will no longer receive TorahTxt email messages.<br>We're sorry to see you go — you're always welcome back.</p>
+    <p>Want to rejoin? <a href="/">Visit torahtxt.com</a> to subscribe again.</p>
   </div>
 </body>
 </html>`);
   } else {
-    res.status(404).send(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Not Found - TorahTxt</title>
-  <style>
-    body { font-family: sans-serif; background: #07090f; color: #c9a84c; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
-    .box { max-width: 420px; padding: 2rem; }
-    p { color: #d4cfc4; }
-    a { color: #c9a84c; }
-  </style>
-</head>
-<body>
-  <div class="box">
-    <h2>Invalid or expired unsubscribe link.</h2>
-    <p>You may already be unsubscribed. <a href="/">Return home</a>.</p>
-  </div>
-</body>
-</html>`);
+    // Token matched on lookup but update changed nothing — race condition / already gone
+    res.send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Already Unsubscribed - TorahTxt</title><style>${_unsubStyles}</style></head><body><div class="box"><span class="star">✡️</span><h2>You're already unsubscribed.</h2><p>This address is not receiving TorahTxt emails.</p><p>Want to rejoin? <a href="/">Return home</a>.</p></div></body></html>`);
   }
 });
 

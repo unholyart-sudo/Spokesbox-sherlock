@@ -94,6 +94,32 @@ function initEmailTable() {
       created_at TEXT DEFAULT (datetime('now'))
     )
   `);
+  migrateEmailAuditColumns();
+  backfillUnsubscribeMethod();
+}
+
+// Add audit columns if they don't exist yet (idempotent migration)
+function migrateEmailAuditColumns() {
+  const db = getDb();
+  const cols = ['unsubscribed_at', 'unsubscribe_method'];
+  for (const col of cols) {
+    try {
+      db.exec(`ALTER TABLE email_subscribers ADD COLUMN ${col} TEXT DEFAULT NULL`);
+    } catch (err) {
+      // Column already exists — safe to ignore
+      if (!err.message || !err.message.includes('duplicate column')) throw err;
+    }
+  }
+}
+
+// Set unsubscribe_method='unknown' for pre-existing inactive records with no method recorded
+function backfillUnsubscribeMethod() {
+  const db = getDb();
+  db.exec(`
+    UPDATE email_subscribers
+    SET unsubscribe_method = 'unknown'
+    WHERE active = 0 AND unsubscribe_method IS NULL
+  `);
 }
 
 // Call initEmailTable whenever we init
@@ -130,10 +156,27 @@ function addEmailSubscriber(name, email) {
   }
 }
 
-function removeEmailSubscriberByToken(email, token) {
+// Look up an email subscriber by email+token without modifying anything.
+// Returns the row if found and active, null otherwise.
+function lookupEmailSubscriberByToken(email, token) {
   initEmailTable();
   const db = getDb();
-  const result = db.prepare('UPDATE email_subscribers SET active = 0 WHERE email = ? AND token = ?').run(email, token);
+  return db.prepare('SELECT id, email, name, active FROM email_subscribers WHERE email = ? AND token = ?').get(email, token) || null;
+}
+
+// Deactivate an email subscriber by email+token.
+// method should be 'confirmed_click' (two-step) or 'unknown' (legacy/backfill).
+// Returns true if a row was updated, false if token/email didn't match or already inactive.
+function removeEmailSubscriberByToken(email, token, method = 'confirmed_click') {
+  initEmailTable();
+  const db = getDb();
+  const result = db.prepare(
+    `UPDATE email_subscribers
+     SET active = 0,
+         unsubscribed_at = datetime('now'),
+         unsubscribe_method = ?
+     WHERE email = ? AND token = ? AND active = 1`
+  ).run(method, email, token);
   return result.changes > 0;
 }
 
@@ -165,6 +208,7 @@ module.exports = {
   getActiveSubscribers,
   getSubscriberCount,
   addEmailSubscriber,
+  lookupEmailSubscriberByToken,
   removeEmailSubscriberByToken,
   removeEmailSubscriberByEmail,
   getActiveEmailSubscribers,
