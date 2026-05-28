@@ -13,7 +13,9 @@
   <meta name="description" content="Personalize your Spokesbox newsletter. Pick topics, set your tone, and watch your daily newsletter come to life in real-time.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Only load the 4 weights actually used (500–800); display=swap prevents FOIT -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap"></noscript>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -701,6 +703,7 @@
   <span class="topbar-step" id="stepIndicator"></span>
 </header>
 
+<main id="wizardMain" aria-label="Newsletter setup wizard">
 <div class="split">
 
   <!-- ════════════════════════════════
@@ -780,9 +783,9 @@
         </button>
         <span class="sam-voice-status" id="samVoiceStatus"></span>
       </div>
-      <!-- Shown only on unsupported browsers -->
-      <p class="sam-voice-unsupported" id="samVoiceUnsupported" style="display:none">
-        Voice input is not supported in this browser. You can type your response instead.
+      <!-- Shown only on unsupported browsers / iOS -->
+      <p class="sam-voice-unsupported" id="samVoiceUnsupported" style="display:none" role="note">
+        Voice input isn’t available in this browser — just type your response below.
       </p>
 
       <div class="sam-char-hint"><span id="samCharCount">0</span> / 5000</div>
@@ -842,6 +845,7 @@
   </div><!-- /right-panel -->
 
 </div><!-- /split -->
+</main><!-- /wizardMain -->
 
 
 <script>
@@ -2960,8 +2964,13 @@ function handleSamTextareaInput(text) {
   let baseText      = '';     // textarea content at recording start
 
   // ── Feature detection ──────────────────────────────────────────────────────
+  // iOS Safari exposes webkitSpeechRecognition but continuous recognition
+  // is non-functional — the API stops after one result. Hide the mic on iOS.
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
   function voiceSupported() {
-    return !!SpeechRecognition;
+    return !!SpeechRecognition && !isIOS;
   }
 
   // ── DOM refs (resolved lazily when Sam screen shows) ──────────────────────

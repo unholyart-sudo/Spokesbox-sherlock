@@ -2438,7 +2438,7 @@ app.get('/beta-login', (req, res) => {
   .card{background:#1a1d2e;border:1px solid rgba(255,255,255,0.08);border-radius:20px;
     padding:44px 40px;max-width:420px;width:100%;text-align:center}
   .logo{font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:6px}
-  .sub{font-size:13px;color:#6b7280;margin-bottom:32px}
+  .sub{font-size:13px;color:#9ca3af;margin-bottom:32px}/* was #6b7280 (3.44:1 fail) → #9ca3af (7:1 WCAG AA pass) */
   .badge{display:inline-block;background:rgba(139,92,246,0.15);color:#a78bfa;
     font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
     border-radius:50px;padding:4px 14px;margin-bottom:28px}
@@ -2454,10 +2454,11 @@ app.get('/beta-login', (req, res) => {
     font-size:15px;font-weight:700;border:none;border-radius:12px;padding:13px;
     margin-top:20px;cursor:pointer;transition:opacity 0.2s}
   button:hover{opacity:0.9}
-  .notice{font-size:11px;color:#4b5563;margin-top:20px;line-height:1.6}
+  .notice{font-size:11px;color:#9ca3af;margin-top:20px;line-height:1.6}/* was #4b5563 (2.2:1 fail) → #9ca3af (7:1 WCAG AA pass) */
 </style>
 </head>
 <body>
+<main aria-label="Beta access">
 <div class="card">
   <div class="logo">Spokesbox</div>
   <div class="sub">Personalized daily newsletters</div>
@@ -2474,6 +2475,7 @@ app.get('/beta-login', (req, res) => {
     may be analyzed to generate personalized newsletter topic suggestions.
   </p>
 </div>
+</main>
 </body>
 </html>`);
 });
