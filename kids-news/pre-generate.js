@@ -39,14 +39,20 @@ if (args.includes('--json')) {
   const avoids = h.buildAvoidList(pruned);
   console.log(`\n📋 Kids Newsletter Dedup Summary`);
   console.log(`${'─'.repeat(50)}`);
-  console.log(`Stories tracked:  ${pruned.stories.length}`);
-  console.log(`Jokes tracked:    ${pruned.jokes.length}`);
-  console.log(`Trivia tracked:   ${pruned.trivia.length}`);
-  console.log(`Music tracked:    ${pruned.music.length}`);
-  console.log(`Riddles tracked:  ${pruned.riddles.length}`);
+  console.log(`Stories tracked:       ${pruned.stories.length}`);
+  console.log(`Jokes tracked:         ${pruned.jokes.length}`);
+  console.log(`Trivia tracked:        ${pruned.trivia.length}`);
+  console.log(`Music tracked:         ${pruned.music.length}`);
+  console.log(`Riddles tracked:       ${pruned.riddles.length}`);
+  console.log(`Israel topics tracked: ${(pruned.israel_topics || []).length}`);
+  console.log(`Zoey pop tracked:      ${(pruned.zoey_pop || []).length}`);
+  console.log(`Science topics tracked:${(pruned.science_topics || []).length}`);
   console.log(`\nRecent topics to avoid (${avoids.topics.length}):`);
   avoids.topics.slice(0,5).forEach(t => console.log(t));
   console.log(`\nRecent music to avoid: ${avoids.music.join(', ')}`);
+  console.log(`\nAVOID ISRAEL TOPICS (recent 14d): ${avoids.israel_topics.length > 0 ? avoids.israel_topics.join(', ') : '(none yet)'}`);
+  console.log(`AVOID ZOEY POP ARTISTS (recent 21d): ${avoids.zoey_pop.length > 0 ? avoids.zoey_pop.join(', ') : '(none yet)'}`);
+  console.log(`AVOID SCIENCE TOPICS (recent 14d): ${avoids.science_topics.length > 0 ? avoids.science_topics.join(', ') : '(none yet)'}`);
 } else {
   // Default: print the prompt block for injection
   process.stdout.write(h.buildPromptBlock(pruned));

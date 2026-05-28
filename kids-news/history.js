@@ -23,6 +23,9 @@ const WINDOWS = {
   trivia_answer:      30,
   music_artist:       30,
   riddle_type:        21,
+  israel_topic:       14,
+  zoey_pop_artist:    21,
+  science_topic:      14,
 };
 const RETENTION_DAYS = 120;
 
@@ -55,14 +58,17 @@ function todayISO() {
 // ─── Load / save ──────────────────────────────────────────────────────────────
 
 function load() {
+  const defaults = { stories: [], jokes: [], trivia: [], music: [], riddles: [], israel_topics: [], zoey_pop: [], science_topics: [] };
   if (!fs.existsSync(HISTORY_PATH)) {
-    return { stories: [], jokes: [], trivia: [], music: [], riddles: [] };
+    return { ...defaults };
   }
   try {
-    return JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf8'));
+    // Ensure new fields are present for forward compat
+    return { ...defaults, ...data };
   } catch (e) {
     console.error('kids-news/history.js: load error:', e.message);
-    return { stories: [], jokes: [], trivia: [], music: [], riddles: [] };
+    return { ...defaults };
   }
 }
 
@@ -78,11 +84,14 @@ function prune(h) {
   cutoff.setDate(cutoff.getDate() - RETENTION_DAYS);
   const keep = e => new Date(e.date + 'T00:00:00Z') >= cutoff;
   return {
-    stories: h.stories.filter(keep),
-    jokes:   h.jokes.filter(keep),
-    trivia:  h.trivia.filter(keep),
-    music:   h.music.filter(keep),
-    riddles: h.riddles.filter(keep),
+    stories:       h.stories.filter(keep),
+    jokes:         h.jokes.filter(keep),
+    trivia:        h.trivia.filter(keep),
+    music:         h.music.filter(keep),
+    riddles:       h.riddles.filter(keep),
+    israel_topics: (h.israel_topics || []).filter(keep),
+    zoey_pop:      (h.zoey_pop || []).filter(keep),
+    science_topics:(h.science_topics || []).filter(keep),
   };
 }
 
@@ -221,6 +230,77 @@ function addRiddle(h, riddleDesc) {
   });
 }
 
+// ─── Israel Topics ────────────────────────────────────────────────────────────
+
+function checkIsraelTopic(h, topicDesc) {
+  const norm = normalise(topicDesc);
+  const hash = hashStr(norm);
+  for (const t of (h.israel_topics || [])) {
+    if (t.hash === hash && daysSince(t.date) < WINDOWS.israel_topic) {
+      return { duplicate: true, reason: `Same Israel topic used ${daysSince(t.date)}d ago` };
+    }
+    if (wordOverlap(norm, t.normalized) > 0.6 && daysSince(t.date) < WINDOWS.israel_topic) {
+      return { duplicate: true, reason: `Similar Israel topic used ${daysSince(t.date)}d ago` };
+    }
+  }
+  return { duplicate: false };
+}
+
+function addIsraelTopic(h, topicDesc) {
+  const norm = normalise(topicDesc);
+  if (!h.israel_topics) h.israel_topics = [];
+  h.israel_topics.push({
+    date:       todayISO(),
+    text:       topicDesc.slice(0, 200),
+    normalized: norm,
+    hash:       hashStr(norm),
+  });
+}
+
+// ─── Zoey Pop ─────────────────────────────────────────────────────────────────
+
+function checkZoeyPop(h, artistName) {
+  const norm = normalise(artistName);
+  for (const z of (h.zoey_pop || [])) {
+    if (normalise(z.artist) === norm && daysSince(z.date) < WINDOWS.zoey_pop_artist) {
+      return { duplicate: true, reason: `${artistName} featured for Zoey ${daysSince(z.date)}d ago` };
+    }
+  }
+  return { duplicate: false };
+}
+
+function addZoeyPop(h, artistName) {
+  if (!h.zoey_pop) h.zoey_pop = [];
+  h.zoey_pop.push({ date: todayISO(), artist: artistName });
+}
+
+// ─── Science Topics ──────────────────────────────────────────────────────────
+
+function checkScienceTopic(h, topicDesc) {
+  const norm = normalise(topicDesc);
+  const hash = hashStr(norm);
+  for (const s of (h.science_topics || [])) {
+    if (s.hash === hash && daysSince(s.date) < WINDOWS.science_topic) {
+      return { duplicate: true, reason: `Same science topic used ${daysSince(s.date)}d ago` };
+    }
+    if (wordOverlap(norm, s.normalized) > 0.6 && daysSince(s.date) < WINDOWS.science_topic) {
+      return { duplicate: true, reason: `Similar science topic used ${daysSince(s.date)}d ago` };
+    }
+  }
+  return { duplicate: false };
+}
+
+function addScienceTopic(h, topicDesc) {
+  const norm = normalise(topicDesc);
+  if (!h.science_topics) h.science_topics = [];
+  h.science_topics.push({
+    date:       todayISO(),
+    text:       topicDesc.slice(0, 200),
+    normalized: norm,
+    hash:       hashStr(norm),
+  });
+}
+
 // ─── Build "avoid" prompt injection ──────────────────────────────────────────
 
 function buildAvoidList(h) {
@@ -254,12 +334,31 @@ function buildAvoidList(h) {
     .slice(0, 10)
     .map(r => `  - "${r.text.slice(0, 100)}" (${r.date})`);
 
+  const recentIsraelTopics = (h.israel_topics || [])
+    .filter(t => daysSince(t.date) < WINDOWS.israel_topic)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 10)
+    .map(t => `  - "${t.text.slice(0, 100)}" (${t.date})`);
+
+  const recentZoeyPop = (h.zoey_pop || [])
+    .filter(z => daysSince(z.date) < WINDOWS.zoey_pop_artist)
+    .map(z => z.artist);
+
+  const recentScienceTopics = (h.science_topics || [])
+    .filter(s => daysSince(s.date) < WINDOWS.science_topic)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 10)
+    .map(s => `  - "${s.text.slice(0, 100)}" (${s.date})`);
+
   return {
-    topics:  recentTopics,
-    jokes:   recentJokes,
-    trivia:  recentTrivia,
-    music:   recentMusic,
-    riddles: recentRiddles,
+    topics:         recentTopics,
+    jokes:          recentJokes,
+    trivia:         recentTrivia,
+    music:          recentMusic,
+    riddles:        recentRiddles,
+    israel_topics:  recentIsraelTopics,
+    zoey_pop:       recentZoeyPop,
+    science_topics: recentScienceTopics,
   };
 }
 
@@ -281,6 +380,15 @@ function buildPromptBlock(h) {
   }
   if (avoids.music.length > 0) {
     lines.push(`### Recent music artists (do NOT repeat within 30 days): ${avoids.music.join(', ')}\n`);
+  }
+  if (avoids.israel_topics.length > 0) {
+    lines.push(`### Recent Israel topics (do NOT repeat within 14 days):\n${avoids.israel_topics.join('\n')}\n`);
+  }
+  if (avoids.zoey_pop.length > 0) {
+    lines.push(`### Recent Zoey pop artists (do NOT repeat within 21 days): ${avoids.zoey_pop.join(', ')}\n`);
+  }
+  if (avoids.science_topics.length > 0) {
+    lines.push(`### Recent science topics (do NOT repeat within 14 days):\n${avoids.science_topics.join('\n')}\n`);
   }
   lines.push('If covering an ongoing story, include it ONLY if there is a meaningful new development, and label it clearly as "📌 UPDATE:".');
   lines.push('Every joke and trivia question must be completely fresh from the above list.\n');
@@ -330,7 +438,9 @@ function migrateFromOldTracker(trackerPath) {
 module.exports = {
   load, save, prune,
   checkStory, checkJoke, checkTrivia, checkMusic, checkRiddle,
+  checkIsraelTopic, checkZoeyPop, checkScienceTopic,
   addStory, addJoke, addTrivia, addMusic, addRiddle,
+  addIsraelTopic, addZoeyPop, addScienceTopic,
   buildPromptBlock, buildAvoidList,
   migrateFromOldTracker,
   normalise, hashStr, todayISO, WINDOWS,

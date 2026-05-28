@@ -29,7 +29,7 @@ const h    = require('./history');
 function run(meta) {
   const history = h.load();
 
-  let added = { stories: 0, jokes: 0, trivia: 0, music: 0, riddles: 0 };
+  let added = { stories: 0, jokes: 0, trivia: 0, music: 0, riddles: 0, israel_topics: 0, zoey_pop: 0, science_topics: 0 };
 
   // Stories / topics
   for (const s of (meta.stories || [])) {
@@ -55,11 +55,26 @@ function run(meta) {
     if (r && r.length > 5) { h.addRiddle(history, r); added.riddles++; }
   }
 
+  // Israel topics
+  for (const topic of (meta.israel_topics || [])) {
+    if (topic && topic.length > 3) { h.addIsraelTopic(history, topic); added.israel_topics++; }
+  }
+
+  // Zoey pop artists
+  for (const artist of (meta.zoey_pop || [])) {
+    if (artist && artist.length > 1) { h.addZoeyPop(history, artist); added.zoey_pop++; }
+  }
+
+  // Science topics
+  for (const topic of (meta.science_topics || [])) {
+    if (topic && topic.length > 3) { h.addScienceTopic(history, topic); added.science_topics++; }
+  }
+
   // Prune and save
   h.save(h.prune(history));
 
   console.log(`[kids-news/post-generate] History updated: ${JSON.stringify(added)}`);
-  console.log(`[kids-news/post-generate] Total tracked: stories=${history.stories.length} jokes=${history.jokes.length} trivia=${history.trivia.length} music=${history.music.length} riddles=${history.riddles.length}`);
+  console.log(`[kids-news/post-generate] Total tracked: stories=${history.stories.length} jokes=${history.jokes.length} trivia=${history.trivia.length} music=${history.music.length} riddles=${history.riddles.length} israel_topics=${(history.israel_topics||[]).length} zoey_pop=${(history.zoey_pop||[]).length} science_topics=${(history.science_topics||[]).length}`);
 
   // Also update legacy kids-newsletter-tracker.json so old cron still works
   const oldTrackerPath = path.join(__dirname, '..', 'memory', 'kids-newsletter-tracker.json');
@@ -77,6 +92,22 @@ function run(meta) {
       const recent = old.recentRiddles || [];
       if (!recent.includes(r)) recent.unshift(r);
       old.recentRiddles = recent.slice(0, 30);
+    }
+    // Update new fields in legacy tracker for compatibility
+    if (meta.israel_topics && meta.israel_topics.length > 0) {
+      const recentIT = old.recentIsraelTopics || [];
+      for (const t of meta.israel_topics) { if (!recentIT.includes(t)) recentIT.unshift(t); }
+      old.recentIsraelTopics = recentIT.slice(0, 20);
+    }
+    if (meta.zoey_pop && meta.zoey_pop.length > 0) {
+      const recentZP = old.recentZoeyPop || [];
+      for (const a of meta.zoey_pop) { if (!recentZP.includes(a)) recentZP.unshift(a); }
+      old.recentZoeyPop = recentZP.slice(0, 20);
+    }
+    if (meta.science_topics && meta.science_topics.length > 0) {
+      const recentST = old.recentScienceTopics || [];
+      for (const t of meta.science_topics) { if (!recentST.includes(t)) recentST.unshift(t); }
+      old.recentScienceTopics = recentST.slice(0, 20);
     }
     old.lastUpdated = h.todayISO();
     // Rebuild nextMusicPick
