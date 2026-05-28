@@ -9,83 +9,97 @@
   <link rel="apple-touch-icon" sizes="512x512" href="/favicon-512.png?v=1774537955" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Today's D'var Torah — TorahTxt</title>
-  <meta name="theme-color" content="#07090f" />
+  <meta name="theme-color" content="#f8f5ef" />
   <meta property="og:title" content="Today's D'var Torah — TorahTxt" />
   <meta property="og:description" content="Daily Torah wisdom delivered to your phone." />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ── Light-mode design tokens (forced — no dark-mode override) ── */
     :root {
-      --navy: #07090f;
-      --navy-mid: #0d1121;
-      --gold: #c9a84c;
-      --gold-light: #e2c46a;
-      --gold-dim: rgba(201,168,76,0.15);
-      --white: #f2ece0;
-      --off-white: #d4cfc4;
-      --grey: #6b7a96;
-      --border: rgba(201,168,76,0.18);
+      --bg:             #f8f5ef;   /* warm cream page */
+      --surface:        #ffffff;   /* card face */
+      --surface-alt:    #f2eee6;   /* secondary surfaces */
+      --border:         #ddd4c8;
+      --text:           #1f2933;   /* primary body text */
+      --text-sec:       #4b5563;   /* secondary text */
+      --text-muted:     #6b7280;   /* metadata / fine print */
+      --accent:         #7c5c2e;   /* warm brown — AA on white */
+      --accent-dark:    #5a4020;   /* deeper brown for hover */
+      --accent-gold:    #9c7a32;   /* gold-toned, AA on white */
+      --accent-teal:    #1d6a6a;   /* deep teal for links */
+      --gold-divider:   #c9a84c;   /* decorative only */
+      --green-text:     #1a5c3a;
+      --green-surface:  #edf7f1;
+      --green-border:   #b2ddc5;
+      --shadow:         0 2px 12px rgba(0,0,0,0.07);
     }
 
     html { scroll-behavior: smooth; }
 
+    /* Force light mode regardless of OS preference */
     body {
       font-family: 'DM Sans', sans-serif;
-      background-color: var(--navy);
-      color: var(--white);
+      font-size: 18px;
+      background-color: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 0 1.25rem 3rem;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Top bar */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+
+    /* ── Top bar ── */
     .topbar {
       width: 100%;
-      max-width: 640px;
+      max-width: 720px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.25rem 0 0;
-    }
-
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.1rem;
-      color: var(--gold);
-      text-decoration: none;
-      letter-spacing: 0.02em;
+      padding: 1.5rem 0 0;
     }
 
     .subscribe-btn {
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      color: var(--gold);
-      background: transparent;
-      padding: 0.5rem 1.5rem;
-      border-radius: 4px;
-      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--surface);
+      background: var(--accent);
+      padding: 0.6rem 1.5rem;
+      border-radius: 6px;
+      border: none;
       text-decoration: none;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transition: all 0.2s;
+      letter-spacing: 0.04em;
+      transition: background 0.2s;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
     }
-    .subscribe-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+    .subscribe-btn:hover { background: var(--accent-dark); }
+    .subscribe-btn:focus-visible {
+      outline: 3px solid var(--accent-teal);
+      outline-offset: 2px;
+    }
 
-    /* Card */
+    /* ── Daily image ── */
     .daily-image {
       width: 100%;
-      max-width: 640px;
+      max-width: 720px;
       margin-top: 2rem;
-      border-radius: 1.25rem;
+      border-radius: 1rem;
       overflow: hidden;
       aspect-ratio: 16/9;
-      background: #0d1121;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
     }
-
     .daily-image img {
       width: 100%;
       height: 100%;
@@ -93,94 +107,144 @@
       display: block;
     }
 
+    /* ── Card ── */
     .card {
       width: 100%;
-      max-width: 640px;
-      margin-top: 1rem;
-      background: #0d1121;
+      max-width: 720px;
+      margin-top: 1.25rem;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 1.25rem;
-      padding: 2rem 1.75rem;
+      border-radius: 1rem;
+      padding: 2.25rem 2rem;
+      box-shadow: var(--shadow);
+    }
+    @media (max-width: 480px) {
+      .card { padding: 1.5rem 1.25rem; }
     }
 
     .date-label {
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 0.5rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.6rem;
     }
 
     .parasha {
       font-family: 'Playfair Display', serif;
-      font-size: 1.55rem;
+      font-size: 1.75rem;
       font-weight: 600;
-      line-height: 1.3;
-      color: var(--white);
+      line-height: 1.25;
+      color: var(--text);
       margin-bottom: 1.5rem;
+    }
+    @media (max-width: 480px) {
+      .parasha { font-size: 1.45rem; }
     }
 
     .divider {
       width: 2.5rem;
-      height: 2px;
-      background: var(--gold);
+      height: 3px;
+      background: var(--gold-divider);
       border-radius: 2px;
       margin-bottom: 1.5rem;
-      opacity: 0.6;
+      opacity: 0.7;
     }
 
     .dvar-title {
       font-family: 'Playfair Display', serif;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 600;
-      color: var(--gold-light, #e2c46a);
+      color: var(--accent);
       margin-bottom: 1.25rem;
       line-height: 1.35;
     }
 
+    /* Senior-readable Torah text */
     .dvar-text {
       font-family: 'Playfair Display', serif;
-      font-size: 1.05rem;
+      font-size: 1.1rem;        /* ~19.8px at 18px base */
       line-height: 1.85;
-      color: var(--off-white);
+      color: var(--text);
     }
-
-    .dvar-text p {
-      margin-bottom: 1.1rem;
-    }
-
+    .dvar-text p { margin-bottom: 1.2rem; }
     .dvar-text ul {
       list-style: none;
       padding: 0;
       margin: 1rem 0;
     }
-
     .dvar-text ul li {
-      padding: 0.6rem 0 0.6rem 0;
-      border-left: 2px solid rgba(201,168,76,0.3);
-      padding-left: 1rem;
+      padding: 0.6rem 0 0.6rem 1rem;
+      border-left: 3px solid var(--gold-divider);
       margin-bottom: 0.75rem;
-      color: var(--off-white);
+      color: var(--text);
     }
-
     .dvar-text em {
-      color: var(--gold);
+      color: var(--accent);
       font-style: italic;
     }
 
-    /* Loading / error states */
+    /* Loading / error */
     .state-msg {
       font-size: 1rem;
-      color: var(--grey);
+      color: var(--text-muted);
       text-align: center;
       padding: 2rem 0;
     }
 
-    /* Actions */
+    /* ── Podcast player ── */
+    .podcast-wrap {
+      width: 100%;
+      max-width: 720px;
+      margin-top: 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .podcast-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .podcast-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 0.2rem;
+    }
+    .podcast-title-text {
+      font-size: 0.95rem;
+      color: var(--text-sec);
+    }
+    #podcast-audio {
+      width: 100%;
+      height: 44px;
+      accent-color: var(--accent);
+      border-radius: 6px;
+      outline: none;
+    }
+    #podcast-audio:focus-visible {
+      outline: 3px solid var(--accent-teal);
+      outline-offset: 2px;
+    }
+    .podcast-duration {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* ── Actions ── */
     .actions {
       width: 100%;
-      max-width: 640px;
+      max-width: 720px;
       margin-top: 1.5rem;
       display: flex;
       flex-direction: column;
@@ -191,252 +255,388 @@
       display: block;
       width: 100%;
       text-align: center;
-      padding: 0.9rem;
+      padding: 0.95rem;
       border-radius: 0.75rem;
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 500;
       text-decoration: none;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, background 0.2s;
+      min-height: 44px;
     }
     .action-btn:hover { opacity: 0.85; }
-
-    .btn-primary {
-      background: var(--gold);
-      color: var(--navy);
-    }
+    .action-btn:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
 
     .btn-secondary {
-      background: transparent;
-      color: var(--gold);
-      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--accent);
+      border: 1.5px solid var(--border);
     }
+    .btn-secondary:hover { background: var(--surface-alt); }
 
-    /* Inline signup */
+    /* ── Signup box ── */
     .signup-box {
       width: 100%;
-      max-width: 640px;
+      max-width: 720px;
       margin-top: 1.5rem;
-      background: #0d1121;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 1.25rem;
-      padding: 1.75rem;
+      border-radius: 1rem;
+      padding: 2rem 2rem 1.75rem;
+      box-shadow: var(--shadow);
+    }
+    @media (max-width: 480px) {
+      .signup-box { padding: 1.5rem 1.25rem; }
     }
 
     .signup-box h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
-      color: var(--white);
-      margin-bottom: 0.35rem;
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .signup-box p {
+      font-size: 1rem;
+      color: var(--text-sec);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
     }
 
-    .signup-box p {
+    .signup-label {
+      display: block;
       font-size: 0.85rem;
-      color: var(--grey);
-      margin-bottom: 1.25rem;
+      font-weight: 600;
+      color: var(--text-sec);
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.01em;
     }
 
     .signup-field {
       width: 100%;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 0.6rem;
-      padding: 0.75rem 1rem;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.8rem 1rem;
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
-      color: var(--white);
-      margin-bottom: 0.75rem;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 1rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      min-height: 44px;
     }
-    .signup-field:focus { border-color: var(--gold); }
-    .signup-field::placeholder { color: rgba(107,122,150,0.6); }
+    .signup-field:focus {
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px rgba(29,106,106,0.15);
+    }
+    .signup-field::placeholder { color: var(--text-muted); }
 
     .channel-checks {
       display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
     }
 
     .channel-check {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.9rem;
-      color: var(--off-white);
+      font-size: 1rem;
+      color: var(--text);
       cursor: pointer;
+      min-height: 44px;
     }
-
     .channel-check input[type="checkbox"] {
-      width: 1.1rem;
-      height: 1.1rem;
-      accent-color: var(--gold);
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: var(--accent);
       cursor: pointer;
     }
+    .channel-check input[type="checkbox"]:focus-visible {
+      outline: 3px solid var(--accent-teal);
+      outline-offset: 2px;
+    }
 
-    .phone-field, .email-field {
-      display: none;
-    }
-    .phone-field.visible, .email-field.visible {
-      display: block;
-    }
+    .phone-field, .email-field { display: none; }
+    .phone-field.visible, .email-field.visible { display: block; }
 
     .signup-submit {
       width: 100%;
-      background: var(--gold);
-      color: var(--navy);
+      background: var(--accent);
+      color: #ffffff;
       border: none;
       border-radius: 0.75rem;
-      padding: 0.9rem;
+      padding: 0.95rem;
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: background 0.2s;
+      min-height: 44px;
     }
-    .signup-submit:hover { opacity: 0.88; }
+    .signup-submit:hover { background: var(--accent-dark); }
+    .signup-submit:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
     .signup-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .signup-msg {
       margin-top: 0.75rem;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       text-align: center;
-      min-height: 1.2rem;
+      min-height: 1.4rem;
+      line-height: 1.4;
     }
-    .signup-msg.success { color: #7ecf9a; }
-    .signup-msg.error { color: #e07070; }
+    .signup-msg.success { color: #1a5c3a; font-weight: 500; }
+    .signup-msg.error   { color: #9b1c1c; }
 
-    /* Footer */
-    footer {
-      margin-top: 3rem;
-      font-size: 0.75rem;
-      color: var(--grey);
-      text-align: center;
-      line-height: 1.7;
+    /* ── Share bar ── */
+    .share-bar {
+      width: 100%;
+      max-width: 720px;
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
     }
-    footer a { color: var(--grey); text-decoration: underline; }
+    .share-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sec);
+      font-size: 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      min-height: 44px;
+      font-weight: 500;
+    }
+    .share-btn:hover { background: var(--surface-alt); border-color: #bbb0a4; }
+    .share-btn:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
+
+    /* ── Torah for Kids ── */
+    .kids-card {
+      width: 100%;
+      max-width: 720px;
+      margin-top: 2rem;
+      background: var(--green-surface);
+      border: 1px solid var(--green-border);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+    .kids-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+    .kids-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green-text);
+    }
+    .kids-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--green-text);
+      margin-bottom: 0.9rem;
+      line-height: 1.35;
+    }
+    .kids-body {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+    .kids-body em { color: var(--green-text); font-style: italic; }
+
+    /* ── Footer ── */
+    footer {
+      width: 100%;
+      margin-top: 3.5rem;
+      padding: 2.5rem 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface-alt);
+      text-align: center;
+    }
+    footer a {
+      color: var(--text-sec);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+    footer a:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
+    .footer-nav {
+      display: flex;
+      gap: 1.25rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .footer-memorial {
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+    .footer-memorial a { color: var(--accent-gold); }
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Top bar -->
   <div class="topbar">
-    <a href="/"><img src="/images/logo-final.png" alt="TorahTxt" style="height:4.5rem;width:auto;border-radius:4px;"></a>
+    <a href="/" aria-label="TorahTxt home">
+      <img src="/images/logo-final.png" alt="TorahTxt" style="height:4rem;width:auto;border-radius:4px;">
+    </a>
     <a href="/#subscribe" class="subscribe-btn">Subscribe Free</a>
   </div>
 
+  <!-- Daily image -->
   <div id="image-container"></div>
 
-  <!-- Podcast audio player (hidden until episode is confirmed available) -->
-  <div id="podcast-player" style="display:none;width:100%;max-width:640px;margin-top:1.5rem;">
-    <div style="background:#0d1121;border:1px solid rgba(201,168,76,0.22);border-radius:1rem;padding:1.1rem 1.4rem;display:flex;flex-direction:column;gap:0.6rem;">
-      <div style="display:flex;align-items:center;gap:0.7rem;">
-        <span style="font-size:1.3rem;">🎧</span>
+  <!-- Podcast player (hidden until episode confirmed) -->
+  <div id="podcast-player" style="display:none;" role="region" aria-label="Daily Torah Podcast">
+    <div class="podcast-wrap">
+      <div class="podcast-header">
+        <span style="font-size:1.4rem;" aria-hidden="true">🎧</span>
         <div>
-          <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#c9a84c;margin-bottom:0.15rem;">Listen — TorahTxt Daily Podcast</div>
-          <div id="podcast-title" style="font-size:0.92rem;color:#d4cfc4;"></div>
+          <div class="podcast-label">Listen — TorahTxt Daily Podcast</div>
+          <div id="podcast-title" class="podcast-title-text"></div>
         </div>
       </div>
       <audio id="podcast-audio" controls preload="none"
-        style="width:100%;height:36px;accent-color:#c9a84c;border-radius:4px;outline:none;">
+        aria-label="Today's Torah podcast episode">
         Your browser does not support audio playback.
       </audio>
-      <div id="podcast-duration" style="font-size:0.72rem;color:#6b7a96;text-align:right;"></div>
+      <div id="podcast-duration" class="podcast-duration"></div>
     </div>
   </div>
 
-  <div class="card" id="card">
-    <div class="state-msg" id="loading">Loading today's D'var Torah...</div>
+  <!-- Main content card -->
+  <div class="card" id="card" role="main">
+    <div class="state-msg" id="loading">Loading today's D'var Torah…</div>
   </div>
 
-  <div class="signup-box">
+  <!-- Signup -->
+  <div class="signup-box" role="complementary" aria-label="Subscribe to TorahTxt">
     <h3>Get This Daily — It's Free</h3>
     <p>Torah wisdom delivered every morning. Choose how you'd like to receive it.</p>
 
-    <input class="signup-field" type="text" id="signup-name" placeholder="Your name" autocomplete="given-name" />
+    <label class="signup-label" for="signup-name">Your name</label>
+    <input class="signup-field" type="text" id="signup-name"
+      placeholder="First name" autocomplete="given-name" />
 
-    <div class="channel-checks">
-      <label class="channel-check">
-        <input type="checkbox" id="check-sms" onchange="toggleFields()" /> 📱 Text message
-      </label>
-      <label class="channel-check">
-        <input type="checkbox" id="check-email" onchange="toggleFields()" /> 📧 Email
-      </label>
-    </div>
+    <fieldset style="border:none;padding:0;margin-bottom:0;">
+      <legend class="signup-label" style="margin-bottom:0.75rem;">Delivery method</legend>
+      <div class="channel-checks">
+        <label class="channel-check">
+          <input type="checkbox" id="check-sms" onchange="toggleFields()" />
+          📱 Text message
+        </label>
+        <label class="channel-check">
+          <input type="checkbox" id="check-email" onchange="toggleFields()" />
+          📧 Email
+        </label>
+      </div>
+    </fieldset>
 
     <div class="phone-field" id="phone-field">
-      <input class="signup-field" type="tel" id="signup-phone" placeholder="US phone number" autocomplete="tel" />
+      <label class="signup-label" for="signup-phone">US phone number</label>
+      <input class="signup-field" type="tel" id="signup-phone"
+        placeholder="(555) 000-0000" autocomplete="tel" />
     </div>
     <div class="email-field" id="email-field">
-      <input class="signup-field" type="email" id="signup-email" placeholder="Email address" autocomplete="email" />
+      <label class="signup-label" for="signup-email">Email address</label>
+      <input class="signup-field" type="email" id="signup-email"
+        placeholder="you@example.com" autocomplete="email" />
     </div>
 
-    <button class="signup-submit" id="signup-btn" onclick="submitSignup()">Subscribe Free</button>
-    <div class="signup-msg" id="signup-msg"></div>
+    <button class="signup-submit" id="signup-btn" onclick="submitSignup()">
+      Subscribe Free
+    </button>
+    <div class="signup-msg" id="signup-msg" role="status" aria-live="polite"></div>
   </div>
 
+  <!-- Actions -->
   <div class="actions">
     <a href="/sponsor" class="action-btn btn-secondary">Sponsor a Day</a>
   </div>
 
-
-  <!-- Share Bar -->
-  <div id="share-bar" style="margin-top:1.5rem; display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-    <span style="font-size:0.8rem; color:#9a8a70; font-family:'DM Sans',sans-serif; letter-spacing:0.05em; text-transform:uppercase;">Share</span>
-    <button onclick="shareWhatsApp()" title="Share on WhatsApp" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.12);background:#1a2a1a;color:#a8dfc0;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#243424'" onmouseout="this.style.background='#1a2a1a'">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <!-- Share bar -->
+  <div class="share-bar" role="group" aria-label="Share this page">
+    <span class="share-label">Share</span>
+    <button class="share-btn" onclick="shareWhatsApp()" aria-label="Share on WhatsApp">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       WhatsApp
     </button>
-    <button onclick="shareTwitter()" title="Share on X/Twitter" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.12);background:#1a1a2a;color:#a0a8df;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#222237'" onmouseout="this.style.background='#1a1a2a'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.74-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    <button class="share-btn" onclick="shareTwitter()" aria-label="Share on X / Twitter">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.74-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
       Post
     </button>
-    <button onclick="shareFacebook()" title="Share on Facebook" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.12);background:#1a1e2a;color:#8da0e0;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#222637'" onmouseout="this.style.background='#1a1e2a'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    <button class="share-btn" onclick="shareFacebook()" aria-label="Share on Facebook">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
       Share
     </button>
-    <button onclick="copyLink()" id="copy-btn" title="Copy link" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.12);background:#1c1c1c;color:#b0a898;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#282828'" onmouseout="this.style.background='#1c1c1c'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>
+    <button class="share-btn" onclick="copyLink()" id="copy-btn" aria-label="Copy page link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>
       Copy Link
     </button>
   </div>
 
   <!-- Torah for Kids -->
-  <div class="card" id="kids-card" style="margin-top:2.5rem; border-color: rgba(130,200,130,0.25); background: #0a1210;">
-    <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:1.25rem;">
-      <span style="font-size:1.5rem;">✨</span>
-      <span style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:#7ecf9a; letter-spacing:0.04em; text-transform:uppercase; font-size:0.78rem;">Torah for Kids</span>
+  <div class="kids-card" id="kids-card" role="region" aria-label="Torah for Kids">
+    <div class="kids-header">
+      <span style="font-size:1.5rem;" aria-hidden="true">✨</span>
+      <span class="kids-eyebrow">Torah for Kids</span>
     </div>
     <div id="kids-content">
-      <div class="state-msg" style="color:#6b7a96; font-size:0.9rem; text-align:left; padding:0;">Loading...</div>
+      <div class="state-msg" style="text-align:left;padding:0;font-size:0.95rem;">Loading…</div>
     </div>
   </div>
 
-    <footer style="text-align:center;padding:3rem 1.5rem 2rem;border-top:1px solid rgba(201,168,76,0.15);background:#07090f;">
-    <img src="/images/logo-final.png" alt="TorahTxt" style="height:40px;width:auto;display:block;margin:0 auto 1.25rem;">
-    <div style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;font-size:0.9rem;">
-      <a href="/#signup" style="color:#9a8a70;text-decoration:none;">Subscribe</a>
-      <a href="/today" style="color:#9a8a70;text-decoration:none;">Today</a>
-      <a href="/archive" style="color:#9a8a70;text-decoration:none;">Archive</a>
-      <a href="/our-approach.html" style="color:#9a8a70;text-decoration:none;">Our Approach</a>
-      <a href="/sponsor.html" style="color:#9a8a70;text-decoration:none;">Sponsor</a>
-      <a href="/privacy.html" style="color:#9a8a70;text-decoration:none;">Privacy</a>
-      <a href="mailto:info@torahtxt.com" style="color:#9a8a70;text-decoration:none;">Contact</a>
+  <!-- Footer -->
+  <footer>
+    <img src="/images/logo-final.png" alt="TorahTxt" style="height:38px;width:auto;display:block;margin:0 auto 1rem;">
+    <nav class="footer-nav" aria-label="Site links">
+      <a href="/#signup">Subscribe</a>
+      <a href="/today">Today</a>
+      <a href="/archive">Archive</a>
+      <a href="/our-approach.html">Our Approach</a>
+      <a href="/sponsor.html">Sponsor</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:info@torahtxt.com">Contact</a>
+    </nav>
+    <div class="footer-memorial">
+      🕯️ <a href="/in-memory">Dedicated in memory of Michael Green, of Blessed Memory</a>
     </div>
-    <div style="margin-bottom:1rem;font-size:0.82rem;">
-      🕯️ <a href="/in-memory" style="color:#c9a84c;text-decoration:none;">Dedicated in memory of Michael Green, of Blessed Memory</a>
-    </div>
-    <div style="color:#6b7a96;font-size:0.78rem;">
-      © <script>document.write(new Date().getFullYear())</script> TorahTxt. Made with ❤️, Torah, and AI. &nbsp;·&nbsp; <span style="color:#6b7a96;">✦ AI-Generated Content</span>
+    <div class="footer-copy">
+      © <script>document.write(new Date().getFullYear())</script> TorahTxt.
+      Made with ❤️, Torah, and AI. &nbsp;·&nbsp; ✦ AI-Generated Content
     </div>
   </footer>
 
   <script>
     function formatDvar(text) {
-      // Convert plain text with bullets and newlines into HTML
       const lines = text.split('\n');
       let html = '';
       let inList = false;
-
       for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed) {
@@ -448,7 +648,6 @@
           html += `<li>${trimmed.slice(1).trim()}</li>`;
         } else {
           if (inList) { html += '</ul>'; inList = false; }
-          // Italic for lines wrapped in *...*
           const formatted = trimmed.replace(/\*(.*?)\*/g, '<em>$1</em>');
           html += `<p>${formatted}</p>`;
         }
@@ -457,8 +656,8 @@
       return html;
     }
 
-    let _shareTitle = 'Daily D\'var Torah';
-    let _shareUrl = 'https://torahtxt.com/today';
+    let _shareTitle = "Today's D'var Torah";
+    let _shareUrl   = 'https://torahtxt.com/today';
 
     async function loadToday() {
       const card = document.getElementById('card');
@@ -467,96 +666,91 @@
         if (!res.ok) throw new Error('Not found');
         const data = await res.json();
 
-        // Show image if available
+        // Daily image
         if (data.imageUrl) {
           document.getElementById('image-container').innerHTML = `
             <div class="daily-image">
               <img src="${data.imageUrl}" alt="Today's D'var Torah illustration" loading="eager" />
-            </div>
-          `;
+            </div>`;
         }
 
-        // Format full content if available, else fall back to short message
         const content = data.fullContent || data.message;
-        const formattedContent = formatDvar(content);
-
-        // Update share metadata
         _shareTitle = '📖 ' + (data.title || data.parasha) + ' — D\'var Torah';
-        _shareUrl = 'https://torahtxt.com/today';
-
-        // Populate Sefaria source section
-        const sourceSection = document.getElementById('source-section');
-        if (data.sefaria && data.sefaria.ref && sourceSection) {
-          sourceSection.style.display = 'block';
-          document.getElementById('source-ref').textContent = data.sefaria.ref;
-          document.getElementById('source-link').href = 'https://www.sefaria.org/' + (data.sefaria.url || data.sefaria.ref.replace(/ /g, '_'));
-          document.getElementById('source-toggle-label').textContent = 'Read the Source · ' + data.sefaria.parasha;
-          // Fetch first verse
-          fetch('https://www.sefaria.org/api/texts/' + encodeURIComponent(data.sefaria.url || data.sefaria.ref) + '?context=0&pad=0')
-            .then(r => r.json())
-            .then(s => {
-              const verses = s.text;
-              const heVerses = s.he;
-              let eng = '';
-              let heb = '';
-              if (Array.isArray(verses)) {
-                const flat = verses.flat ? verses.flat() : [].concat(...verses);
-                // Get first 1-2 clean verses
-                eng = flat.slice(0, 2).map(v => v.replace(/<[^>]+>/g, '')).join(' ');
-              }
-              if (Array.isArray(heVerses)) {
-                const flatHe = heVerses.flat ? heVerses.flat() : [].concat(...heVerses);
-                heb = flatHe.slice(0, 1).map(v => v.replace(/<[^>]+>/g, '')).join(' ');
-              }
-              if (eng) document.getElementById('source-text').textContent = '"' + eng + '"';
-              if (heb) document.getElementById('source-he').textContent = heb;
-            })
-            .catch(() => {
-              if (data.sefaria.description) {
-                document.getElementById('source-text').textContent = data.sefaria.description;
-              }
-            });
-        }
 
         card.innerHTML = `
           <div class="date-label">${data.date} · ${data.type}</div>
           <div class="parasha">${data.title || data.parasha}</div>
-          <div class="divider"></div>
-          <div class="dvar-text">${formattedContent}</div>
-        `;
+          <div class="divider" aria-hidden="true"></div>
+          <div class="dvar-text">${formatDvar(content)}</div>`;
       } catch (e) {
-        card.innerHTML = '<div class="state-msg">Today\'s message is on its way. Check back shortly.<br><small style="color:#555;font-size:0.7rem;">' + e.message + '</small></div>';
+        card.innerHTML = `<div class="state-msg">Today's message is on its way. Check back shortly.</div>`;
       }
     }
 
+    async function loadKidsContent() {
+      try {
+        const res = await fetch('/api/today');
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        if (data.kidsContent) {
+          const k = data.kidsContent;
+          document.getElementById('kids-content').innerHTML = `
+            <div style="font-size:2rem;margin-bottom:0.75rem;" aria-hidden="true">${k.emoji}</div>
+            <div class="kids-title">${k.title}</div>
+            <div class="kids-body">${k.text.replace(/\*(.*?)\*/g, '<em>$1</em>')}</div>`;
+        } else {
+          document.getElementById('kids-content').innerHTML =
+            `<div style="color:var(--text-muted);font-size:0.95rem;">Today's Torah for Kids is on its way!</div>`;
+        }
+      } catch {
+        document.getElementById('kids-content').innerHTML =
+          `<div style="color:var(--text-muted);font-size:0.95rem;">Today's Torah for Kids is on its way!</div>`;
+      }
+    }
+
+    async function loadPodcastPlayer() {
+      try {
+        const res = await fetch('/api/podcast/today');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.available) return;
+        const player  = document.getElementById('podcast-player');
+        const audio   = document.getElementById('podcast-audio');
+        const titleEl = document.getElementById('podcast-title');
+        const durEl   = document.getElementById('podcast-duration');
+        if (!player || !audio) return;
+        audio.src = data.url;
+        titleEl.textContent = data.title || "Today's Torah Reflection";
+        if (data.duration) durEl.textContent = '⏱ ' + data.duration + ' · MP3';
+        player.style.display = 'block';
+      } catch { /* podcast not available — silent */ }
+    }
+
     function toggleFields() {
-      const sms = document.getElementById('check-sms').checked;
+      const sms   = document.getElementById('check-sms').checked;
       const email = document.getElementById('check-email').checked;
       document.getElementById('phone-field').classList.toggle('visible', sms);
       document.getElementById('email-field').classList.toggle('visible', email);
     }
 
     async function submitSignup() {
-      const name = document.getElementById('signup-name').value.trim();
-      const sms = document.getElementById('check-sms').checked;
-      const email = document.getElementById('check-email').checked;
-      const phone = document.getElementById('signup-phone').value.trim();
+      const name     = document.getElementById('signup-name').value.trim();
+      const sms      = document.getElementById('check-sms').checked;
+      const email    = document.getElementById('check-email').checked;
+      const phone    = document.getElementById('signup-phone').value.trim();
       const emailVal = document.getElementById('signup-email').value.trim();
-      const btn = document.getElementById('signup-btn');
-      const msg = document.getElementById('signup-msg');
+      const btn      = document.getElementById('signup-btn');
 
-      if (!name) { showMsg('Please enter your name.', 'error'); return; }
-      if (!sms && !email) { showMsg('Choose at least one delivery method.', 'error'); return; }
-      if (sms && !phone) { showMsg('Please enter your phone number.', 'error'); return; }
-      if (email && !emailVal) { showMsg('Please enter your email address.', 'error'); return; }
+      if (!name)            { showMsg('Please enter your name.', 'error'); return; }
+      if (!sms && !email)   { showMsg('Choose at least one delivery method.', 'error'); return; }
+      if (sms && !phone)    { showMsg('Please enter your phone number.', 'error'); return; }
+      if (email && !emailVal){ showMsg('Please enter your email address.', 'error'); return; }
 
-      btn.disabled = true;
-      btn.textContent = 'Subscribing...';
-      msg.className = 'signup-msg';
-      msg.textContent = '';
+      btn.disabled    = true;
+      btn.textContent = 'Subscribing…';
+      showMsg('', '');
 
       const results = [];
-
       if (sms) {
         try {
           const r = await fetch('/subscribe', {
@@ -568,7 +762,6 @@
           results.push(d.success ? '📱 Text ✓' : '📱 ' + d.message);
         } catch { results.push('📱 Failed'); }
       }
-
       if (email) {
         try {
           const r = await fetch('/subscribe/email', {
@@ -582,53 +775,25 @@
       }
 
       const allOk = results.every(r => r.includes('✓'));
-      showMsg(allOk ? 'You\'re in! First message arrives tomorrow morning.' : results.join(' · '), allOk ? 'success' : 'error');
-      if (allOk) btn.textContent = 'Subscribed!';
-      else { btn.disabled = false; btn.textContent = 'Subscribe Free'; }
+      showMsg(
+        allOk ? "You're in! First message arrives tomorrow morning." : results.join(' · '),
+        allOk ? 'success' : 'error'
+      );
+      btn.textContent = allOk ? 'Subscribed! ✓' : 'Subscribe Free';
+      if (!allOk) btn.disabled = false;
     }
 
     function showMsg(text, type) {
       const el = document.getElementById('signup-msg');
-      el.textContent = text;
-      el.className = 'signup-msg ' + type;
+      el.textContent  = text;
+      el.className    = 'signup-msg' + (type ? ' ' + type : '');
     }
 
-    async function loadKidsContent() {
-      try {
-        const res = await fetch('/api/today');
-        if (!res.ok) throw new Error('Not found');
-        const data = await res.json();
-
-        if (data.kidsContent) {
-          const k = data.kidsContent;
-          document.getElementById('kids-content').innerHTML = `
-            <div style="margin-bottom:0.75rem;">
-              <span style="font-size:2rem;">${k.emoji}</span>
-            </div>
-            <div style="font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:600; color:#a8dfc0; margin-bottom:1rem; line-height:1.35;">${k.title}</div>
-            <div style="font-size:1rem; line-height:1.8; color:#d4cfc4;">${k.text.replace(/\*(.*?)\*/g, '<em style="color:#7ecf9a;">$1</em>')}</div>
-          `;
-        } else {
-          document.getElementById('kids-content').innerHTML = `
-            <div style="color:#6b7a96; font-size:0.9rem;">Today\'s Torah for Kids is on its way!</div>
-          `;
-        }
-      } catch (e) {
-        document.getElementById('kids-content').innerHTML = `
-          <div style="color:#6b7a96; font-size:0.9rem;">Today\'s Torah for Kids is on its way!</div>
-        `;
-      }
-    }
-
-
-    // Share functionality
     function shareWhatsApp() {
-      const text = encodeURIComponent(_shareTitle + '\n\n' + _shareUrl);
-      window.open('https://wa.me/?text=' + text, '_blank');
+      window.open('https://wa.me/?text=' + encodeURIComponent(_shareTitle + '\n\n' + _shareUrl), '_blank');
     }
     function shareTwitter() {
-      const text = encodeURIComponent(_shareTitle + ' — Daily Torah wisdom. \n\n' + _shareUrl + ' \n\n#Torah #DvarTorah #JewishWisdom');
-      window.open('https://x.com/intent/tweet?text=' + text, '_blank');
+      window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(_shareTitle + '\n\n' + _shareUrl + '\n\n#Torah #DvarTorah #JewishWisdom'), '_blank');
     }
     function shareFacebook() {
       window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(_shareUrl), '_blank');
@@ -637,36 +802,15 @@
       navigator.clipboard.writeText(_shareUrl).then(() => {
         const btn = document.getElementById('copy-btn');
         const orig = btn.innerHTML;
-        btn.innerHTML = '✓ Copied!';
-        btn.style.background = '#1a2a1a';
-        btn.style.color = '#7ecf9a';
-        setTimeout(() => { btn.innerHTML = orig; btn.style.color = '#b0a898'; btn.style.background = '#1c1c1c'; }, 2000);
+        btn.textContent = '✓ Copied!';
+        btn.style.background = 'var(--green-surface)';
+        btn.style.color = 'var(--green-text)';
+        setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; btn.style.color = ''; }, 2000);
       });
     }
 
     loadToday();
     loadKidsContent();
-
-    // Load podcast player if today's episode is available
-    async function loadPodcastPlayer() {
-      try {
-        const res = await fetch('/api/podcast/today');
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!data.available) return;
-        const player  = document.getElementById('podcast-player');
-        const audio   = document.getElementById('podcast-audio');
-        const titleEl = document.getElementById('podcast-title');
-        const durEl   = document.getElementById('podcast-duration');
-        if (!player || !audio) return;
-        audio.src = data.url;
-        titleEl.textContent = data.title || 'Today\'s Torah Reflection';
-        if (data.duration) durEl.textContent = '\u23f1 ' + data.duration + ' \u00b7 MP3';
-        player.style.display = 'block';
-      } catch(e) {
-        // Podcast not available \u2014 silently skip, no broken UI
-      }
-    }
     loadPodcastPlayer();
   </script>
 
