@@ -4,12 +4,13 @@ const { DatabaseSync } = require('node:sqlite');
 const crypto = require('crypto');
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, 'subscribers.db');
+const DB_PATH = process.env.TORAHTXT_DB_PATH || path.join(__dirname, 'subscribers.db');
 
 let db;
 
 function initDb() {
-  db = new DatabaseSync(DB_PATH);
+  const dbPath = process.env.TORAHTXT_DB_PATH || DB_PATH;
+  db = new DatabaseSync(dbPath);
   db.exec(`
     CREATE TABLE IF NOT EXISTS subscribers (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,6 +19,32 @@ function initDb() {
       token TEXT,
       active INTEGER DEFAULT 1,
       created_at TEXT DEFAULT (datetime('now'))
+    )
+  `);
+  // Blast idempotency: durable daily lock + lightweight ledger
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS blast_locks (
+      lock_key   TEXT PRIMARY KEY,
+      channel    TEXT NOT NULL,
+      date       TEXT NOT NULL,
+      acquired_at TEXT NOT NULL DEFAULT (datetime('now')),
+      status     TEXT NOT NULL DEFAULT 'in_progress',
+      sms_sent   INTEGER DEFAULT 0,
+      email_sent INTEGER DEFAULT 0,
+      sms_failed INTEGER DEFAULT 0,
+      email_failed INTEGER DEFAULT 0,
+      completed_at TEXT
+    )
+  `);
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS blast_ledger (
+      id             INTEGER PRIMARY KEY AUTOINCREMENT,
+      lock_key       TEXT NOT NULL,
+      recipient_type TEXT NOT NULL,
+      recipient      TEXT NOT NULL,
+      success        INTEGER NOT NULL DEFAULT 0,
+      error          TEXT,
+      sent_at        TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `);
   return db;
@@ -200,6 +227,65 @@ function getEmailSubscriberCount() {
   return row.count;
 }
 
+// ─── Blast Lock ─────────────────────────────────────────────────────────────
+
+// Try to acquire a blast lock. Returns true if acquired (new), false if already exists.
+function tryAcquireBlastLock(lockKey, channel, date) {
+  const database = getDb();
+  try {
+    database.prepare(
+      'INSERT INTO blast_locks (lock_key, channel, date, status) VALUES (?, ?, ?, \'in_progress\')'
+    ).run(lockKey, channel, date);
+    return true;
+  } catch (err) {
+    if (err.message && err.message.includes('UNIQUE constraint failed')) return false;
+    throw err;
+  }
+}
+
+// Update lock stats and optionally mark complete.
+function updateBlastLock(lockKey, { smsSent, emailSent, smsFailed, emailFailed, status } = {}) {
+  const database = getDb();
+  const fields = [];
+  const params = [];
+  if (smsSent    !== undefined) { fields.push('sms_sent = ?');    params.push(smsSent); }
+  if (emailSent  !== undefined) { fields.push('email_sent = ?');  params.push(emailSent); }
+  if (smsFailed  !== undefined) { fields.push('sms_failed = ?');  params.push(smsFailed); }
+  if (emailFailed !== undefined){ fields.push('email_failed = ?');params.push(emailFailed); }
+  if (status     !== undefined) { fields.push('status = ?');      params.push(status); }
+  if (status === 'completed') { fields.push('completed_at = datetime(\'now\')'); }
+  if (!fields.length) return;
+  params.push(lockKey);
+  database.prepare(`UPDATE blast_locks SET ${fields.join(', ')} WHERE lock_key = ?`).run(...params);
+}
+
+// Get current lock state (or undefined if none).
+function getBlastLock(lockKey) {
+  return getDb().prepare('SELECT * FROM blast_locks WHERE lock_key = ?').get(lockKey);
+}
+
+// List all lock rows (admin inspect).
+function listBlastLocks(limit = 10) {
+  return getDb().prepare('SELECT * FROM blast_locks ORDER BY acquired_at DESC LIMIT ?').all(limit);
+}
+
+// Record a ledger entry (best-effort — never throw).
+function recordLedgerEntry(lockKey, type, recipient, success, error) {
+  try {
+    getDb().prepare(
+      'INSERT INTO blast_ledger (lock_key, recipient_type, recipient, success, error) VALUES (?, ?, ?, ?, ?)'
+    ).run(lockKey, type, recipient, success ? 1 : 0, error || null);
+  } catch (_) {}
+}
+
+// Get ledger entries for a lock.
+function getBlastLedger(lockKey) {
+  return getDb().prepare('SELECT * FROM blast_ledger WHERE lock_key = ? ORDER BY id ASC').all(lockKey);
+}
+
+// Test helper — reset the db singleton (tests only).
+function _resetDbForTest() { db = null; }
+
 module.exports = {
   initDb: initDbWithEmail,
   addSubscriber,
@@ -213,4 +299,12 @@ module.exports = {
   removeEmailSubscriberByEmail,
   getActiveEmailSubscribers,
   getEmailSubscriberCount,
+  // Blast idempotency
+  tryAcquireBlastLock,
+  updateBlastLock,
+  getBlastLock,
+  listBlastLocks,
+  recordLedgerEntry,
+  getBlastLedger,
+  _resetDbForTest,
 };

@@ -29,7 +29,7 @@ function parseCSVRow(row) {
   }
   return fields;
 }
-const { initDb, addSubscriber, removeSubscriberByToken, removeSubscriberByPhone, getActiveSubscribers, getSubscriberCount, addEmailSubscriber, lookupEmailSubscriberByToken, removeEmailSubscriberByToken, removeEmailSubscriberByEmail, getActiveEmailSubscribers, getEmailSubscriberCount } = require('./db');
+const { initDb, addSubscriber, removeSubscriberByToken, removeSubscriberByPhone, getActiveSubscribers, getSubscriberCount, addEmailSubscriber, lookupEmailSubscriberByToken, removeEmailSubscriberByToken, removeEmailSubscriberByEmail, getActiveEmailSubscribers, getEmailSubscriberCount, tryAcquireBlastLock, updateBlastLock, getBlastLock, listBlastLocks, recordLedgerEntry, getBlastLedger } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -94,6 +94,7 @@ async function isShabbatOrHoliday() {
 
 // SMS via Telnyx
 async function sendSMS(to, text) {
+  if (process.env.BLAST_TEST_MODE === '1') return { success: true, _test: true };
   const res = await fetch('https://api.telnyx.com/v2/messages', {
     method: 'POST',
     headers: {
@@ -115,6 +116,7 @@ const EMAIL_FROM_FALLBACK = 'jared@jaredgreen.com';
 const EMAIL_FROM_NAME = 'TorahTxt';
 
 async function sendEmail({ to, subject, html, fromEmail }) {
+  if (process.env.BLAST_TEST_MODE === '1') return { success: true, _test: true };
   const from = fromEmail || EMAIL_FROM;
   const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
     method: 'POST',
@@ -666,16 +668,43 @@ app.post('/blast', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Message is required.' });
   }
 
+  // Local TorahTxt date (America/New_York) — used as the idempotency key date
+  const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+  const lockKey = `blast:sms_email:${todayDate}`;
+
+  console.log(`[blast] request received | date=${todayDate} | lockKey=${lockKey} | force=${!!force}`);
+
+  // ── Idempotency lock: acquire before any send ────────────────────────────
+  const acquired = tryAcquireBlastLock(lockKey, 'sms_email', todayDate);
+  if (!acquired) {
+    const existing = getBlastLock(lockKey);
+    console.log(`[blast] duplicate blocked | lockKey=${lockKey} | lock status=${existing && existing.status}`);
+    return res.json({
+      success: true,
+      skipped: true,
+      reason: 'already_sent_today',
+      lock: existing || null,
+    });
+  }
+  console.log(`[blast] lock acquired | lockKey=${lockKey}`);
+  // Lock is now held. A crash will NOT clear it — rerun is blocked for the day.
+  // To manually unblock: use GET /admin/blast-lock to inspect, then clear via sqlite directly.
+
   // Check Shabbat/holiday — skip blast unless force=true
+  // Note: check AFTER lock so a Shabbat skip still prevents a second run.
   if (!force) {
     const { blocked, reason } = await isShabbatOrHoliday();
     if (blocked) {
-      console.log(`Blast skipped: ${reason}`);
+      console.log(`[blast] skipped — holiday/Shabbat | reason=${reason}`);
+      updateBlastLock(lockKey, { status: 'skipped_holiday' });
       return res.json({ success: true, skipped: true, reason, message: `Blast skipped — ${reason}. Pass force:true to override.` });
     }
   }
 
   const subscribers = getActiveSubscribers();
+  const emailSubscribers = getActiveEmailSubscribers();
+  console.log(`[blast] starting | sms_recipients=${subscribers.length} | email_recipients=${emailSubscribers.length}`);
+
   const BASE = process.env.BASE_URL || 'https://torahtxt.com';
   const fullMessage = message.trim() + '\n\nDig deeper: ' + BASE + '/today\n\nReply STOP to stop.';
 
@@ -688,23 +717,23 @@ app.post('/blast', async (req, res) => {
     try {
       await sendSMS(sub.phone, fullMessage);
       sent++;
+      recordLedgerEntry(lockKey, 'sms', sub.phone, true, null);
     } catch (err) {
       failed++;
       errors.push({ phone: sub.phone, error: err.message });
-      console.error(`Failed to send to ${sub.phone}:`, err.message);
+      recordLedgerEntry(lockKey, 'sms', sub.phone, false, err.message);
+      console.error(`[blast] sms error | phone=${sub.phone} | error=${err.message}`);
     }
   }
+  console.log(`[blast] sms complete | sent=${sent} | failed=${failed}`);
 
   // Email blast
-  const emailSubscribers = getActiveEmailSubscribers();
   let emailSent = 0;
   let emailFailed = 0;
   const emailErrors = [];
 
   const parasha = getTodayParasha();
   const dateStr = getTodayDateFormatted();
-  // Get today's expanded content if available
-  const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
   const { existsSync: existsSyncExpanded, readFileSync: readFileSyncExpanded } = require('fs');
   const expandedContentPath = path.join(__dirname, 'content', 'daily', `${todayDate}.json`);
   let fullDvar  = null;
@@ -725,7 +754,6 @@ app.post('/blast', async (req, res) => {
 
   for (const sub of emailSubscribers) {
     try {
-      // Use canonical payload builder (EMAIL_OUTPUT_STANDARD.md)
       const payload = buildDailyEmailPayload({
         name:      sub.name,
         date:      dateStr,
@@ -745,17 +773,46 @@ app.post('/blast', async (req, res) => {
         text:    payload.text,
       });
       emailSent++;
+      recordLedgerEntry(lockKey, 'email', sub.email, true, null);
     } catch (err) {
       emailFailed++;
       emailErrors.push({ email: sub.email, error: err.message });
-      console.error(`Failed to send email to ${sub.email}:`, err.message);
+      recordLedgerEntry(lockKey, 'email', sub.email, false, err.message);
+      console.error(`[blast] email error | email=${sub.email} | error=${err.message}`);
     }
   }
+  console.log(`[blast] email complete | sent=${emailSent} | failed=${emailFailed}`);
+
+  // Mark lock completed with final counts (lock key stays — no auto-clear)
+  updateBlastLock(lockKey, {
+    smsSent: sent, emailSent, smsFailed: failed, emailFailed, status: 'completed',
+  });
+  console.log(`[blast] completed | lockKey=${lockKey} | sms=${sent}/${subscribers.length} | email=${emailSent}/${emailSubscribers.length}`);
 
   res.json({
     success: true,
-    sms: { sent, failed, total: subscribers.length, errors },
-    email: { sent: emailSent, failed: emailFailed, total: emailSubscribers.length, errors: emailErrors }
+    lockKey,
+    sms:   { sent, failed, total: subscribers.length, errors },
+    email: { sent: emailSent, failed: emailFailed, total: emailSubscribers.length, errors: emailErrors },
+  });
+});
+
+// Admin: inspect blast lock state (read-only — no unlock endpoint)
+app.get('/admin/blast-lock', (req, res) => {
+  const secret = req.headers['x-blast-secret'];
+  if (secret !== BLAST_SECRET) return res.status(403).json({ success: false, message: 'Unauthorized' });
+
+  const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+  const lockKey = `blast:sms_email:${todayDate}`;
+  const todayLock = getBlastLock(lockKey);
+  const recent = listBlastLocks(10);
+  const ledger = todayLock ? getBlastLedger(lockKey) : [];
+
+  res.json({
+    today: { date: todayDate, lockKey, lock: todayLock || null },
+    recent,
+    ledger,
+    note: 'To manually clear a lock, delete the row from blast_locks in subscribers.db directly.',
   });
 });
 
@@ -1139,8 +1196,13 @@ app.post('/sponsor', (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🕍 TorahTxt server running on port ${PORT}`);
-  console.log(`   Landing page: http://localhost:${PORT}`);
-  console.log(`   Subscriber count: http://localhost:${PORT}/subscribers/count`);
-});
+// Export app for testing; only listen when run directly.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🕍 TorahTxt server running on port ${PORT}`);
+    console.log(`   Landing page: http://localhost:${PORT}`);
+    console.log(`   Subscriber count: http://localhost:${PORT}/subscribers/count`);
+  });
+}
+
+module.exports = app;
