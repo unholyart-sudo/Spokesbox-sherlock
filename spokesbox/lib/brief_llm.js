@@ -11,6 +11,7 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { getBrief, saveBrief } = require('./user_brief');
 const { BRIEF_GENERATION_PROMPT, BRIEF_UPDATE_PROMPT, FOLLOWUP_QUESTIONS_PROMPT } = require('./brief_prompts');
+const { sanitizeBriefText, filterFollowupQuestions, buildPrivacyContextForPrompt } = require('./privacy_redact');
 
 const DEFAULT_MODEL = 'claude-sonnet-4-6';
 const TEMP          = 0.4;
@@ -130,9 +131,19 @@ async function generateBriefFromOnboarding({ subscriberId, onboardingText, clari
 
   const messages = [{ role: 'user', content: userContent }];
 
-  const { brief_text, edit_reason } = await callWithRetry(
-    BRIEF_GENERATION_PROMPT, messages, 'generateBriefFromOnboarding', subscriberId
+  // Inject privacy context into system prompt (Guard C — reduces echoes at source)
+  const privacyContext = buildPrivacyContextForPrompt(onboardingText);
+  const systemPrompt = BRIEF_GENERATION_PROMPT.replace('[PRIVACY_CONTEXT]', privacyContext);
+
+  const { brief_text: rawBriefText, edit_reason } = await callWithRetry(
+    systemPrompt, messages, 'generateBriefFromOnboarding', subscriberId
   );
+
+  // Apply privacy sanitizer before DB storage (Guard A — defense-in-depth)
+  const { sanitized: brief_text, redacted, domains } = sanitizeBriefText(rawBriefText, onboardingText);
+  if (redacted) {
+    console.log(`[brief_llm] generateBriefFromOnboarding subscriberId=${subscriberId} privacy_redacted=true domains=${domains.join(',')}`);
+  }
 
   const saved = saveBrief(db, { subscriberId, briefText: brief_text, editedBy: 'llm', editReason: edit_reason });
   return { brief_text: saved.brief_text, brief_version: saved.brief_version, edit_reason };
@@ -170,7 +181,12 @@ async function updateBriefFromReply({ subscriberId, replyText, db }) {
 // { id, text } objects. Throws on LLM failure or malformed response;
 // callers should handle errors and fall back to { questions: [] }.
 async function generateFollowupQuestions(onboardingText) {
-  const systemPrompt = FOLLOWUP_QUESTIONS_PROMPT.replace('[ONBOARDING_TEXT]', onboardingText);
+  // Inject privacy context into prompt (Guard C — reduces probe questions at source)
+  const privacyContext = buildPrivacyContextForPrompt(onboardingText);
+  const systemPrompt = FOLLOWUP_QUESTIONS_PROMPT
+    .replace('[PRIVACY_CONTEXT]', privacyContext)
+    .replace('[ONBOARDING_TEXT]', onboardingText);
+
   const messages = [{ role: 'user', content: 'Generate follow-up questions now.' }];
 
   const response = await callLLM(systemPrompt, messages);
@@ -197,7 +213,13 @@ async function generateFollowupQuestions(onboardingText) {
     throw new Error(`[followup] too few valid questions: ${valid.length}`);
   }
 
-  return valid;
+  // Apply privacy filter (Guard B — defense-in-depth for probe questions)
+  const filtered = filterFollowupQuestions(valid, onboardingText);
+  if (filtered.length < valid.length) {
+    console.log(`[brief_llm] generateFollowupQuestions privacy_filtered=${valid.length - filtered.length} questions removed`);
+  }
+
+  return filtered;
 }
 
 module.exports = {
