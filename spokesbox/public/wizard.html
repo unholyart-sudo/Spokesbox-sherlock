@@ -1461,6 +1461,8 @@ function renderQuestion(q) {
     ta.className   = 'textarea-input';
     ta.id          = 'qInput';
     ta.placeholder = q.placeholder || '';
+    // Rehydrate saved answer when returning to this step
+    ta.value = W.answers[q.key] || '';
     // Live preview wiring: update preview on every keystroke
     ta.addEventListener('input', () => {
       const val = ta.value.trim();
@@ -1468,6 +1470,8 @@ function renderQuestion(q) {
       updatePreviewFromAnswer(q.key, val);
     });
     inputWrap.appendChild(ta);
+    // Rehydrate preview if answer already exists
+    if (ta.value.trim()) updatePreviewFromAnswer(q.key, ta.value.trim());
     setTimeout(() => ta.focus(), 100);
   }
 
