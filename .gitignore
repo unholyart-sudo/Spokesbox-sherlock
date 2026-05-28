@@ -23,3 +23,12 @@ backup.log
 
 # Spokesbox send ledger — runtime files, not source
 spokesbox/send-ledger/*.json
+
+# SQLite runtime databases — NEVER commit live subscriber/app data
+# git reset --hard will revert these to old snapshots, wiping live data
+# See scripts/safe-git-reset.sh and torahtxt/DATABASE.md
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal

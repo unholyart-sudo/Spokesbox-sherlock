@@ -25,7 +25,16 @@
 set -euo pipefail
 
 WORKSPACE="/Users/openclawjg/.openclaw/workspace"
-DEST="$HOME/Dropbox/OpenClaw Backups/production-critical"
+DROPBOX_DEST="$HOME/Dropbox/OpenClaw Backups/production-critical"
+LOCAL_DEST="$WORKSPACE/backups/production-critical"
+# Use Dropbox if mounted, otherwise fall back to local
+if [ -d "$HOME/Dropbox" ]; then
+  DEST="$DROPBOX_DEST"
+  echo "📦 Backup destination: Dropbox"
+else
+  DEST="$LOCAL_DEST"
+  echo "📦 Dropbox not mounted — using local backup: $LOCAL_DEST"
+fi
 STAMP=$(date '+%Y-%m-%d_%H-%M-%S')
 SNAPSHOT="${DEST}/${STAMP}"
 PLAIN_TAR="plain-production-critical.tar.gz"
@@ -109,6 +118,26 @@ copy_if_exists "lib"        "${SNAPSHOT}/plain"
 copy_if_exists "email"      "${SNAPSHOT}/plain"
 copy_if_exists "public"     "${SNAPSHOT}/plain"
 copy_if_exists "migrations" "${SNAPSHOT}/plain"
+
+# ── Subscriber databases (runtime data — NOT in git) ──────────────────────────
+# These are the most critical files: git reset --hard will NOT touch them since
+# *.db is in .gitignore, but we back them up explicitly here.
+log "── Backing up subscriber databases..."
+copy_if_exists "torahtxt/subscribers.db"  "${SNAPSHOT}/plain/databases"
+copy_if_exists "skytuned/subscribers.db"  "${SNAPSHOT}/plain/databases"
+copy_if_exists "spokesbox/subscribers.db" "${SNAPSHOT}/plain/databases"
+# Log counts only — never expose phone numbers/emails in logs
+for db in torahtxt skytuned spokesbox; do
+  dbpath="$WORKSPACE/${db}/subscribers.db"
+  if [ -f "$dbpath" ]; then
+    count=$(sqlite3 "$dbpath" "SELECT COUNT(*) FROM subscribers;" 2>/dev/null || echo "?")
+    log "  DB count ${db}: $count subscribers"
+  fi
+done
+
+# google-service-account.json (plain backup — needed for recovery)
+copy_if_exists "google-service-account.json"        "${SNAPSHOT}/plain"
+copy_if_exists "google-vertex-service-account.json" "${SNAPSHOT}/plain"
 
 # LaunchAgents plists
 PLIST_DEST="${SNAPSHOT}/plain/LaunchAgents"
