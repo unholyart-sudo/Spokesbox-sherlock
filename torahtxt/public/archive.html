@@ -24,59 +24,73 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
   <link rel="apple-touch-icon" sizes="512x512" href="/favicon-512.png" />
-  <meta name="theme-color" content="#07090f" />
+  <meta name="theme-color" content="#f8f5ef" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg: #07090f;
-      --bg2: #0d1017;
-      --gold: #c9a84c;
-      --gold-dim: rgba(201,168,76,0.18);
-      --gold-glow: rgba(201,168,76,0.35);
-      --text: #e8e0d0;
-      --text-dim: #9a8a70;
-      --text-muted: #6b5f4e;
-      --card-bg: #0f1218;
+      --bg:          #f8f5ef;
+      --surface:     #ffffff;
+      --surface-alt: #f2eee6;
+      --border:      #ddd4c8;
+      --text:        #1f2933;
+      --text-sec:    #4b5563;
+      --text-muted:  #6b7280;
+      --accent:      #7c5c2e;
+      --accent-dark: #5a4020;
+      --accent-gold: #9c7a32;
+      --accent-teal: #1d6a6a;
+      --gold-divider:#c9a84c;
+      --shadow:      0 2px 12px rgba(0,0,0,0.07);
+      /* legacy aliases used in JS-rendered HTML below */
+      --card-bg:     #ffffff;
+      --gold:        #9c7a32;
+      --gold-dim:    #ddd4c8;
+      --gold-glow:   rgba(124,92,46,0.15);
+      --text-dim:    #4b5563;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
       min-height: 100vh;
-      line-height: 1.6;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── Header ── */
     .site-header {
-      border-bottom: 1px solid var(--gold-dim);
-      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: var(--surface);
     }
     .site-header a.logo {
       text-decoration: none;
       font-family: 'Playfair Display', serif;
       font-size: 1.4rem;
-      color: var(--gold);
+      color: var(--accent);
       font-weight: 700;
       letter-spacing: 0.02em;
     }
     .site-header nav a {
-      color: var(--text-dim);
+      color: var(--text-sec);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       margin-left: 1.5rem;
       transition: color 0.2s;
     }
-    .site-header nav a:hover { color: var(--gold); }
-    .site-header nav a.active { color: var(--gold); }
+    .site-header nav a:hover { color: var(--accent); text-decoration: underline; }
+    .site-header nav a.active { color: var(--accent); font-weight: 600; }
 
     /* ── Page container ── */
     .page {
@@ -97,13 +111,13 @@
     .archive-heading h1 {
       font-family: 'Playfair Display', serif;
       font-size: clamp(2rem, 5vw, 3rem);
-      color: var(--gold);
+      color: var(--text);
       font-weight: 700;
       line-height: 1.15;
     }
     .archive-heading p {
       margin-top: 0.6rem;
-      color: var(--text-dim);
+      color: var(--text-sec);
       font-size: 1.05rem;
       font-style: italic;
       font-family: 'Playfair Display', serif;
@@ -118,18 +132,19 @@
     .search-wrap input {
       width: 100%;
       padding: 0.85rem 1rem 0.85rem 2.8rem;
-      background: var(--card-bg);
-      border: 1px solid var(--gold-dim);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
       border-radius: 8px;
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
+      min-height: 44px;
     }
     .search-wrap input:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px var(--gold-dim);
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px rgba(29,106,106,0.15);
     }
     .search-wrap input::placeholder { color: var(--text-muted); }
     .search-icon {
@@ -147,11 +162,11 @@
     .parasha-header {
       font-family: 'Playfair Display', serif;
       font-size: 1.2rem;
-      color: var(--gold);
+      color: var(--accent);
       font-weight: 600;
       margin-bottom: 1rem;
       padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--gold-dim);
+      border-bottom: 2px solid var(--border);
     }
 
     /* ── Card grid ── */
@@ -166,17 +181,22 @@
 
     /* ── Entry card ── */
     .entry-card {
-      background: var(--card-bg);
-      border: 1px solid var(--gold-dim);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 1.1rem 1.2rem;
+      padding: 1.25rem 1.35rem;
       cursor: pointer;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      box-shadow: var(--shadow);
     }
     .entry-card:hover {
-      border-color: var(--gold);
-      box-shadow: 0 0 18px var(--gold-glow);
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(124,92,46,0.15);
       transform: translateY(-2px);
+    }
+    .entry-card:focus-visible {
+      outline: 3px solid var(--accent-teal);
+      outline-offset: 2px;
     }
     .entry-card .card-meta {
       font-size: 0.78rem;
@@ -184,19 +204,20 @@
       margin-bottom: 0.35rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
+      font-weight: 600;
     }
     .entry-card .card-title {
       font-family: 'Playfair Display', serif;
-      font-size: 0.98rem;
+      font-size: 1rem;
       font-weight: 600;
       color: var(--text);
       line-height: 1.35;
       margin-bottom: 0.5rem;
     }
     .entry-card .card-snippet {
-      font-size: 0.84rem;
-      color: var(--text-dim);
-      line-height: 1.5;
+      font-size: 0.9rem;
+      color: var(--text-sec);
+      line-height: 1.55;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -205,16 +226,16 @@
 
     /* ── Shimmer loading ── */
     .shimmer-card {
-      background: var(--card-bg);
-      border: 1px solid var(--gold-dim);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 1.1rem 1.2rem;
+      padding: 1.25rem 1.35rem;
       overflow: hidden;
     }
     .shimmer-line {
       height: 14px;
       border-radius: 4px;
-      background: linear-gradient(90deg, #1a1e28 25%, #242834 50%, #1a1e28 75%);
+      background: linear-gradient(90deg, #e8e4de 25%, #f2ede6 50%, #e8e4de 75%);
       background-size: 200% 100%;
       animation: shimmer 1.4s infinite;
       margin-bottom: 0.65rem;
@@ -231,7 +252,7 @@
     .empty-state {
       text-align: center;
       padding: 3rem 1rem;
-      color: var(--text-dim);
+      color: var(--text-sec);
     }
     .empty-state .emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
     .empty-state p { font-size: 1rem; }
@@ -244,28 +265,32 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      color: var(--gold);
+      color: var(--accent-teal);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 500;
       cursor: pointer;
       background: none;
       border: none;
-      padding: 0;
+      padding: 0.25rem 0;
       transition: opacity 0.2s;
+      min-height: 44px;
     }
-    .btn-back:hover { opacity: 0.8; }
+    .btn-back:hover { opacity: 0.8; text-decoration: underline; }
+    .btn-back:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
 
     .entry-type-badge {
       display: inline-block;
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: var(--gold);
-      border: 1px solid var(--gold-dim);
+      color: var(--accent);
+      border: 1.5px solid var(--border);
       border-radius: 4px;
-      padding: 0.2rem 0.55rem;
+      padding: 0.2rem 0.6rem;
       margin-bottom: 1rem;
+      font-weight: 600;
+      background: var(--surface-alt);
     }
     .entry-title {
       font-family: 'Playfair Display', serif;
@@ -276,40 +301,39 @@
       margin-bottom: 0.6rem;
     }
     .entry-date {
-      color: var(--text-dim);
-      font-size: 0.9rem;
+      color: var(--text-sec);
+      font-size: 0.95rem;
       margin-bottom: 2rem;
     }
 
     .entry-divider {
       height: 1px;
-      background: var(--gold-dim);
+      background: var(--border);
       margin: 1.75rem 0;
     }
 
     .entry-body {
-      font-size: 1.02rem;
-      line-height: 1.8;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      line-height: 1.85;
       color: var(--text);
     }
     .entry-body p { margin-bottom: 1.1rem; }
-    .entry-body em { color: var(--gold); font-style: italic; }
+    .entry-body em { color: var(--accent); font-style: italic; }
     .entry-body ul {
       list-style: none;
       padding: 0;
       margin: 0.5rem 0 1.1rem;
     }
     .entry-body ul li {
-      padding: 0.25rem 0 0.25rem 1.5rem;
+      padding: 0.35rem 0 0.35rem 1.5rem;
       position: relative;
       color: var(--text);
+      border-left: 3px solid var(--gold-divider);
+      margin-bottom: 0.5rem;
+      padding-left: 1rem;
     }
-    .entry-body ul li::before {
-      content: '•';
-      position: absolute;
-      left: 0;
-      color: var(--gold);
-    }
+    .entry-body ul li::before { content: none; }
 
     /* Prev/Next nav */
     .entry-nav {
@@ -320,18 +344,21 @@
     }
     .btn-nav {
       flex: 1;
-      padding: 0.75rem 1rem;
-      background: var(--card-bg);
-      border: 1px solid var(--gold-dim);
+      padding: 0.85rem 1rem;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
       border-radius: 8px;
-      color: var(--gold);
+      color: var(--accent);
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem;
+      font-size: 0.95rem;
       cursor: pointer;
       text-align: center;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s, background 0.2s;
+      min-height: 44px;
+      font-weight: 500;
     }
-    .btn-nav:hover { border-color: var(--gold); box-shadow: 0 0 12px var(--gold-glow); }
+    .btn-nav:hover { border-color: var(--accent); background: var(--surface-alt); }
+    .btn-nav:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
     .btn-nav:disabled { opacity: 0.35; cursor: default; }
     .btn-nav.prev { text-align: left; }
     .btn-nav.next { text-align: right; }
@@ -340,14 +367,14 @@
     .share-section {
       margin-top: 2.5rem;
       padding: 1.25rem 1.5rem;
-      background: var(--card-bg);
-      border: 1px solid var(--gold-dim);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
       border-radius: 10px;
     }
     .share-section h3 {
       font-family: 'Playfair Display', serif;
       font-size: 1rem;
-      color: var(--gold);
+      color: var(--text);
       margin-bottom: 0.9rem;
     }
     .share-buttons {
@@ -370,9 +397,9 @@
     }
     .btn-share:hover { opacity: 0.88; transform: translateY(-1px); }
     .btn-copy {
-      background: var(--gold-dim);
-      border: 1px solid var(--gold);
-      color: var(--gold);
+      background: var(--surface-alt);
+      border: 1.5px solid var(--border);
+      color: var(--accent);
     }
     .btn-whatsapp {
       background: #25d366;
@@ -386,48 +413,53 @@
       margin-top: 2.5rem;
       text-align: center;
       padding: 2rem;
-      border: 1px solid var(--gold-dim);
+      border: 1px solid var(--border);
       border-radius: 10px;
-      background: linear-gradient(135deg, #0d1017 0%, #11151f 100%);
+      background: var(--surface-alt);
     }
     .entry-cta p {
-      color: var(--text-dim);
+      color: var(--text-sec);
       margin-bottom: 1rem;
-      font-size: 0.95rem;
+      font-size: 1rem;
     }
     .btn-cta {
       display: inline-block;
-      padding: 0.8rem 2rem;
-      background: var(--gold);
-      color: #07090f;
+      padding: 0.85rem 2rem;
+      background: var(--accent);
+      color: #ffffff;
       font-family: 'DM Sans', sans-serif;
       font-weight: 600;
       font-size: 0.95rem;
       border-radius: 6px;
       text-decoration: none;
-      transition: opacity 0.2s, transform 0.15s;
+      transition: background 0.2s, transform 0.15s;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
     }
-    .btn-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-cta:hover { background: var(--accent-dark); }
+    .btn-cta:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
 
     /* ── Footer ── */
     footer {
-      border-top: 1px solid var(--gold-dim);
-      padding: 3rem 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.5rem 2rem;
       text-align: center;
       color: var(--text-muted);
+      background: var(--surface-alt);
     }
     .footer-logo { margin-bottom: 0.5rem; }
     .footer-divider {
       height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      background: var(--border);
       margin: 1.25rem auto;
       max-width: 300px;
     }
     .footer-tagline {
-      font-size: 0.88rem;
-      color: var(--text-dim);
+      font-size: 0.9rem;
+      color: var(--text-sec);
       margin-bottom: 1.25rem;
-      line-height: 1.5;
+      line-height: 1.55;
     }
     .footer-links {
       display: flex;
@@ -437,14 +469,14 @@
       margin-bottom: 1.25rem;
     }
     .footer-links a {
-      color: var(--text-dim);
+      color: var(--text-sec);
       text-decoration: none;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       transition: color 0.2s;
     }
-    .footer-links a:hover { color: var(--gold); }
+    .footer-links a:hover { color: var(--accent); text-decoration: underline; }
     .footer-copy {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       margin-top: 1.25rem;
       line-height: 1.6;

@@ -9,14 +9,62 @@
   <link rel="apple-touch-icon" sizes="512x512" href="/favicon-512.png?v=1774537955" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy — TorahTxt</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    body { background: #0a0f1e; color: #e8e0d0; font-family: 'Inter', sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.8; }
-    h1 { font-family: 'Playfair Display', serif; color: #c9a84c; margin-bottom: 0.5rem; }
-    h2 { color: #c9a84c; margin-top: 2rem; font-size: 1.1rem; }
-    a { color: #c9a84c; }
-    p { margin-bottom: 1rem; }
-    .back { display: inline-block; margin-bottom: 2rem; color: #c9a84c; text-decoration: none; }
+    :root {
+      --bg: #f8f5ef; --surface: #ffffff; --surface-alt: #f2eee6;
+      --border: #ddd4c8; --text: #1f2933; --text-sec: #4b5563;
+      --text-muted: #6b7280; --accent: #7c5c2e; --accent-teal: #1d6a6a;
+      --accent-gold: #9c7a32; --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--text); margin-bottom: 0.5rem; margin-top: 1.5rem; }
+    h2 { color: var(--accent); margin-top: 2rem; font-size: 1.15rem; font-weight: 600; }
+    a { color: var(--accent-teal); }
+    a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
+    p { margin-bottom: 1rem; color: var(--text-sec); }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 2rem;
+      color: var(--accent-teal);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .back:hover { text-decoration: underline; }
+
+    footer {
+      text-align: center;
+      padding: 2.5rem 1.5rem 1.5rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+      background: var(--surface-alt);
+      border-radius: 12px;
+    }
+    footer img { height: 38px; width: auto; display: block; margin: 0 auto 1rem; }
+    .footer-nav {
+      display: flex; gap: 1rem; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.9rem;
+    }
+    .footer-nav a { color: var(--text-sec); text-decoration: none; }
+    .footer-nav a:hover { text-decoration: underline; }
+    .footer-memorial { margin-bottom: 0.75rem; font-size: 0.875rem; }
+    .footer-memorial a { color: var(--accent-gold); }
+    .footer-copy { color: var(--text-muted); font-size: 0.8rem; }
   </style>
 </head>
 <body>
@@ -45,21 +93,21 @@
   <h2>Contact</h2>
   <p>Questions? Email us at <a href="mailto:info@torahtxt.com">info@torahtxt.com</a></p>
 
-  <footer style="text-align:center;padding:3rem 1.5rem 2rem;border-top:1px solid rgba(201,168,76,0.15);margin-top:3rem;">
-    <img src="/images/logo-final.png" alt="TorahTxt" style="height:40px;width:auto;display:block;margin:0 auto 1.25rem;">
-    <div style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;font-size:0.9rem;">
-      <a href="/#signup" style="color:#9a8a70;text-decoration:none;">Subscribe</a>
-      <a href="/today" style="color:#9a8a70;text-decoration:none;">Today</a>
-      <a href="/archive" style="color:#9a8a70;text-decoration:none;">Archive</a>
-      <a href="/our-approach.html" style="color:#9a8a70;text-decoration:none;">Our Approach</a>
-      <a href="/sponsor.html" style="color:#9a8a70;text-decoration:none;">Sponsor</a>
-      <a href="/privacy.html" style="color:#9a8a70;text-decoration:none;">Privacy</a>
-      <a href="mailto:info@torahtxt.com" style="color:#9a8a70;text-decoration:none;">Contact</a>
+  <footer>
+    <img src="/images/logo-final.png" alt="TorahTxt" />
+    <nav class="footer-nav">
+      <a href="/#signup">Subscribe</a>
+      <a href="/today">Today</a>
+      <a href="/archive">Archive</a>
+      <a href="/our-approach.html">Our Approach</a>
+      <a href="/sponsor.html">Sponsor</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:info@torahtxt.com">Contact</a>
+    </nav>
+    <div class="footer-memorial">
+      🕯️ <a href="/in-memory">Dedicated in memory of Michael Green, of Blessed Memory</a>
     </div>
-    <div style="margin-bottom:1rem;font-size:0.82rem;">
-      🕯️ <a href="/in-memory" style="color:#c9a84c;text-decoration:none;">Dedicated in memory of Michael Green, of Blessed Memory</a>
-    </div>
-    <div style="color:#6b7a96;font-size:0.78rem;">© <script>document.write(new Date().getFullYear())</script> TorahTxt. Made with ❤️ and Torah.</div>
+    <div class="footer-copy">© <script>document.write(new Date().getFullYear())</script> TorahTxt. Made with ❤️ and Torah.</div>
   </footer>
 </body>
 </html>

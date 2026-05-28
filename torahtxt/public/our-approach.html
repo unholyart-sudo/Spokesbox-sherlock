@@ -7,121 +7,127 @@
   <meta name="description" content="How TorahTxt sources and crafts daily Torah wisdom — our methodology, theological grounding, and observance schedule." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <meta name="theme-color" content="#07090f" />
+  <meta name="theme-color" content="#f8f5ef" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --gold: #c9a84c;
-      --gold-light: #e2c46a;
-      --bg: #07090f;
-      --card: #0d1121;
-      --text: #f2ece0;
-      --muted: #9a8a70;
-      --border: rgba(201,168,76,0.2);
+      --bg:           #f8f5ef;
+      --surface:      #ffffff;
+      --surface-alt:  #f2eee6;
+      --border:       #ddd4c8;
+      --text:         #1f2933;
+      --text-sec:     #4b5563;
+      --text-muted:   #6b7280;
+      --accent:       #7c5c2e;
+      --accent-dark:  #5a4020;
+      --accent-gold:  #9c7a32;
+      --accent-teal:  #1d6a6a;
+      --gold-divider: #c9a84c;
+      --shadow:       0 2px 12px rgba(0,0,0,0.07);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
+      font-size: 18px;
       line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
     }
-    a { color: var(--gold); text-decoration: none; }
+
+    a { color: var(--accent-teal); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; border-radius: 2px; }
 
     header {
       text-align: center;
-      padding: 3rem 1.5rem 2rem;
+      padding: 2.5rem 1.5rem 1.75rem;
       border-bottom: 1px solid var(--border);
+      background: var(--surface);
     }
-    header img { height: 48px; width: auto; margin-bottom: 1rem; }
-    header nav { margin-top: 1rem; font-size: 0.9rem; color: var(--muted); }
-    header nav a { color: var(--muted); }
-    header nav a:hover { color: var(--gold); }
+    header img { height: 52px; width: auto; margin-bottom: 0.75rem; }
+    header nav { margin-top: 0.75rem; font-size: 0.95rem; color: var(--text-sec); }
+    header nav a { color: var(--accent-teal); }
 
     .hero {
       text-align: center;
-      padding: 4rem 1.5rem 2rem;
+      padding: 3.5rem 1.5rem 2rem;
       max-width: 720px;
       margin: 0 auto;
     }
     .hero h1 {
       font-family: 'Playfair Display', serif;
       font-size: clamp(2rem, 5vw, 3rem);
-      color: var(--gold-light);
-      margin-bottom: 1rem;
+      color: var(--text);
+      margin-bottom: 0.9rem;
     }
     .hero p {
       font-size: 1.1rem;
-      color: #d4cfc4;
+      color: var(--text-sec);
       max-width: 560px;
       margin: 0 auto;
+      line-height: 1.7;
     }
     .divider {
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      max-width: 200px;
+      height: 3px;
+      background: var(--gold-divider);
+      max-width: 60px;
       margin: 2rem auto;
+      border-radius: 2px;
+      opacity: 0.7;
     }
 
     main {
       max-width: 760px;
       margin: 0 auto;
-      padding: 1rem 1.5rem 5rem;
+      padding: 0.5rem 1.5rem 5rem;
     }
 
     .section {
-      background: var(--card);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 2.5rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
     }
+    @media (max-width: 480px) { .section { padding: 1.5rem 1.25rem; } }
+
     .section h2 {
       font-family: 'Playfair Display', serif;
       font-size: 1.5rem;
-      color: var(--gold);
+      color: var(--text);
       margin-bottom: 1.25rem;
     }
     .section h3 {
       font-size: 1rem;
       font-weight: 600;
-      color: var(--gold-light);
+      color: var(--accent);
       margin: 1.5rem 0 0.5rem;
     }
-    .section p {
-      color: #d4cfc4;
-      margin-bottom: 0.9rem;
-    }
-    .section ul, .section ol {
-      color: #d4cfc4;
-      padding-left: 1.4rem;
-      margin-bottom: 1rem;
-    }
-    .section li {
-      margin-bottom: 0.5rem;
-    }
+    .section p { color: var(--text-sec); margin-bottom: 0.9rem; line-height: 1.75; }
+    .section ul, .section ol { color: var(--text-sec); padding-left: 1.4rem; margin-bottom: 1rem; }
+    .section li { margin-bottom: 0.5rem; line-height: 1.7; }
+    .section strong { color: var(--text); }
+    .section em { color: var(--accent); }
 
-    .audience-grid {
-      display: grid;
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
+    .audience-grid { display: grid; gap: 0.75rem; margin-top: 1rem; }
     .audience-row {
       display: flex;
       align-items: flex-start;
       gap: 0.75rem;
-      background: rgba(255,255,255,0.03);
+      background: var(--surface-alt);
       border-radius: 8px;
-      padding: 0.75rem 1rem;
-      border: 1px solid rgba(201,168,76,0.1);
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
     }
     .audience-row .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
-    .audience-row .label { font-weight: 600; color: var(--text); }
-    .audience-row .desc { font-size: 0.9rem; color: var(--muted); }
+    .audience-row .label { font-weight: 600; color: var(--text); font-size: 1rem; }
+    .audience-row .desc { font-size: 0.9rem; color: var(--text-sec); margin-top: 0.15rem; }
 
     .holiday-table {
       width: 100%;
@@ -131,17 +137,19 @@
     }
     .holiday-table th {
       text-align: left;
-      color: var(--gold);
+      color: var(--accent);
       font-weight: 600;
-      padding: 0.5rem 0.75rem;
-      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 0.75rem;
+      border-bottom: 2px solid var(--border);
+      background: var(--surface-alt);
     }
     .holiday-table td {
-      padding: 0.5rem 0.75rem;
-      color: #d4cfc4;
-      border-bottom: 1px solid rgba(201,168,76,0.06);
+      padding: 0.55rem 0.75rem;
+      color: var(--text-sec);
+      border-bottom: 1px solid var(--border);
     }
     .holiday-table tr:last-child td { border-bottom: none; }
+    .holiday-table tr:nth-child(even) td { background: var(--surface-alt); }
 
     .source-list {
       display: grid;
@@ -149,28 +157,43 @@
       gap: 0.75rem;
       margin-top: 1rem;
     }
-    @media (max-width: 560px) {
-      .source-list { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 560px) { .source-list { grid-template-columns: 1fr; } }
     .source-item {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(201,168,76,0.1);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 0.75rem 1rem;
+      padding: 0.85rem 1rem;
     }
-    .source-item .source-name { font-weight: 600; color: var(--gold-light); font-size: 0.95rem; }
-    .source-item .source-desc { font-size: 0.85rem; color: var(--muted); margin-top: 0.2rem; }
+    .source-item .source-name { font-weight: 600; color: var(--text); font-size: 0.95rem; }
+    .source-item .source-desc { font-size: 0.85rem; color: var(--text-sec); margin-top: 0.2rem; line-height: 1.5; }
+
+    .dedication-section {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2.5rem 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .dedication-section p { color: var(--text-sec); }
+    .dedication-section .name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; color: var(--text); margin: 0.5rem 0; }
+    .dedication-section .sub { max-width: 480px; margin: 0 auto; font-size: 0.95rem; line-height: 1.6; }
+    .dedication-section a { color: var(--accent-teal); font-weight: 500; }
 
     footer {
       text-align: center;
-      padding: 3rem 1.5rem;
+      padding: 2.5rem 1.5rem;
       border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.85rem;
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      font-size: 0.875rem;
     }
-    footer a { color: var(--muted); }
-    footer a:hover { color: var(--gold); }
-    footer .footer-links { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    footer a { color: var(--text-sec); }
+    footer a:hover { color: var(--accent); text-decoration: underline; }
+    .footer-links { display: flex; gap: 1.25rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.25rem; font-size: 0.95rem; }
+    .footer-memorial { margin-bottom: 0.75rem; }
+    .footer-memorial a { color: var(--accent-gold); }
   </style>
 </head>
 <body>
@@ -183,12 +206,11 @@
 <div class="hero">
   <h1>Our Approach</h1>
   <p>Where the messages come from, how they're written, who they're for — and when we go quiet.</p>
-  <div class="divider"></div>
+  <div class="divider" aria-hidden="true"></div>
 </div>
 
 <main>
 
-  <!-- What we send -->
   <div class="section">
     <h2>📖 What We Send</h2>
     <p>Every morning, TorahTxt delivers a short D'var Torah — a Torah teaching — grounded in the weekly <em>parasha</em> (Torah portion) and connected to something real in daily life. The goal is never to lecture. It's to spark a thought you'll carry through your day.</p>
@@ -203,7 +225,6 @@
     <p>On weeks where the parasha theme has been thoroughly covered, we pivot to Talmud lessons, Pirkei Avot, or Chassidic stories — always thematically connected when possible.</p>
   </div>
 
-  <!-- Sources -->
   <div class="section">
     <h2>📚 Sources We Draw From</h2>
     <p>Every TorahTxt message is grounded in traditional Jewish texts. We draw from:</p>
@@ -244,7 +265,6 @@
     <p style="margin-top:1.25rem;">We always aim to explain our sources in plain language — no jargon without context, no citations without meaning.</p>
   </div>
 
-  <!-- Theological lens -->
   <div class="section">
     <h2>🕍 Theological Orientation</h2>
     <p>TorahTxt's messages are closest to <strong>Modern Orthodox / Centrist Orthodox</strong> in their framing — though we write for anyone who cares about their Judaism. Here's what that means in practice:</p>
@@ -295,10 +315,9 @@
       </div>
     </div>
 
-    <p style="margin-top:1.5rem;font-style:italic;color:var(--muted);">Our goal: speak from <em>Hebrew school to beit midrash</em> — reaching Jews across denominations who care about their Judaism, anchored in Orthodox tradition but written with a tone that never excludes.</p>
+    <p style="margin-top:1.5rem;font-style:italic;color:var(--text-muted);">Our goal: speak from <em>Hebrew school to beit midrash</em> — reaching Jews across denominations who care about their Judaism, anchored in Orthodox tradition but written with a tone that never excludes.</p>
   </div>
 
-  <!-- Observance schedule -->
   <div class="section">
     <h2>🕯️ When We Go Quiet</h2>
     <p>TorahTxt observes Shabbat and major Jewish holidays. No messages are sent during these times — because we believe the medium should honor the message.</p>
@@ -328,14 +347,13 @@
       </tbody>
     </table>
 
-    <p style="margin-top:1.25rem; color:var(--muted); font-size:0.9rem;">Note: On Erev Pesach (the day before Passover) and other days with significant preparation, the message may be delivered early or skipped at our discretion.</p>
+    <p style="margin-top:1.25rem;color:var(--text-muted);font-size:0.9rem;">Note: On Erev Pesach (the day before Passover) and other days with significant preparation, the message may be delivered early or skipped at our discretion.</p>
   </div>
 
-  <!-- Dedication -->
-  <div class="section" style="text-align:center; border-color:rgba(201,168,76,0.35);">
-    <p style="font-size:1.1rem; color:var(--gold-light); font-family:'Playfair Display',serif;">🕯️ TorahTxt is dedicated in memory of</p>
-    <p style="font-size:1.3rem; font-family:'Playfair Display',serif; font-weight:600; margin:0.5rem 0;">Michael Green, of Blessed Memory</p>
-    <p style="color:var(--muted); max-width:480px; margin:0 auto; font-size:0.95rem;">He believed no one should be left out. These messages carry that spirit forward — Torah for everyone who wants it.</p>
+  <div class="dedication-section">
+    <p style="font-size:1.05rem;font-family:'Playfair Display',serif;">🕯️ TorahTxt is dedicated in memory of</p>
+    <p class="name">Michael Green, of Blessed Memory</p>
+    <p class="sub" style="color:var(--text-sec);">He believed no one should be left out. These messages carry that spirit forward — Torah for everyone who wants it.</p>
     <p style="margin-top:1rem;"><a href="/in-memory">Read his story →</a></p>
   </div>
 
@@ -344,15 +362,17 @@
 <footer>
   <div class="footer-links">
     <a href="/">Home</a>
+    <a href="/today">Today</a>
+    <a href="/archive">Archive</a>
     <a href="/our-approach.html">Our Approach</a>
     <a href="/sponsor.html">Sponsor</a>
     <a href="/privacy.html">Privacy</a>
     <a href="mailto:info@torahtxt.com">Contact</a>
   </div>
-  <div style="margin-bottom:1rem;">
+  <div class="footer-memorial">
     🕯️ <a href="/in-memory">Dedicated in memory of Michael Green, of Blessed Memory</a>
   </div>
-  © <script>document.write(new Date().getFullYear())</script> TorahTxt. Made with ❤️ and Torah.
+  <div>© <script>document.write(new Date().getFullYear())</script> TorahTxt. Made with ❤️ and Torah.</div>
 </footer>
 
 </body>

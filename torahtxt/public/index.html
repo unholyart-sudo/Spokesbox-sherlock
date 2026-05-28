@@ -24,7 +24,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=1774537955" />
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=1774537955" />
   <link rel="apple-touch-icon" sizes="512x512" href="/favicon-512.png?v=1774537955" />
-  <meta name="theme-color" content="#07090f" />
+  <meta name="theme-color" content="#f8f5ef" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
@@ -33,21 +33,34 @@
 
 
     :root {
-      --navy: #07090f;
-      --navy-mid: #0d1121;
-      --navy-light: #141b2e;
-      --gold: #c9a84c;
-      --gold-light: #e2c46a;
-      --gold-bright: #f0d080;
-      --gold-dim: #7a6328;
-      --gold-glow: rgba(201,168,76,0.15);
-      --white: #f2ece0;
-      --off-white: #d4cfc4;
-      --grey: #6b7a96;
-      --card: #0f1628;
-      --card-hover: #141e33;
-      --border: rgba(201,168,76,0.12);
-      --border-hover: rgba(201,168,76,0.45);
+      --bg:           #f8f5ef;
+      --surface:      #ffffff;
+      --surface-alt:  #f2eee6;
+      --border:       #ddd4c8;
+      --border-hover: #bbb0a4;
+      --text:         #1f2933;
+      --text-sec:     #4b5563;
+      --text-muted:   #6b7280;
+      --accent:       #7c5c2e;
+      --accent-dark:  #5a4020;
+      --accent-gold:  #9c7a32;
+      --accent-teal:  #1d6a6a;
+      --gold-divider: #c9a84c;
+      --shadow:       0 2px 12px rgba(0,0,0,0.07);
+      /* legacy aliases kept for inline HTML / JS-rendered content */
+      --navy:      #f8f5ef;
+      --navy-mid:  #f2eee6;
+      --navy-light:#f2eee6;
+      --gold:      #9c7a32;
+      --gold-light:#7c5c2e;
+      --gold-bright:#5a4020;
+      --gold-dim:  rgba(124,92,46,0.15);
+      --gold-glow: rgba(124,92,46,0.12);
+      --white:     #1f2933;
+      --off-white: #4b5563;
+      --grey:      #6b7280;
+      --card:      #ffffff;
+      --card-hover:#f2eee6;
     }
 
     body::after {
@@ -58,11 +71,16 @@
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background-color: var(--navy);
-      color: var(--white);
+      font-size: 18px;
+      background-color: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
+      -webkit-font-smoothing: antialiased;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
     }
 
     /* Scroll Progress Bar */
@@ -71,7 +89,7 @@
       top: 0;
       left: 0;
       height: 3px;
-      background: linear-gradient(90deg, #c9a84c, #e2c46a);
+      background: linear-gradient(90deg, var(--accent), var(--accent-gold));
       z-index: 200;
       transition: width 0.1s ease;
       width: 0%;
@@ -106,19 +124,21 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.5rem 3rem;
-      border-bottom: 1px solid rgba(201,168,76,0.08);
+      padding: 1.25rem 3rem;
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(7,9,15,0.85);
+      background: rgba(248,245,239,0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .nav-logo {
       font-family: 'Playfair Display', serif;
       font-size: 1.4rem;
       font-weight: 700;
-      color: #c9a84c;
+      color: var(--accent) !important;
       text-decoration: none;
       letter-spacing: 0.02em;
     }
@@ -135,29 +155,29 @@
 
     .nav-hebrew {
       font-size: 0.9rem;
-      color: var(--grey);
+      color: var(--text-muted);
       font-weight: 300;
       letter-spacing: 0.05em;
     }
 
     .nav-cta {
-      background: transparent;
-      color: var(--gold);
-      padding: 0.5rem 1.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      background: var(--accent);
+      color: #ffffff;
+      padding: 0.55rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
       font-weight: 600;
       text-decoration: none;
-      transition: all 0.2s;
-      border: 1px solid rgba(201,168,76,0.4);
-      letter-spacing: 0.1em;
+      transition: background 0.2s;
+      border: none;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
     }
-
-    .nav-cta:hover {
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.08);
-    }
+    .nav-cta:hover { background: var(--accent-dark); }
+    .nav-cta:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
 
     /* HERO */
     .hero {
@@ -167,7 +187,7 @@
       margin: 0 auto;
       position: relative;
       z-index: 2;
-      color: #f2ece0;
+      color: var(--text);
     }
     .hero-logo-img {
       display: block;
@@ -204,56 +224,50 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: rgba(201,168,76,0.08);
-      border: 1px solid rgba(201,168,76,0.25);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
       border-radius: 4px;
       padding: 0.45rem 1.1rem;
       font-size: 0.7rem;
-      color: var(--gold-light);
-      font-weight: 500;
-      letter-spacing: 0.18em;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       margin-bottom: 2rem;
     }
 
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(3.5rem, 9vw, 6.5rem);
+      font-size: clamp(3rem, 9vw, 6rem);
       font-weight: 900;
-      color: #c9a84c;
-      background: linear-gradient(135deg, #c9a84c 0%, #f0d080 40%, #c9a84c 70%, #a07830 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--text);
       line-height: 1;
       letter-spacing: -0.03em;
       margin-bottom: 0.5rem;
     }
-    @supports not (-webkit-background-clip: text) {
-      .hero h1 { -webkit-text-fill-color: #c9a84c; background: none; }
-    }
 
     .hero-hebrew {
       font-size: clamp(1.5rem, 4vw, 2.5rem);
-      color: rgba(201,168,76,0.5);
+      color: var(--accent-gold);
       font-family: 'Playfair Display', serif;
       direction: rtl;
       margin-bottom: 1.5rem;
+      opacity: 0.6;
     }
 
     .hero-tagline {
-      font-size: clamp(1.1rem, 2vw, 1.3rem);
-      color: var(--off-white);
+      font-size: clamp(1.1rem, 2vw, 1.25rem);
+      color: var(--text-sec);
       line-height: 1.8;
-      font-weight: 300;
+      font-weight: 400;
       letter-spacing: 0.01em;
       max-width: 580px;
       margin: 0 auto 2.5rem;
     }
 
     .hero-tagline strong {
-      color: var(--white);
-      font-weight: 500;
+      color: var(--text);
+      font-weight: 600;
     }
 
     .hero-actions {
@@ -264,62 +278,57 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #c9a84c, #e2c46a);
-      color: #07090f;
+      background: var(--accent);
+      color: #ffffff;
       padding: 0.9rem 2.25rem;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 0.875rem;
       font-weight: 600;
       text-decoration: none;
-      transition: all 0.25s;
+      transition: background 0.2s;
       border: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+      min-height: 44px;
     }
-
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #e2c46a, #f0d080);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(201,168,76,0.4);
-    }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-primary:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
 
     .btn-secondary {
-      background: transparent;
-      color: var(--gold);
+      background: var(--surface);
+      color: var(--accent);
       padding: 0.9rem 2.25rem;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 0.875rem;
       font-weight: 500;
       text-decoration: none;
-      transition: all 0.25s;
-      border: 1px solid rgba(201,168,76,0.35);
-      letter-spacing: 0.06em;
+      transition: background 0.2s, border-color 0.2s;
+      border: 1.5px solid var(--border);
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       cursor: pointer;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
     }
-
-    .btn-secondary:hover {
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.06);
-      color: var(--gold-light);
-    }
+    .btn-secondary:hover { background: var(--surface-alt); border-color: var(--accent); }
+    .btn-secondary:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
 
     .hero-stat {
       margin-top: 3.5rem;
       font-size: 0.8rem;
-      color: var(--grey);
+      color: var(--text-muted);
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
     .hero-stat span {
-      color: var(--gold-light);
-      font-weight: 600;
+      color: var(--accent);
+      font-weight: 700;
       font-size: 1rem;
       font-variant-numeric: tabular-nums;
     }
@@ -356,11 +365,11 @@
 
     .section-label {
       text-align: center;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--gold);
-      font-weight: 600;
+      color: var(--accent-gold);
+      font-weight: 700;
       margin-bottom: 0.75rem;
     }
 
@@ -369,7 +378,7 @@
       font-size: clamp(2rem, 4.5vw, 3rem);
       font-weight: 700;
       text-align: center;
-      color: var(--white);
+      color: var(--text);
       margin-bottom: 0.75rem;
       letter-spacing: -0.02em;
       line-height: 1.2;
@@ -377,12 +386,13 @@
 
     .section-subtitle {
       text-align: center;
-      color: var(--grey);
+      color: var(--text-sec);
       font-size: 1rem;
       margin-bottom: 3.5rem;
       max-width: 500px;
       margin-left: auto;
       margin-right: auto;
+      line-height: 1.65;
     }
 
     .steps {
@@ -392,50 +402,48 @@
     }
 
     .step {
-      background: linear-gradient(145deg, rgba(20,27,46,0.9), rgba(10,13,25,0.95));
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 2rem;
       position: relative;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s, opacity 0.6s ease;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }
 
     .step:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-5px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.1);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(124,92,46,0.12);
     }
 
     .step-number {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
-      border: 1px solid rgba(201,168,76,0.4);
+      background: var(--surface-alt);
+      border: 1.5px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Playfair Display', serif;
       font-size: 1.2rem;
       font-weight: 700;
-      color: var(--gold-light);
+      color: var(--accent);
       margin-bottom: 1.25rem;
-      box-shadow: 0 0 20px rgba(201,168,76,0.1);
     }
 
     .step h3 {
       font-family: 'Playfair Display', serif;
       font-size: 1.2rem;
       font-weight: 600;
-      color: var(--white);
+      color: var(--text);
       margin-bottom: 0.75rem;
     }
 
     .step p {
-      color: var(--grey);
-      font-size: 0.9rem;
+      color: var(--text-sec);
+      font-size: 0.95rem;
       line-height: 1.7;
     }
 
@@ -459,20 +467,19 @@
     }
 
     .benefit-card {
-      background: linear-gradient(145deg, rgba(20,27,46,0.9), rgba(10,13,25,0.95));
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.75rem;
       text-align: center;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }
 
     .benefit-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-5px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.1);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(124,92,46,0.12);
     }
 
     .benefit-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
@@ -480,18 +487,18 @@
     .benefit-card h3 {
       font-family: 'Playfair Display', serif;
       font-size: 1.1rem;
-      color: var(--white);
+      color: var(--text);
       margin-bottom: 0.6rem;
     }
 
-    .benefit-card p { color: var(--grey); font-size: 0.875rem; line-height: 1.7; }
+    .benefit-card p { color: var(--text-sec); font-size: 0.9rem; line-height: 1.7; }
 
     /* SIGNUP */
     .signup-section {
       padding: 7rem 1.5rem;
-      background: linear-gradient(180deg, var(--navy-light) 0%, var(--navy-mid) 100%);
-      border-top: 1px solid rgba(201,168,76,0.08);
-      border-bottom: 1px solid rgba(201,168,76,0.08);
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
       position: relative;
     }
 
@@ -502,22 +509,22 @@
 
     .signup-count {
       text-align: center;
-      font-size: 0.875rem;
-      color: var(--grey);
+      font-size: 0.9rem;
+      color: var(--text-sec);
       margin-bottom: 2.5rem;
     }
 
     .signup-count strong {
-      color: var(--gold);
+      color: var(--accent);
       font-size: 1.1rem;
     }
 
     .signup-form {
-      background: linear-gradient(145deg, rgba(15,22,40,0.95), rgba(10,13,25,0.98));
-      border: 1px solid rgba(201,168,76,0.18);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 16px;
       padding: 3rem;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(201,168,76,0.1);
+      box-shadow: var(--shadow);
     }
 
     .form-group {
@@ -526,11 +533,10 @@
 
     label {
       display: block;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--grey);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-sec);
+      letter-spacing: 0.04em;
       margin-bottom: 0.5rem;
     }
 
@@ -538,23 +544,23 @@
     input[type="tel"],
     input[type="email"] {
       width: 100%;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(201,168,76,0.15);
+      background: var(--bg);
+      border: 1.5px solid var(--border);
       border-radius: 6px;
-      padding: 1rem 1.1rem;
-      color: var(--white);
-      font-size: 0.95rem;
+      padding: 0.9rem 1.1rem;
+      color: var(--text);
+      font-size: 1rem;
       font-family: 'DM Sans', sans-serif;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       outline: none;
+      min-height: 44px;
     }
 
     input[type="text"]:focus,
     input[type="tel"]:focus,
     input[type="email"]:focus {
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.04);
-      box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px rgba(29,106,106,0.15);
     }
 
     /* Subscription Tabs */
@@ -564,70 +570,67 @@
       margin-bottom: 2rem;
       border-radius: 8px;
       overflow: hidden;
-      border: 1px solid rgba(201,168,76,0.2);
+      border: 1.5px solid var(--border);
     }
 
     .sub-tab {
       flex: 1;
       padding: 0.85rem 1rem;
-      background: rgba(255,255,255,0.02);
-      color: var(--grey);
-      font-size: 0.85rem;
+      background: var(--surface-alt);
+      color: var(--text-sec);
+      font-size: 0.9rem;
       font-weight: 600;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
       border: none;
       transition: all 0.2s;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
+      min-height: 44px;
     }
 
-    .sub-tab:first-child { border-right: 1px solid rgba(201,168,76,0.15); }
+    .sub-tab:first-child { border-right: 1.5px solid var(--border); }
 
     .sub-tab.active {
-      background: rgba(201,168,76,0.12);
-      color: var(--gold-light);
+      background: var(--surface);
+      color: var(--accent);
     }
 
     .sub-tab:hover:not(.active) {
-      background: rgba(201,168,76,0.05);
-      color: var(--off-white);
+      background: var(--surface);
+      color: var(--text);
     }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    input::placeholder { color: rgba(107,122,150,0.5); }
+    input::placeholder { color: var(--text-muted); }
 
     .form-submit {
       width: 100%;
-      background: linear-gradient(135deg, #c9a84c, #e2c46a);
-      color: #07090f;
+      background: var(--accent);
+      color: #ffffff;
       border: none;
-      padding: 1.1rem;
+      padding: 1rem;
       border-radius: 6px;
-      font-size: 0.875rem;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       font-family: 'DM Sans', sans-serif;
-      transition: all 0.25s;
+      transition: background 0.2s;
       margin-top: 0.75rem;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+      min-height: 48px;
     }
 
-    .form-submit:hover:not(:disabled) {
-      background: linear-gradient(135deg, #e2c46a, #f0d080);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(201,168,76,0.45);
-    }
-
-    .form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .form-submit:hover:not(:disabled) { background: var(--accent-dark); }
+    .form-submit:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
+    .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .form-disclaimer {
       text-align: center;
-      font-size: 0.75rem;
-      color: var(--grey);
+      font-size: 0.8rem;
+      color: var(--text-muted);
       margin-top: 1rem;
       line-height: 1.5;
     }
@@ -636,7 +639,7 @@
       margin-top: 1rem;
       padding: 0.875rem 1rem;
       border-radius: 10px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 500;
       text-align: center;
       display: none;
@@ -644,16 +647,16 @@
 
     .form-message.success {
       display: block;
-      background: rgba(52,199,89,0.12);
-      border: 1px solid rgba(52,199,89,0.3);
-      color: #4ade80;
+      background: #edf7f1;
+      border: 1px solid #b2ddc5;
+      color: #1a5c3a;
     }
 
     .form-message.error {
       display: block;
-      background: rgba(255,59,48,0.12);
-      border: 1px solid rgba(255,59,48,0.3);
-      color: #f87171;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #9b1c1c;
     }
 
     /* SAMPLE DVAR */
@@ -666,14 +669,11 @@
     .phone-mockup {
       max-width: 380px;
       margin: 3rem auto 0;
-      background: linear-gradient(145deg, rgba(15,22,40,0.95), rgba(8,11,20,0.98));
-      border-radius: 32px;
-      border: 1px solid rgba(201,168,76,0.2);
-      padding: 2rem;
-      box-shadow:
-        0 32px 80px rgba(0,0,0,0.6),
-        0 0 0 1px rgba(201,168,76,0.05),
-        inset 0 1px 0 rgba(201,168,76,0.1);
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 1.75rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
 
     .phone-header {
@@ -681,20 +681,21 @@
       align-items: center;
       gap: 0.75rem;
       padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(201,168,76,0.1);
+      border-bottom: 1px solid var(--border);
       margin-bottom: 1.25rem;
     }
 
     .phone-avatar {
       width: 40px;
       height: 40px;
-      background: var(--gold);
+      background: var(--accent);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
       flex-shrink: 0;
+      color: white;
     }
 
     .phone-contact {
@@ -704,35 +705,35 @@
     .phone-contact-name {
       font-weight: 600;
       font-size: 0.9rem;
-      color: var(--white);
+      color: var(--text);
     }
 
     .phone-contact-sub {
-      font-size: 0.75rem;
-      color: var(--grey);
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
 
     .sms-bubble {
-      background: rgba(201,168,76,0.12);
-      border: 1px solid rgba(201,168,76,0.2);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
       border-radius: 18px 18px 18px 4px;
       padding: 1rem 1.25rem;
-      font-size: 0.875rem;
+      font-size: 0.95rem;
       line-height: 1.7;
       color: var(--white);
     }
 
     .sms-time {
-      font-size: 0.7rem;
-      color: var(--grey);
+      font-size: 0.72rem;
+      color: var(--text-muted);
       margin-top: 0.5rem;
       text-align: right;
     }
 
     .sms-label {
-      font-size: 0.7rem;
-      color: var(--gold);
-      font-weight: 600;
+      font-size: 0.72rem;
+      color: var(--accent-gold);
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       margin-bottom: 0.75rem;
@@ -741,9 +742,9 @@
     /* TESTIMONIALS SECTION */
     .testimonials-section {
       padding: 5rem 1.5rem;
-      background: var(--navy-light);
-      border-top: 1px solid rgba(201,168,76,0.08);
-      border-bottom: 1px solid rgba(201,168,76,0.08);
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
     }
 
     .testimonials-section .section-title,
@@ -763,20 +764,19 @@
     }
 
     .testimonial-card {
-      background: linear-gradient(145deg, rgba(20,27,46,0.9), rgba(10,13,25,0.95));
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 2rem;
       position: relative;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }
 
     .testimonial-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-5px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.1);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(124,92,46,0.12);
     }
 
     .testimonial-card::before {
@@ -786,27 +786,27 @@
       left: 1.5rem;
       font-size: 4rem;
       font-family: 'Playfair Display', serif;
-      color: rgba(201,168,76,0.15);
+      color: rgba(124,92,46,0.12);
       line-height: 1;
     }
 
-    .testimonial-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; }
+    .testimonial-stars { color: var(--accent-gold); font-size: 0.9rem; margin-bottom: 1rem; }
 
     .testimonial-text {
-      color: var(--white);
-      font-size: 0.9rem;
-      line-height: 1.7;
+      color: var(--text);
+      font-size: 0.95rem;
+      line-height: 1.75;
       font-style: italic;
       margin-bottom: 1.25rem;
     }
 
-    .testimonial-author { color: var(--grey); font-size: 0.8rem; font-weight: 500; }
+    .testimonial-author { color: var(--text-sec); font-size: 0.85rem; font-weight: 500; }
 
     /* DONATION */
     .donation-section {
       padding: 5rem 1.5rem;
-      background: var(--navy-light);
-      border-top: 1px solid rgba(201,168,76,0.08);
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border);
     }
 
     .donation-inner {
@@ -816,12 +816,12 @@
     }
 
     .donation-card {
-      background: linear-gradient(145deg, rgba(15,22,40,0.95), rgba(10,13,25,0.98));
-      border: 1px solid rgba(201,168,76,0.18);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 16px;
       padding: 3.5rem 2.5rem;
       margin-top: 2.5rem;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.08);
+      box-shadow: var(--shadow);
     }
 
     .donation-emoji { font-size: 3rem; margin-bottom: 1rem; display: block; }
@@ -829,47 +829,43 @@
     .donation-card h3 {
       font-family: 'Playfair Display', serif;
       font-size: 1.5rem;
-      color: var(--white);
+      color: var(--text);
       margin-bottom: 0.75rem;
     }
 
     .donation-card p {
-      color: var(--grey);
-      font-size: 0.95rem;
-      line-height: 1.7;
+      color: var(--text-sec);
+      font-size: 1rem;
+      line-height: 1.75;
       margin-bottom: 2rem;
     }
 
     .btn-donate {
-      background: transparent;
-      color: var(--gold);
-      border: 1px solid rgba(201,168,76,0.4);
+      background: var(--surface-alt);
+      color: var(--accent);
+      border: 1.5px solid var(--border);
       padding: 0.9rem 2.25rem;
-      border-radius: 4px;
-      font-size: 0.875rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       font-family: 'DM Sans', sans-serif;
-      transition: all 0.25s;
+      transition: background 0.2s, border-color 0.2s;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
+      min-height: 44px;
     }
 
-    .btn-donate:hover {
-      background: rgba(201,168,76,0.08);
-      border-color: var(--gold);
-      color: var(--gold-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(201,168,76,0.2);
-    }
+    .btn-donate:hover { background: var(--border); border-color: var(--accent); }
+    .btn-donate:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 2px; }
 
     /* FOOTER */
     footer {
-      background: #040508;
-      border-top: 1px solid rgba(201,168,76,0.08);
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border);
       padding: 4rem 1.5rem;
       text-align: center;
     }
@@ -878,26 +874,23 @@
       font-family: 'Playfair Display', serif;
       font-size: 2rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #c9a84c, #e2c46a);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--accent);
       margin-bottom: 0.5rem;
       display: inline-block;
     }
 
     .footer-hebrew {
       font-size: 1rem;
-      color: rgba(201,168,76,0.4);
+      color: var(--text-muted);
       direction: rtl;
       margin-bottom: 1.5rem;
     }
 
     .footer-tagline {
-      color: var(--grey);
-      font-size: 0.875rem;
+      color: var(--text-sec);
+      font-size: 0.9rem;
       margin-bottom: 2rem;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     .footer-links {
@@ -909,32 +902,35 @@
     }
 
     .footer-links a {
-      color: var(--grey);
+      color: var(--text-sec);
       text-decoration: none;
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       transition: color 0.2s;
     }
 
-    .footer-links a:hover { color: var(--gold); }
+    .footer-links a:hover { color: var(--accent); text-decoration: underline; }
 
     .footer-copy {
-      font-size: 0.75rem;
-      color: rgba(107,122,150,0.4);
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
 
     .footer-divider {
       width: 60px;
-      height: 1px;
-      background: rgba(201,168,76,0.15);
+      height: 2px;
+      background: var(--gold-divider);
       margin: 0 auto 2rem;
+      opacity: 0.5;
+      border-radius: 2px;
     }
 
     /* Gold line accent */
     .gold-line {
       width: 40px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      border-radius: 0;
+      height: 3px;
+      background: var(--gold-divider);
+      border-radius: 2px;
+      opacity: 0.7;
       margin: 1.25rem auto 3rem;
     }
 
@@ -1040,7 +1036,7 @@
     <a href="/" class="nav-logo"><img src="/images/logo-final.png" alt="TorahTxt" style="height:4.5rem;width:auto;border-radius:4px;"></a>
     
     <div style="display:flex;gap:0.75rem;align-items:center;">
-      <a href="/today" class="nav-cta nav-cta-secondary" style="background:transparent;color:var(--gold);border-color:rgba(201,168,76,0.5);">✨ Today's Lesson</a>
+      <a href="/today" class="nav-cta nav-cta-secondary" style="background:var(--surface-alt);color:var(--accent);border:1.5px solid var(--border);">✨ Today's Lesson</a>
       <a href="#signup" class="nav-cta nav-cta-primary">Subscribe Free</a>
     </div>
   </nav>
@@ -1055,7 +1051,7 @@
       by <strong>text message</strong> or <strong>email</strong>, your choice.
       AI-crafted from real Torah sources. Grounded in tradition, powered by technology.
     </p>
-    <p style="font-size:0.9rem;color:#9a8a70;margin-top:-0.5rem;margin-bottom:0.5rem;">
+    <p style="font-size:0.95rem;color:var(--text-muted);margin-top:-0.5rem;margin-bottom:0.5rem;">
       Free forever &nbsp;·&nbsp; Any phone, any carrier &nbsp;·&nbsp; Text STOP anytime
     </p>
 
@@ -1069,11 +1065,11 @@
       </div>
 
       <div style="display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
-        <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.95rem;color:var(--off-white);cursor:pointer;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.6rem 1rem;flex:1;min-width:130px;">
-          <input type="checkbox" id="hero-check-sms" onchange="heroToggleFields()" style="width:1.2rem;height:1.2rem;accent-color:var(--gold);cursor:pointer;flex-shrink:0;" /> <span>📱 Text</span>
+        <label style="display:flex;align-items:center;gap:0.6rem;font-size:1rem;color:var(--text);cursor:pointer;background:var(--surface-alt);border:1.5px solid var(--border);border-radius:8px;padding:0.6rem 1rem;flex:1;min-width:130px;min-height:44px;">
+          <input type="checkbox" id="hero-check-sms" onchange="heroToggleFields()" style="width:1.2rem;height:1.2rem;accent-color:var(--accent);cursor:pointer;flex-shrink:0;" /> <span>📱 Text</span>
         </label>
-        <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.95rem;color:var(--off-white);cursor:pointer;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:8px;padding:0.6rem 1rem;flex:1;min-width:130px;">
-          <input type="checkbox" id="hero-check-email" onchange="heroToggleFields()" style="width:1.2rem;height:1.2rem;accent-color:var(--gold);cursor:pointer;flex-shrink:0;" /> <span>📧 Email</span>
+        <label style="display:flex;align-items:center;gap:0.6rem;font-size:1rem;color:var(--text);cursor:pointer;background:var(--surface-alt);border:1.5px solid var(--border);border-radius:8px;padding:0.6rem 1rem;flex:1;min-width:130px;min-height:44px;">
+          <input type="checkbox" id="hero-check-email" onchange="heroToggleFields()" style="width:1.2rem;height:1.2rem;accent-color:var(--accent);cursor:pointer;flex-shrink:0;" /> <span>📧 Email</span>
         </label>
       </div>
 
@@ -1122,7 +1118,7 @@
       </div>
       <div class="sms-label">📨 Today's D'var Torah</div>
       <div class="sms-bubble" id="home-sms-bubble">
-        <span style="color:#9a8a70; font-size:0.9rem;">Loading today's teaching...</span>
+        <span style="color:var(--text-muted); font-size:0.95rem;">Loading today's teaching...</span>
       </div>
       <div class="sms-time">6:30 AM · Delivered ✓✓</div>
     </div>
@@ -1141,31 +1137,31 @@
   </script>
 
   <!-- Support strip -->
-  <section style="text-align:center;padding:2.5rem 1.5rem;border-top:1px solid rgba(201,168,76,0.12);">
-    <p style="color:#9a8a70;font-size:0.95rem;margin-bottom:1rem;">Torah is priceless — and always free. If TorahTxt has enriched your mornings, consider supporting it.</p>
-    <a href="https://paypal.me/greeninkad" target="_blank" style="display:inline-block;background:transparent;border:1px solid rgba(201,168,76,0.4);color:#c9a84c;text-decoration:none;padding:10px 28px;border-radius:8px;font-size:0.95rem;">❤️ Support TorahTxt</a>
+  <section style="text-align:center;padding:2.5rem 1.5rem;border-top:1px solid var(--border);background:var(--surface);">
+    <p style="color:var(--text-sec);font-size:1rem;margin-bottom:1.25rem;">Torah is priceless — and always free. If TorahTxt has enriched your mornings, consider supporting it.</p>
+    <a href="https://paypal.me/greeninkad" target="_blank" style="display:inline-flex;align-items:center;background:var(--surface-alt);border:1.5px solid var(--border);color:var(--accent);text-decoration:none;padding:0.65rem 1.75rem;border-radius:8px;font-size:0.95rem;font-weight:500;min-height:44px;">❤️ Support TorahTxt</a>
     &nbsp;&nbsp;
-    <a href="/sponsor.html" style="display:inline-block;background:transparent;border:1px solid rgba(201,168,76,0.25);color:#9a8a70;text-decoration:none;padding:10px 28px;border-radius:8px;font-size:0.95rem;">🕯️ Sponsor a Day</a>
+    <a href="/sponsor.html" style="display:inline-flex;align-items:center;background:var(--surface-alt);border:1.5px solid var(--border);color:var(--text-sec);text-decoration:none;padding:0.65rem 1.75rem;border-radius:8px;font-size:0.95rem;min-height:44px;">🕯️ Sponsor a Day</a>
   </section>
 
 
   <!-- Share Bar -->
-  <section style="text-align:center; padding:2rem 1.5rem 0.5rem; background:#07090f;">
-    <div style="margin-bottom:0.75rem; font-size:0.78rem; color:#9a8a70; font-family:'DM Sans',sans-serif; letter-spacing:0.08em; text-transform:uppercase;">Share TorahTxt</div>
-    <div style="display:flex; align-items:center; justify-content:center; gap:0.6rem; flex-wrap:wrap;">
-      <a href="https://wa.me/?text=Check%20out%20TorahTxt%20%E2%80%94%20free%20daily%20Torah%20wisdom%20by%20SMS%20%26%20email%3A%20https%3A%2F%2Ftorahtxt.com" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.1);background:#1a2a1a;color:#a8dfc0;font-size:0.82rem;font-family:'DM Sans',sans-serif;text-decoration:none;">
+  <section style="text-align:center;padding:2rem 1.5rem 1rem;background:var(--surface);border-top:1px solid var(--border);">
+    <div style="margin-bottom:0.75rem;font-size:0.78rem;color:var(--text-muted);font-family:'DM Sans',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;">Share TorahTxt</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:0.6rem;flex-wrap:wrap;">
+      <a href="https://wa.me/?text=Check%20out%20TorahTxt%20%E2%80%94%20free%20daily%20Torah%20wisdom%20by%20SMS%20%26%20email%3A%20https%3A%2F%2Ftorahtxt.com" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border-radius:2rem;border:1.5px solid var(--border);background:var(--surface-alt);color:var(--text-sec);font-size:0.875rem;font-family:'DM Sans',sans-serif;text-decoration:none;min-height:44px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         WhatsApp
       </a>
-      <a href="https://x.com/intent/tweet?text=Check%20out%20TorahTxt%20%E2%80%94%20free%20daily%20Torah%20wisdom%20by%20SMS%20%26%20email%20%F0%9F%93%96%0A%0Ahttps%3A%2F%2Ftorahtxt.com%0A%0A%23Torah%20%23DvarTorah%20%23JewishWisdom" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.1);background:#1a1a2a;color:#a0a8df;font-size:0.82rem;font-family:'DM Sans',sans-serif;text-decoration:none;">
+      <a href="https://x.com/intent/tweet?text=Check%20out%20TorahTxt%20%E2%80%94%20free%20daily%20Torah%20wisdom%20by%20SMS%20%26%20email%20%F0%9F%93%96%0A%0Ahttps%3A%2F%2Ftorahtxt.com%0A%0A%23Torah%20%23DvarTorah%20%23JewishWisdom" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border-radius:2rem;border:1.5px solid var(--border);background:var(--surface-alt);color:var(--text-sec);font-size:0.875rem;font-family:'DM Sans',sans-serif;text-decoration:none;min-height:44px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.74-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         Post
       </a>
-      <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftorahtxt.com" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.1);background:#1a1e2a;color:#8da0e0;font-size:0.82rem;font-family:'DM Sans',sans-serif;text-decoration:none;">
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftorahtxt.com" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border-radius:2rem;border:1.5px solid var(--border);background:var(--surface-alt);color:var(--text-sec);font-size:0.875rem;font-family:'DM Sans',sans-serif;text-decoration:none;min-height:44px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
         Facebook
       </a>
-      <button onclick="navigator.clipboard.writeText('https://torahtxt.com').then(()=>{this.textContent='✓ Copied!';this.style.color='#7ecf9a';setTimeout(()=>{this.textContent='Copy Link';this.style.color='#b0a898';},2000)})" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 0.9rem;border-radius:2rem;border:1px solid rgba(255,255,255,0.1);background:#1c1c1c;color:#b0a898;font-size:0.82rem;font-family:'DM Sans',sans-serif;cursor:pointer;">
+      <button onclick="navigator.clipboard.writeText('https://torahtxt.com').then(()=>{this.textContent='✓ Copied!';setTimeout(()=>{this.textContent='Copy Link';},2000)})" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border-radius:2rem;border:1.5px solid var(--border);background:var(--surface-alt);color:var(--text-sec);font-size:0.875rem;font-family:'DM Sans',sans-serif;cursor:pointer;min-height:44px;">
         Copy Link
       </button>
     </div>
@@ -1190,11 +1186,11 @@
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:info@torahtxt.com">Contact</a>
     </div>
-    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(201,168,76,0.15);font-size:0.82rem;color:#9a8a70;">
-      🕯️ <a href="/in-memory" style="color:#c9a84c;text-decoration:none;">Dedicated in memory of Michael Green, of Blessed Memory</a>
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:0.875rem;color:var(--text-muted);">
+      🕯️ <a href="/in-memory" style="color:var(--accent-gold);text-decoration:none;">Dedicated in memory of Michael Green, of Blessed Memory</a>
     </div>
     <div class="footer-copy">
-      © <span id="copy-year"></span> TorahTxt. Made with ❤️, Torah, and AI. &nbsp;·&nbsp; <span style="color:#9a8a70;">✦ AI-Generated Content</span>
+      © <span id="copy-year"></span> TorahTxt. Made with ❤️, Torah, and AI. &nbsp;·&nbsp; <span style="color:var(--text-muted);">✦ AI-Generated Content</span>
       <br>TorahTxt sends 1 daily Torah wisdom text. Msg &amp; data rates may apply. Reply STOP to unsubscribe, HELP for help.
     </div>
   </footer>
