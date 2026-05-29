@@ -1,0 +1,23 @@
+--- a/dist/selection-C4e-Qn9W.js
++++ b/dist/selection-C4e-Qn9W.js
+
+Changes made:
+
+1. Added isValidThinkingSignature(signature) function
+   - Validates signature is non-empty string
+   - Validates base64 format regex
+   - Validates decoded byte length is 32-512 bytes
+
+2. Updated hasReplayableThinkingSignature(block) to use isValidThinkingSignature
+   - Instead of bare `typeof === "string" && trim().length > 0`
+   - Now checks base64 validity and byte length range
+
+3. Updated stripInvalidThinkingSignatures(messages, options)
+   - Removed the `preserveLatestAssistant` skip (lines 18-20 in original)
+   - Now validates ALL thinking blocks including latest assistant message
+   - Invalid signatures are stripped from ALL messages
+
+Behavior change: Previously, latest assistant message thinking blocks
+were unconditionally preserved. Now, thinking blocks with invalid
+signatures (empty, non-base64, wrong byte length) are stripped even
+from the latest assistant message.
