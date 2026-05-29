@@ -9,6 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/profile-cards.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -550,6 +551,40 @@
     <div class="page-header">
       <h1>Your Newsletter Profile</h1>
       <p id="profile-subtitle">Customize how your daily brief looks and feels.</p>
+    </div>
+
+    <!-- ─── HOW SAM SEES YOU (Phase 1 profile cards) ─── -->
+    <div class="sam-section" id="sam-cards-section" style="display:none;">
+      <div class="sam-section-header">
+        <h2>🧠 How Sam Sees You</h2>
+        <span class="sam-badge">BETA</span>
+      </div>
+      <p class="sam-subtitle">
+        Sam is your personal news intelligence — here's what they understand about you.
+        These cards control what goes into your newsletter. <strong>Read-only for now</strong> — editing coming soon.
+      </p>
+
+      <div class="sam-card-grid" id="sam-card-grid">
+        <!-- Cards rendered by JS -->
+      </div>
+
+      <!-- Privacy Bar (shown if redaction active) -->
+      <div id="sam-privacy-bar" class="sam-privacy-bar" style="display:none;">
+        <span class="privacy-icon">🔒</span>
+        <div>
+          <div class="privacy-text">Sam is protecting a personal boundary.</div>
+          <div class="privacy-sub">Keep tone calm and practical. No personal references in emails. No personal details have been stored.</div>
+        </div>
+      </div>
+
+      <!-- Brief Viewer -->
+      <div id="sam-brief-section" style="margin-top:16px;">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.5);margin-bottom:8px;">Sam's Full Brief</div>
+        <div id="sam-brief-view" class="sam-brief-empty">Loading Sam's brief…</div>
+        <div id="sam-brief-meta" class="sam-brief-meta"></div>
+      </div>
+
+      <div id="sam-last-updated" class="sam-last-updated"></div>
     </div>
 
     <!-- NEWSLETTER PREVIEW -->
@@ -1310,6 +1345,302 @@
       renderDeepInterests();
     }
 
+    // ─── Profile Cards: How Sam Sees You (Phase 1) ────────────────────────
+
+    const CARD_ICONS = {
+      topic: '🎯',
+      exclusion: '🚫',
+      tone: '🎭',
+      format: '📏',
+      entity_watchlist: '🔍'
+    };
+
+    const GROUP_LABELS = {
+      topics: 'Topics',
+      exclusions: 'Exclusions',
+      tone: 'Tone & Format',
+      format: 'Tone & Format'
+    };
+
+    const SOURCE_LABELS = {
+      'sam_onboarding_seed': 'Sam inferred this',
+      'user_feedback': 'From your clicks',
+      'manual': 'You told Sam',
+      'user_profile': 'From your settings'
+    };
+
+    const CONFIDENCE_CONFIG = {
+      high: { icon: '✅', label: 'Sam is sure' },
+      medium: { icon: '🟡', label: 'Inferred' },
+      low: { icon: '🟠', label: 'Sam is guessing' }
+    };
+
+    const DEPTH_LABELS = {
+      headline: 'Headlines',
+      standard: 'Standard',
+      deep: 'Deep dive'
+    };
+
+    const ENTITY_ICONS = {
+      company: '🏢',
+      person: '👤',
+      ticker: '📈',
+      team: '⚽',
+      place: '📍',
+      publication: '📰',
+      topic: '🏷️',
+      watchlist_item: ''
+    };
+
+    function formatTimestamp(ms) {
+      if (!ms) return null;
+      const d = new Date(ms);
+      const now = new Date();
+      const diffMs = now - d;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays} days ago`;
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function formatTimestampFull(ms) {
+      if (!ms) return '';
+      const d = new Date(ms);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+
+    function buildConfidenceBadge(confidence) {
+      const cfg = CONFIDENCE_CONFIG[confidence] || { icon: '❓', label: 'Unknown' };
+      return `<span class="sam-badge sam-badge-confidence-${confidence}">${cfg.icon} ${cfg.label}</span>`;
+    }
+
+    function buildSourceBadge(source) {
+      const label = SOURCE_LABELS[source] || source;
+      return `<span class="sam-badge sam-badge-source">📡 ${label}</span>`;
+    }
+
+    function buildWeightBadge(weight, isExclusion) {
+      if (isExclusion || weight === 0) {
+        return `<span class="sam-badge sam-badge-muted">🚫 Muted</span>`;
+      }
+      const label = weight <= 0.5 ? 'Low priority' : weight <= 1.0 ? 'Standard' : weight <= 1.5 ? 'High priority' : 'Essential';
+      return `<span class="sam-badge sam-badge-weight">📊 ${label}</span>`;
+    }
+
+    function buildDepthBadge(depth) {
+      if (!depth) return '';
+      return `<span class="sam-badge sam-badge-depth">🔬 ${DEPTH_LABELS[depth] || depth}</span>`;
+    }
+
+    function renderCardEntities(entities) {
+      if (!entities || entities.length === 0) return '';
+      return '<div class="sam-entity-grid">' +
+        entities.map(e => {
+          const icon = ENTITY_ICONS[e.type] || '📌';
+          return `<span class="sam-entity-chip"><span class="entity-type-icon">${icon}</span>${e.value}</span>`;
+        }).join('') +
+        '</div>';
+    }
+
+    function renderCard(card) {
+      const icon = CARD_ICONS[card.card_type] || '📌';
+      const name = card.bucket || (card.card_type === 'tone' ? 'Tone' : card.card_type === 'format' ? 'Format' : 'Interest');
+      const sub = card.subtopic ? ` — ${card.subtopic}` : '';
+
+      let badges = buildConfidenceBadge(card.confidence) + buildSourceBadge(card.source);
+
+      if (card.card_type === 'exclusion' || card.is_exclusion) {
+        badges += `<span class="sam-badge sam-badge-exclusion">🚫 Excluded</span>`;
+      } else {
+        badges += buildWeightBadge(card.weight, card.is_exclusion);
+        badges += buildDepthBadge(card.depth);
+      }
+
+      const entitiesHtml = card.card_type === 'entity_watchlist' ? renderCardEntities(card.entities) : '';
+
+      return `<div class="sam-card">
+        <div class="sam-card-header">
+          <div>
+            <div class="sam-card-title">${icon} ${name}${sub}</div>
+            ${card.specificity ? `<div class="sam-card-specificity">${card.specificity}</div>` : ''}
+            ${card.notes ? `<div class="sam-card-sub">💡 ${card.notes}</div>` : ''}
+          </div>
+        </div>
+        <div class="sam-card-badges">${badges}</div>
+        ${entitiesHtml}
+      </div>`;
+    }
+
+    function renderToneFormatGroup(toneCards, formatCards) {
+      const items = [];
+      if (toneCards && toneCards.length > 0) {
+        items.push(`<div class="sam-tone-format-item">
+          <div class="tf-label">🎭 Tone</div>
+          <div class="tf-value">${toneCards.map(c => c.specificity || c.bucket || 'Custom').join(', ')}</div>
+        </div>`);
+      }
+      if (formatCards && formatCards.length > 0) {
+        items.push(`<div class="sam-tone-format-item">
+          <div class="tf-label">📏 Format</div>
+          <div class="tf-value">${formatCards.map(c => c.specificity || c.bucket || 'Custom').join(', ')}</div>
+        </div>`);
+      }
+      return items.join('');
+    }
+
+    function renderCards(data) {
+      const grid = document.getElementById('sam-card-grid');
+      if (!grid) return;
+
+      const classified = data.classified;
+      const cards = data.cards;
+
+      if (!cards || cards.length === 0) {
+        // Fallback: render from brief if available
+        grid.innerHTML = `<div class="sam-card-group">
+          <div class="sam-card-group-title"><span class="icon">🧠</span> How Sam Sees You</div>
+          <p style="font-size:13px;color:#6b7280;line-height:1.6;">
+            Sam hasn't built your interest profile yet. Tell Sam what you care about through the wizard,
+            and these cards will appear here after the next update.
+          </p>
+        </div>`;
+        return;
+      }
+
+      let html = '';
+
+      // ── Entity Watchlist ──
+      if (classified.entity_watchlist && classified.entity_watchlist.length > 0) {
+        html += `<div class="sam-card-group">
+          <div class="sam-card-group-title"><span class="icon">🔍</span> Watchlist</div>`;
+        html += classified.entity_watchlist.map(renderCard).join('');
+        html += '</div>';
+      } else if (data.entities && data.entities.length > 0) {
+        // Watchlist entities without an interest card
+        html += `<div class="sam-card-group">
+          <div class="sam-card-group-title"><span class="icon">🔍</span> Watchlist</div>
+          <div class="sam-entity-grid">`;
+        html += data.entities.map(e =>
+          `<span class="sam-entity-chip">${e.entity_value}</span>`
+        ).join('');
+        html += '</div></div>';
+      }
+
+      // ── Topics ──
+      if (classified.topics && classified.topics.length > 0) {
+        html += `<div class="sam-card-group">
+          <div class="sam-card-group-title"><span class="icon">🎯</span> Topics</div>`;
+        html += classified.topics.map(renderCard).join('');
+        html += '</div>';
+      }
+
+      // ── Exclusions ──
+      if (classified.exclusions && classified.exclusions.length > 0) {
+        html += `<div class="sam-card-group">
+          <div class="sam-card-group-title"><span class="icon">🚫</span> Exclusions</div>`;
+        html += classified.exclusions.map(renderCard).join('');
+        html += '</div>';
+      }
+
+      // ── Tone & Format ──
+      const hasToneOrFormat = (classified.tone && classified.tone.length > 0) ||
+                              (classified.format && classified.format.length > 0);
+      if (hasToneOrFormat) {
+        html += `<div class="sam-card-group">
+          <div class="sam-card-group-title"><span class="icon">🎭</span> Style</div>
+          <div class="sam-tone-format">`;
+        html += renderToneFormatGroup(classified.tone, classified.format);
+        html += '</div></div>';
+      }
+
+      grid.innerHTML = html;
+    }
+
+    function renderPrivacyBanner(data) {
+      const bar = document.getElementById('sam-privacy-bar');
+      if (!bar) return;
+      if (data.privacy && data.privacy.privacy_active) {
+        bar.style.display = 'flex';
+      } else {
+        bar.style.display = 'none';
+      }
+    }
+
+    function renderBrief(data) {
+      const view = document.getElementById('sam-brief-view');
+      const meta = document.getElementById('sam-brief-meta');
+      if (!view || !meta) return;
+
+      if (data.brief && data.brief.brief_text) {
+        view.className = 'sam-brief-view';
+        view.textContent = data.brief.brief_text;
+
+        // Show privacy redacted suffix if applicable
+        const suffix = (data.brief.brief_text.includes('PRIVACY OVERRIDE'))
+          ? ' 🔒 Privacy redaction applied' : '';
+
+        const editedBy = data.brief.last_edited_by || 'system';
+        const editedAt = data.brief.last_edited_at ? `— updated ${data.brief.last_edited_at}` : '';
+        meta.innerHTML = `Version ${data.brief.brief_version} — edited by ${editedBy} ${editedAt}${suffix}`;
+      } else {
+        view.className = 'sam-brief-empty';
+        view.textContent = 'Sam hasn't written a brief for you yet. Complete the wizard to get started.';
+        meta.innerHTML = '';
+      }
+    }
+
+    function renderLastUpdated(data) {
+      const el = document.getElementById('sam-last-updated');
+      if (!el) return;
+
+      const ts = data.summary?.updated_at || data.brief?.updated_at || null;
+      if (ts) {
+        el.textContent = `Profile last updated ${formatTimestampFull(ts)}`;
+      } else {
+        el.textContent = '';
+      }
+    }
+
+    async function loadProfileCards() {
+      if (!profileEmail || !profileToken) return;
+
+      try {
+        const res = await fetch(`/api/profile/cards?email=${encodeURIComponent(profileEmail)}&token=${encodeURIComponent(profileToken)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Show the section
+        document.getElementById('sam-cards-section').style.display = 'block';
+
+        renderCards(data);
+        renderPrivacyBanner(data);
+        renderBrief(data);
+        renderLastUpdated(data);
+      } catch (e) {
+        console.error('Failed to load profile cards:', e);
+      }
+    }
+
+    // Also fetch brief endpoint separately for the viewer
+    async function loadProfileBrief() {
+      if (!profileEmail || !profileToken) return;
+
+      try {
+        const res = await fetch(`/api/profile/brief?email=${encodeURIComponent(profileEmail)}&token=${encodeURIComponent(profileToken)}`);
+        if (!res.ok) return;
+        // Brief is already embedded in /cards response, but we can use this
+        // for the standalone brief viewer if needed.
+      } catch (e) {
+        console.error('Failed to load brief:', e);
+      }
+    }
+
+    // Hook into existing init — call loadProfileCards after profile loads
+    const originalRenderProfile = window.renderProfile;
+    setTimeout(() => loadProfileCards(), 500);
+    setTimeout(() => loadProfileBrief(), 500);
   </script>
 </body>
 </html>

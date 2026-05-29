@@ -13,6 +13,7 @@ const { loadSignals } = require('./lib/load_signals');
 const { getBrief, saveBrief, getBriefHistory, deleteBrief } = require('./lib/user_brief');
 const { generateBriefFromOnboarding, updateBriefFromReply, generateFollowupQuestions } = require('./lib/brief_llm');
 const { PROFILE_FIELDS, BRANCH_FIELDS } = require('./lib/profile_fields');
+const { getProfileCards } = require('./lib/profile_cards');
 
 // ── Content Moderation ──────────────────────────────────────────
 const HATE_PATTERNS = [
@@ -183,6 +184,8 @@ function isBetaExempt(req) {
   if (p.startsWith('/beta-login'))       return true;
   if (p.startsWith('/webhook/'))         return true;
   if (p === '/unsubscribe')              return true;
+  if (p === '/api/profile/cards')        return true;  // token-authenticated
+  if (p === '/api/profile/brief')         return true;  // token-authenticated
   if (BETA_EXEMPT_RE.test(p))            return true;
   return false;
 }
@@ -2742,6 +2745,55 @@ app.post('/api/profile/analyze', async (req, res) => {
   } catch (err) {
     console.error('Profile analyze error:', err);
     res.status(500).json({ error: 'Failed to analyze' });
+  }
+});
+
+// ─── Profile Cards / Brief Endpoints (Phase 1) ───────────────────────────────
+
+// GET /api/profile/cards — fetch structured card view (read-only)
+app.get('/api/profile/cards', (req, res) => {
+  const { email, token } = req.query;
+  if (!email || !token) return res.status(400).json({ error: 'email and token required' });
+
+  const expected = generateToken(decodeURIComponent(email));
+  if (token !== expected) return res.status(403).json({ error: 'Invalid token' });
+
+  const subscriber = db.prepare('SELECT id FROM subscribers WHERE email = ?').get(decodeURIComponent(email));
+  if (!subscriber) return res.status(404).json({ error: 'Subscriber not found' });
+
+  try {
+    const data = getProfileCards(db, subscriber.id);
+    res.json(data);
+  } catch (err) {
+    console.error('profile cards error:', err);
+    res.status(500).json({ error: 'Failed to load card data' });
+  }
+});
+
+// GET /api/profile/brief — fetch current brief text + version
+app.get('/api/profile/brief', (req, res) => {
+  const { email, token } = req.query;
+  if (!email || !token) return res.status(400).json({ error: 'email and token required' });
+
+  const expected = generateToken(decodeURIComponent(email));
+  if (token !== expected) return res.status(403).json({ error: 'Invalid token' });
+
+  const subscriber = db.prepare('SELECT id, email FROM subscribers WHERE email = ?').get(decodeURIComponent(email));
+  if (!subscriber) return res.status(404).json({ error: 'Subscriber not found' });
+
+  try {
+    const brief = db.prepare(
+      'SELECT brief_text, brief_version, last_edited_by, last_edited_at FROM user_briefs WHERE subscriber_id = ?'
+    ).get(subscriber.id);
+
+    if (!brief) {
+      return res.json({ brief_text: null, brief_version: 0, last_edited_by: null, last_edited_at: null });
+    }
+
+    res.json(brief);
+  } catch (err) {
+    console.error('profile brief error:', err);
+    res.status(500).json({ error: 'Failed to load brief' });
   }
 });
 

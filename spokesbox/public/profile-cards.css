@@ -1,0 +1,311 @@
+/* ── How Sam Sees You — Profile Cards Section (Phase 1) ────────────────────────── */
+/* Loaded on profile.html for the read-only card view.                              */
+
+.sam-section {
+  margin-bottom: 32px;
+}
+.sam-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.sam-section-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+.sam-section-header .sam-badge {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 50px;
+}
+.sam-subtitle {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* ── Card Grid ── */
+.sam-card-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Card Group ── */
+.sam-card-group {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+}
+.sam-card-group-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6b7280;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sam-card-group-title .icon { font-size: 16px; }
+.sam-card-group-empty {
+  font-size: 13px;
+  color: #9ca3af;
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* ── Individual Card ── */
+.sam-card {
+  background: #f8f9ff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+}
+.sam-card:hover {
+  border-color: #00b4d8;
+}
+.sam-card:last-child {
+  margin-bottom: 0;
+}
+
+.sam-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.sam-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a2744;
+  line-height: 1.4;
+}
+.sam-card-sub {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.sam-card-specificity {
+  font-size: 13px;
+  color: #4b5563;
+  margin-top: 6px;
+  line-height: 1.5;
+  padding-left: 2px;
+}
+
+/* ── Badges ── */
+.sam-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.sam-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+.sam-badge-confidence-high {
+  background: rgba(16,185,129,0.12);
+  color: #059669;
+  border: 1px solid rgba(16,185,129,0.25);
+}
+.sam-badge-confidence-medium {
+  background: rgba(251,191,36,0.12);
+  color: #b45309;
+  border: 1px solid rgba(251,191,36,0.25);
+}
+.sam-badge-confidence-low {
+  background: rgba(245,158,11,0.1);
+  color: #92400e;
+  border: 1px solid rgba(245,158,11,0.2);
+}
+.sam-badge-source {
+  background: rgba(99,102,241,0.1);
+  color: #4338ca;
+  border: 1px solid rgba(99,102,241,0.2);
+}
+.sam-badge-weight {
+  background: rgba(0,180,216,0.1);
+  color: #0096b7;
+  border: 1px solid rgba(0,180,216,0.25);
+}
+.sam-badge-depth {
+  background: rgba(139,92,246,0.1);
+  color: #7c3aed;
+  border: 1px solid rgba(139,92,246,0.2);
+}
+.sam-badge-muted {
+  background: rgba(239,68,68,0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239,68,68,0.2);
+}
+.sam-badge-exclusion {
+  background: rgba(239,68,68,0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239,68,68,0.25);
+}
+.sam-badge-privacy {
+  background: rgba(139,92,246,0.12);
+  color: #7c3aed;
+  border: 1px solid rgba(139,92,246,0.25);
+}
+
+/* ── Entities (watchlist items) ── */
+.sam-entity-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.sam-entity-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 50px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a2744;
+  transition: border-color 0.15s;
+}
+.sam-entity-chip:hover {
+  border-color: #00b4d8;
+}
+.sam-entity-chip .entity-type-icon {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* ── Tone & Format Card ── */
+.sam-tone-format {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.sam-tone-format-item {
+  background: rgba(0,180,216,0.06);
+  border: 1.5px solid rgba(0,180,216,0.2);
+  border-radius: 12px;
+  padding: 12px 18px;
+  flex: 1;
+  min-width: 200px;
+}
+.sam-tone-format-item .tf-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+.sam-tone-format-item .tf-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a2744;
+  line-height: 1.4;
+}
+
+/* ── Privacy Bar ── */
+.sam-privacy-bar {
+  background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(99,102,241,0.06));
+  border: 1.5px solid rgba(139,92,246,0.25);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+.sam-privacy-bar .privacy-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.sam-privacy-bar .privacy-text {
+  font-size: 14px;
+  color: #5b21b6;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.sam-privacy-bar .privacy-sub {
+  font-size: 12px;
+  color: #8b5cf6;
+  margin-top: 2px;
+}
+
+/* ── Brief Viewer ── */
+.sam-brief-view {
+  background: #fafafa;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-top: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #374151;
+  white-space: pre-wrap;
+}
+.sam-brief-view::-webkit-scrollbar {
+  width: 4px;
+}
+.sam-brief-view::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+.sam-brief-meta {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 8px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.sam-brief-empty {
+  font-size: 13px;
+  color: #9ca3af;
+  font-style: italic;
+  padding: 12px 24px;
+  text-align: center;
+}
+
+/* ── Last Updated ── */
+.sam-last-updated {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .sam-card-group { padding: 20px 16px; }
+  .sam-card-header { flex-direction: column; }
+  .sam-card-badges { flex-wrap: wrap; }
+  .sam-tone-format-item { min-width: 100%; }
+  .sam-brief-view { max-height: 220px; padding: 16px; }
+}
