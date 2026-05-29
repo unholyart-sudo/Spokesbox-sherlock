@@ -167,6 +167,7 @@ function loadPrivacyStatus(db, subscriberId) {
   // Check for redaction signatures in the brief
   const privacyPatterns = [
     /PRIVACY OVERRIDE/i,
+    /PRIVACY_ACTIVE/i,
     /personal boundary/i,
     /personal stressor/i,
     /health.*money.*stress/i,

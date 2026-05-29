@@ -601,7 +601,7 @@
           <div class="spinner"></div>
           <span>Generating your preview…</span>
         </div>
-        <iframe id="preview-iframe" src="about:blank" title="Newsletter preview" onload="onPreviewLoad()"></iframe>
+        <iframe id="preview-iframe" src="about:blank" title="Newsletter preview"></iframe>
       </div>
     </div>
 
@@ -1109,6 +1109,7 @@
     function loadPreview() {
       const iframe = document.getElementById('preview-iframe');
       document.getElementById('preview-loading').style.display = 'flex';
+      iframe.onload = onPreviewLoad;
       iframe.src = `/api/profile/preview?email=${encodeURIComponent(profileEmail)}&token=${encodeURIComponent(profileToken)}`;
     }
 
@@ -1575,10 +1576,18 @@
 
       if (data.brief && data.brief.brief_text) {
         view.className = 'sam-brief-view';
-        view.textContent = data.brief.brief_text;
+        // Strip privacy metadata headers before displaying
+        let briefText = data.brief.brief_text;
+        // Handle both real newlines and literal \n sequences
+        briefText = briefText.replace(/PRIVACY_ACTIVE=[^\n\\]*[\\n]*/g, '');
+        briefText = briefText.replace(/PRIVACY_DOMAINS=[^\n\\]*[\\n]*/g, '');
+        briefText = briefText.replace(/PRIVACY_OVERRIDE=[^\n\\]*[\\n]*/g, '');
+        // Convert literal \n to actual newlines for display
+        briefText = briefText.replace(/\\n/g, '\n');
+        view.textContent = briefText.trim();
 
         // Show privacy redacted suffix if applicable
-        const suffix = (data.brief.brief_text.includes('PRIVACY OVERRIDE'))
+        const suffix = (data.brief.brief_text.includes('PRIVACY OVERRIDE') || data.brief.brief_text.includes('PRIVACY_ACTIVE=TRUE'))
           ? ' 🔒 Privacy redaction applied' : '';
 
         const editedBy = data.brief.last_edited_by || 'system';
@@ -1586,7 +1595,7 @@
         meta.innerHTML = `Version ${data.brief.brief_version} — edited by ${editedBy} ${editedAt}${suffix}`;
       } else {
         view.className = 'sam-brief-empty';
-        view.textContent = 'Sam hasn't written a brief for you yet. Complete the wizard to get started.';
+        view.textContent = "Sam hasn't written a brief for you yet. Complete the wizard to get started.";
         meta.innerHTML = '';
       }
     }
