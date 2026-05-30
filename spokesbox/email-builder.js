@@ -101,7 +101,8 @@ function buildSpokesboxEmailHTML(brief, subscriber) {
     bg: '#fff', header: '#1a2744', accent: '#667eea', textColor: '#263142',
     mutedColor: '#718096', sectionBg: '#f8faff', sectionBorder: '#e2e8f0',
     labelColor: '#667eea', fontSize: '15px', fontFamily: "Arial,'Helvetica Neue',sans-serif",
-    logo: '📬 SPOKESBOX', logoSub: 'YOUR PERSONALIZED DAILY BRIEF',
+    logoUrl: 'https://spokesbox.com/spokesbox-logo-transparent.png',
+    logoUrl2x: 'https://spokesbox.com/spokesbox-logo-transparent@2x.png',
     signal: true,
   };
   const unsubLink = `${BASE_URL}/unsubscribe?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`;
@@ -137,9 +138,11 @@ function buildSpokesboxEmailHTML(brief, subscriber) {
   <table width="600" cellpadding="0" cellspacing="0" role="presentation" class="container" style="max-width:600px;width:100%;background:#fff;border-radius:12px;overflow:hidden;">
 
     <!-- Header -->
-    <tr><td style="background:${skin.header};padding:20px 28px;text-align:center;">
-      <div style="color:#fff;font-size:22px;font-weight:800;letter-spacing:1px;">${skin.logo}</div>
-      <div style="color:#a0aec0;font-size:11px;margin-top:3px;letter-spacing:0.05em;">${skin.logoSub}</div>
+    <tr><td style="background:${skin.header};padding:30px 20px;text-align:center;">
+      ${skin.logoUrl
+        ? `<img src="${skin.logoUrl}"${skin.logoUrl2x ? ` srcset="${skin.logoUrl2x} 2x"` : ''} alt="Spokesbox" width="160" style="display:block;width:160px;max-width:160px;height:auto;border:0;outline:none;text-decoration:none;margin:0 auto;background:transparent;">`
+        : `<div style="color:#fff;font-size:22px;font-weight:800;letter-spacing:1px;">${skin.logo}</div><div style="color:#a0aec0;font-size:11px;margin-top:3px;letter-spacing:0.05em;">${skin.logoSub}</div>`
+      }
     </td></tr>
 
     <!-- Greeting -->

@@ -3,18 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SkyTuned · Your Daily Orbit</title>
+<title>SkyTuned · Preview — Dark Header Band</title>
+<style>
+  body { background:#f0f4f8; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; margin:0; padding:24px; }
+  .note { max-width:600px; margin:0 auto 16px; padding:12px 16px; background:#fff3cd; border:1px solid #ffc107; border-radius:6px; font-size:13px; color:#664d03; }
+  table { border-collapse:collapse; }
+</style>
 </head>
-<body style="margin:0;padding:0;background:#f0f4f8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+<body>
+
+<div class="note">
+  <strong>✅ SkyTuned Preview — Logo header with dark band #0a0a0f</strong><br>
+  The logo (logo-space-v2.jpg, black corners) blends seamlessly into the dark band.<br>
+  Section headers use <strong>#0f172a</strong> (dark navy/slate) — not gold.<br>
+  Gold #c9a84c is used only for accent lines and dividers.
+</div>
 
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;">
   <tr>
-    <td align="center" style="padding:24px 12px;">
+    <td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
-        <!-- ⚠️ LOGO HEADER — CRITICAL: DARK BAND #0a0a0f REQUIRED ⚠️ -->
-        <!-- The logo (logo-space-v2.jpg) has pure black corners. It MUST sit on a dark #0a0a0f background -->
-        <!-- to avoid a visible black rectangle. DO NOT change this to white or light gray. -->
+        <!-- ⚠️ LOGO HEADER — DARK BAND #0a0a0f — DO NOT CHANGE ⚠️ -->
         <tr>
           <td style="background:#0a0a0f;text-align:center;padding:28px 0 18px;border-radius:8px 8px 0 0;">
             <img src="https://skytuned.com/logo-space-v2.jpg" alt="SkyTuned" width="280" style="display:block;margin:0 auto;border:none;outline:none;">
@@ -29,7 +39,7 @@
         <!-- ── DATE BAR ── -->
         <tr>
           <td style="background:#f8fafc;padding:12px 24px;border-bottom:1px solid #e5e7eb;">
-            <p style="margin:0;color:#1f2937;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">{{DATE_LINE}}</p>
+            <p style="margin:0;color:#1f2937;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">Saturday, May 30, 2026 · Issue #30</p>
           </td>
         </tr>
 
@@ -37,30 +47,31 @@
         <tr>
           <td style="background:#ffffff;padding:24px 24px 8px;">
             <h2 style="margin:0 0 12px;color:#0f172a;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">🌌 Today's Lead</h2>
-            <h1 style="margin:0 0 12px;color:#111827;font-size:21px;line-height:1.35;font-weight:700;">{{LEAD_HEADLINE}}</h1>
-            <p style="margin:0 0 20px;color:#374151;font-size:16px;line-height:1.65;">{{LEAD_BODY}}</p>
+            <h1 style="margin:0 0 12px;color:#111827;font-size:21px;line-height:1.35;font-weight:700;">🔴 Blue Origin's New Glenn Explosion — Aftermath &amp; Fallout</h1>
+            <p style="margin:0 0 20px;color:#374151;font-size:16px;line-height:1.65;">The space world is still processing Thursday night's catastrophic New Glenn explosion during a static fire test at Cape Canaveral. LC-36 sustained heavy damage, and the vehicle — Blue Origin's flagship heavy lifter — is completely destroyed. Jeff Bezos called it a "very rough day" and vowed to rebuild.</p>
             <hr style="border:none;border-top:1px solid #c9a84c;margin:0;">
           </td>
         </tr>
 
         <!-- ── MISSION CONTROL ── -->
-        <!-- Sub-sections: 🚀 Launches | 🏢 Private Sector | 📈 Markets | 🌎 Government & Agencies | 💰 Funding -->
-        <!-- Each sub-section: <p> label + <ul> bullets, then final <hr> -->
         <tr>
           <td style="background:#ffffff;padding:20px 24px 8px;">
             <h2 style="margin:0 0 16px;color:#0f172a;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">📡 Mission Control</h2>
-            {{MISSION_CONTROL_SECTIONS}}
+            <p style="color:#1f2937;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600;margin:0 0 6px;">🚀 Launches</p>
+            <ul style="margin:0 0 14px;padding-left:20px;color:#374151;font-size:14px;line-height:1.7;">
+              <li><strong style="color:#0f172a;">ULA Atlas V</strong> — Launched 29 Kuiper satellites 24 hours after New Glenn explosion</li>
+              <li><strong style="color:#0f172a;">SpaceX Falcon 9</strong> — Starlink 11-3 launch from Vandenberg tonight at 10:47 PM ET</li>
+            </ul>
             <hr style="border:none;border-top:1px solid #c9a84c;margin:0;">
           </td>
         </tr>
 
-        <!-- ── SPOTLIGHT (day-of-week deep-dive) ── -->
+        <!-- ── SPOTLIGHT ── -->
         <tr>
           <td style="background:#ffffff;padding:20px 24px 8px;">
-            <h2 style="margin:0 0 4px;color:#0f172a;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">{{SPOTLIGHT_LABEL}}</h2>
-            <p style="margin:0 0 14px;color:#6b7280;font-size:11px;letter-spacing:1px;text-transform:uppercase;">{{SPOTLIGHT_EYEBROW}}</p>
-            <h3 style="margin:0 0 14px;color:#111827;font-size:18px;line-height:1.35;font-weight:700;">{{SPOTLIGHT_HEADLINE}}</h3>
-            {{SPOTLIGHT_BODY}}
+            <h2 style="margin:0 0 4px;color:#0f172a;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">🔬 Science Saturday</h2>
+            <p style="margin:0 0 14px;color:#6b7280;font-size:11px;letter-spacing:1px;text-transform:uppercase;">Deep Dive: Breakthrough Discoveries</p>
+            <h3 style="margin:0 0 14px;color:#111827;font-size:18px;line-height:1.35;font-weight:700;">James Webb Telescope Spots Potential Biosignatures on Exoplanet K2-18b</h3>
             <hr style="border:none;border-top:1px solid #c9a84c;margin:0;">
           </td>
         </tr>
@@ -70,9 +81,10 @@
           <td style="background:#ffffff;padding:20px 24px 8px;">
             <h2 style="margin:0 0 14px;color:#0f172a;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">🌙 Tonight's Sky</h2>
             <ul style="margin:0 0 10px;padding-left:20px;color:#374151;font-size:14px;line-height:1.7;">
-              {{TONIGHT_ITEMS}}
+              <li>🌙 <strong>Waxing Gibbous Moon</strong> — 99% illuminated, visible all night</li>
+              <li>🪐 <strong>Saturn</strong> — Shining at magnitude 1.1 in Aquarius, visible after midnight</li>
+              <li>🔴 <strong>Mars</strong> — Fading but still visible in Gemini after sunset</li>
             </ul>
-            <p style="margin:0 0 20px;font-size:13px;color:#6b7280;">📚 <a href="https://skytuned.com/stargazing.html" style="color:#0f172a;text-decoration:underline;">Full stargazing guide at skytuned.com/stargazing.html</a></p>
             <hr style="border:none;border-top:1px solid #c9a84c;margin:0;">
           </td>
         </tr>
@@ -81,41 +93,16 @@
         <tr>
           <td style="background:#ffffff;padding:20px 24px 8px;">
             <h2 style="margin:0 0 14px;color:#0f172a;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">⚡ Space Weather</h2>
-            <p style="margin:0 0 20px;color:#374151;font-size:14px;line-height:1.7;">{{SPACE_WEATHER_BODY}}</p>
-            <hr style="border:none;border-top:1px solid #c9a84c;margin:0;">
-          </td>
-        </tr>
-
-        <!-- ── SOCIAL BUZZ ── -->
-        <!-- Each card: single-row table with border-left:3px solid #c9a84c -->
-        <tr>
-          <td style="background:#ffffff;padding:20px 24px 8px;">
-            <h2 style="margin:0 0 14px;color:#0f172a;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">📲 Social Buzz</h2>
-            {{SOCIAL_BUZZ_CARDS}}
-            <p style="margin:0 0 20px;font-size:13px;color:#6b7280;">📲 <a href="https://skytuned.com/social.html" style="color:#0f172a;text-decoration:underline;">Full social roundup at skytuned.com/social.html</a></p>
-            <hr style="border:none;border-top:1px solid #c9a84c;margin:0;">
-          </td>
-        </tr>
-
-        <!-- ── ON THE PAD — LAUNCH SCHEDULE ── -->
-        <!-- Each row: date (dark navy, bold) | mission+vehicle+site | optional ⭐ -->
-        <tr>
-          <td style="background:#ffffff;padding:20px 24px 8px;">
-            <h2 style="margin:0 0 14px;color:#0f172a;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">🚀 On the Pad — Next 7 Days</h2>
-            <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;color:#374151;border-collapse:collapse;">
-              {{LAUNCH_ROWS}}
-            </table>
-            <p style="margin:8px 0 20px;font-size:11px;color:#6b7280;">⭐ = High-interest watch event</p>
+            <p style="margin:0 0 20px;color:#374151;font-size:14px;line-height:1.7;">Kp index is 3 (quiet), solar wind speed is 380 km/s with a mild coronal hole stream. Aurora likely visible only at high latitudes tonight (northern Canada, Scandinavia). No significant solar flares reported in the last 24 hours.</p>
             <hr style="border:none;border-top:1px solid #c9a84c;margin:0;">
           </td>
         </tr>
 
         <!-- ── MARKET SNAPSHOT ── -->
-        <!-- 4 columns: Ticker | Price | Change | Note -->
         <tr>
           <td style="background:#ffffff;padding:20px 24px 20px;">
             <h2 style="margin:0 0 14px;color:#0f172a;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">📈 Market Snapshot</h2>
-            <p style="margin:0 0 12px;font-size:11px;color:#6b7280;">{{MARKET_TIMESTAMP}}</p>
+            <p style="margin:0 0 12px;font-size:11px;color:#6b7280;">As of prior close · May 30, 2026</p>
             <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;color:#374151;border-collapse:collapse;">
               <tr style="background:#0f172a;">
                 <td style="padding:8px 10px;color:#ffffff;font-weight:700;border-radius:4px 0 0 0;">Ticker</td>
@@ -123,7 +110,10 @@
                 <td style="padding:8px 10px;color:#ffffff;font-weight:700;">Change</td>
                 <td style="padding:8px 10px;color:#ffffff;font-weight:700;border-radius:0 4px 0 0;">Note</td>
               </tr>
-              {{MARKET_ROWS}}
+              <tr style="border-bottom:1px solid #e5e7eb;"><td style="padding:8px 10px;"><strong>ASTS</strong></td><td style="padding:8px 10px;">$38.42</td><td style="padding:8px 10px;color:#16a34a;">+2.1%</td><td style="padding:8px 10px;">Direct-to-cell milestone</td></tr>
+              <tr style="border-bottom:1px solid #e5e7eb;"><td style="padding:8px 10px;"><strong>RKLB</strong></td><td style="padding:8px 10px;">$9.85</td><td style="padding:8px 10px;color:#f87171;">-0.8%</td><td style="padding:8px 10px;">Post-launch consolidation</td></tr>
+              <tr style="border-bottom:1px solid #e5e7eb;"><td style="padding:8px 10px;"><strong>LUNR</strong></td><td style="padding:8px 10px;">$7.22</td><td style="padding:8px 10px;color:#16a34a;">+5.3%</td><td style="padding:8px 10px;">NASA IM-3 contract update</td></tr>
+              <tr><td style="padding:8px 10px;"><strong>UFO</strong></td><td style="padding:8px 10px;">$18.15</td><td style="padding:8px 10px;color:#16a34a;">+0.4%</td><td style="padding:8px 10px;">Broad space ETF steady</td></tr>
             </table>
           </td>
         </tr>
@@ -136,7 +126,7 @@
               <a href="https://skytuned.com" style="color:#0f172a;text-decoration:underline;">skytuned.com</a>
             </p>
             <p style="margin:0 0 8px;color:#6b7280;font-size:12px;">
-              <a href="https://skytuned.com/unsubscribe?email={{EMAIL}}&token={{TOKEN}}" style="color:#6b7280;text-decoration:none;">Unsubscribe</a>
+              <a href="#" style="color:#6b7280;text-decoration:none;">Unsubscribe</a>
                · 
               <a href="https://skytuned.com" style="color:#6b7280;text-decoration:none;">Visit SkyTuned</a>
             </p>
