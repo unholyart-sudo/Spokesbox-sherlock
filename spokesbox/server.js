@@ -3275,39 +3275,47 @@ app.post('/api/onboarding-complete', async (req, res) => {
   // Run shared completion handler (await — it sends the welcome email)
   const { subscriberId, onboardingText, alreadySent } = await completeWizardOnboarding(db, session, answers);
 
+  // Determine brief-generation status BEFORE responding — if a brief already
+  // exists from the Sam (#meetSam) path, report the honest status.
+  let briefStatus;
+  let scheduleBrief = false;
+  if (!subscriberId) {
+    briefStatus = 'skipped_no_subscriber';
+  } else if (!onboardingText || onboardingText.length === 0) {
+    briefStatus = 'skipped_no_onboarding_text';
+  } else if (getBrief(db, subscriberId)) {
+    briefStatus = 'skipped_exists';
+  } else {
+    briefStatus = 'queued';
+    scheduleBrief = true;
+  }
+
   // Respond immediately — do not block on brief generation
   res.json({
     success:              true,
     already_sent:         alreadySent,
     has_onboarding_text:  onboardingText.length > 0,
-    brief_generation:     subscriberId ? 'queued' : 'skipped_no_subscriber',
+    brief_generation:     briefStatus,
     message:              alreadySent ? 'Already onboarded.' : 'Onboarding complete. Email sent.',
   });
 
   // Fire-and-forget: trigger brief generation from combined onboarding text
-  if (subscriberId && onboardingText.length > 0) {
-    const existingBrief = getBrief(db, subscriberId);
-    if (existingBrief) {
-      // Brief already exists from Sam (#meetSam) path — log and skip to avoid
-      // duplicate generation. A future P2 enhancement could regenerate and
-      // augment with structured fields.
-      console.log(`[onboarding-complete] Brief already exists for subscriber ${subscriberId} — skipping generation`);
-    } else {
-      setImmediate(async () => {
-        try {
-          await generateBriefFromOnboarding({
-            subscriberId,
-            onboardingText,
-            db,
-          });
-          console.log(`[onboarding-complete] Brief generated from structured fields for subscriber ${subscriberId}`);
-        } catch (err) {
-          console.error(`[onboarding-complete] Brief generation failed for subscriber ${subscriberId} (non-fatal):`, err.message);
-        }
-      });
-    }
-  } else if (subscriberId && onboardingText.length === 0) {
-    console.log(`[onboarding-complete] No structured fields for subscriber ${subscriberId} — skipping brief generation`);
+  if (scheduleBrief) {
+    setImmediate(async () => {
+      try {
+        await generateBriefFromOnboarding({
+          subscriberId,
+          onboardingText,
+          db,
+        });
+        console.log(`[onboarding-complete] Brief generated from structured fields for subscriber ${subscriberId}`);
+      } catch (err) {
+        console.error(`[onboarding-complete] Brief generation failed for subscriber ${subscriberId} (non-fatal):`, err.message);
+      }
+    });
+  } else {
+    const cause = subscriberId ? (onboardingText?.length ? 'exists' : 'no_text') : 'no_sub';
+    console.log(`[onboarding-complete] Brief generation skipped for subscriber ${subscriberId || '(none)'} (${cause})`);
   }
 
 });

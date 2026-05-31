@@ -193,8 +193,9 @@ try {
     r.body?.already_sent === false || r.body?.already_sent === true,
     'already_sent is boolean'
   );
+  // Normal new-subscriber path with structured fields → brief gen queued
   assert(
-    r.body?.brief_generation === 'queued' || r.body?.brief_generation === 'skipped_no_subscriber',
+    r.body?.brief_generation === 'queued',
     `brief_generation: ${r.body?.brief_generation}`
   );
 
@@ -324,10 +325,79 @@ try {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
+// TEST 6: Existing brief returns skipped_exists
+// ══════════════════════════════════════════════════════════════════════════════
+head('6. Existing brief — skipped_exists');
+
+const email6 = `route6_${Date.now()}@example.com`;
+
+try {
+  const { sessionId, subscriberId } = seedSession(email6, FULL_ANSWERS);
+
+  // Pre-seed a brief (simulates Sam path having already generated one)
+  const db = new Database(DB_PATH);
+  db.prepare(
+    'INSERT OR IGNORE INTO user_briefs (subscriber_id, brief_text, brief_version, last_edited_by) VALUES (?, ?, ?, ?)'
+  ).run(subscriberId, 'Pre-existing brief from Sam', 1, 'system');
+  db.close();
+
+  const r = await authedReq('POST', '/api/onboarding-complete', { session_id: sessionId });
+  assert.strictEqual(r.status, 200, 'Expected 200');
+  assert.strictEqual(r.body?.brief_generation, 'skipped_exists',
+    `expected skipped_exists, got ${r.body?.brief_generation}`);
+
+  ok(`Existing brief correctly returns skipped_exists`);
+} catch (e) {
+  fail('Existing brief — skipped_exists', e.message);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TEST 7: No onboarding text returns skipped_no_onboarding_text
+// ══════════════════════════════════════════════════════════════════════════════
+head('7. No onboarding text — skipped_no_onboarding_text');
+
+const email7 = `route7_${Date.now()}@example.com`;
+
+try {
+  const { sessionId } = seedSession(email7, {});  // empty answers → no text
+
+  const r = await authedReq('POST', '/api/onboarding-complete', { session_id: sessionId });
+  assert.strictEqual(r.status, 200, 'Expected 200');
+  assert.strictEqual(r.body?.has_onboarding_text, false,
+    `has_onboarding_text should be false, got ${r.body?.has_onboarding_text}`);
+  assert.strictEqual(r.body?.brief_generation, 'skipped_no_onboarding_text',
+    `expected skipped_no_onboarding_text, got ${r.body?.brief_generation}`);
+
+  ok(`No onboarding text returns skipped_no_onboarding_text`);
+} catch (e) {
+  fail('No onboarding text — skipped_no_onboarding_text', e.message);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TEST 8: Queued returns queued
+// ══════════════════════════════════════════════════════════════════════════════
+head('8. Queued — brief_generation: queued');
+
+const email8 = `route8_${Date.now()}@example.com`;
+
+try {
+  const { sessionId } = seedSession(email8, MINIMAL_ANSWERS);
+
+  const r = await authedReq('POST', '/api/onboarding-complete', { session_id: sessionId });
+  assert.strictEqual(r.status, 200, 'Expected 200');
+  assert.strictEqual(r.body?.brief_generation, 'queued',
+    `expected queued, got ${r.body?.brief_generation}`);
+
+  ok(`New subscriber with text returns brief_generation: queued`);
+} catch (e) {
+  fail('Queued — brief_generation: queued', e.message);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 // CLEANUP
 // ══════════════════════════════════════════════════════════════════════════════
 head('CLEANUP');
-for (const email of [email1, email2, email3, email4, email5]) cleanupSeeded(email);
+for (const email of [email1, email2, email3, email4, email5, email6, email7, email8]) cleanupSeeded(email);
 ok('Test data cleaned up');
 
 // ══════════════════════════════════════════════════════════════════════════════
