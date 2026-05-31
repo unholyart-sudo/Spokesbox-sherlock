@@ -14,6 +14,7 @@ const { getBrief, saveBrief, getBriefHistory, deleteBrief } = require('./lib/use
 const { generateBriefFromOnboarding, updateBriefFromReply, generateFollowupQuestions } = require('./lib/brief_llm');
 const { PROFILE_FIELDS, BRANCH_FIELDS } = require('./lib/profile_fields');
 const { getProfileCards } = require('./lib/profile_cards');
+const { buildOnboardingTextFromWizardFields, mergeOnboardingTexts } = require('./lib/build_onboarding_text');
 
 // ── Content Moderation ──────────────────────────────────────────
 const HATE_PATTERNS = [
@@ -3180,6 +3181,8 @@ app.post('/wizard/answer', async (req, res) => {
 
 // ─── Wizard: Complete (explicit save) ─────────────────────────────────────────
 // LEGACY — wizard.html now calls /api/onboarding-complete. Kept for backward compatibility.
+// Uses the same completeWizardOnboarding handler as /api/onboarding-complete but does NOT
+// trigger brief generation — that path belongs to the new flow endpoint.
 app.post('/wizard/complete', async (req, res) => {
   const { session_id } = req.body;
   if (!session_id) return res.status(400).json({ error: 'session_id required' });
@@ -3187,55 +3190,22 @@ app.post('/wizard/complete', async (req, res) => {
   const session = db.prepare('SELECT * FROM wizard_sessions WHERE session_id = ?').get(session_id);
   if (!session) return res.status(404).json({ error: 'Session not found' });
 
-  // Respond immediately — never block on save or send
-  res.json({ success: true, message: 'Preferences saved! Your first newsletter is on its way.' });
-
-  // Save preferences (best-effort — don't let this kill the send)
   const answers = JSON.parse(session.answers || '{}');
-  try {
-    applyAnswersToSubscriber(session.email, answers);
-  } catch (saveErr) {
-    console.error('applyAnswersToSubscriber error:', saveErr.message, saveErr.stack);
-  }
 
-  // Enrich subscriber with any fields not already handled by applyAnswersToSubscriber
-  try {
-    enrichSubscriberFromAnswers(session.email, answers);
-  } catch (enrichErr) {
-    console.error('enrichSubscriberFromAnswers error:', enrichErr.message, enrichErr.stack);
-  }
+  // Run shared completion handler (same as /api/onboarding-complete)
+  await completeWizardOnboarding(db, session, answers);
 
-  // Send welcome email (clean, no mock content)
-  try {
-    const name = answers.name || 'friend';
-    const deliveryTime = answers.delivery_time || '7am';
-    const welcomeHtml = buildWelcomeEmail(name, deliveryTime, session.email);
-    await sgMail.send({
-      to: session.email,
-      from: { email: 'jared@jaredgreen.com', name: 'Spokesbox' },
-      replyTo: 'sherlock.claw@gmail.com',
-      subject: `Welcome to Spokesbox! 🎉`,
-      html: welcomeHtml
-    });
-    console.log(`✅ Welcome email sent to ${session.email}`);
-  } catch (sendErr) {
-    console.error('Welcome email send failed:', sendErr.message, sendErr.response?.body);
-  }
-
+  res.json({ success: true, message: 'Preferences saved! Your first newsletter is on its way.' });
 });
 
 
-// ─── Onboarding Complete (idempotent — replaces /wizard/complete for new flow) ─
-app.post('/api/onboarding-complete', async (req, res) => {
-  const { session_id } = req.body;
-  if (!session_id) return res.status(400).json({ error: 'session_id required' });
-
-  const session = db.prepare('SELECT * FROM wizard_sessions WHERE session_id = ?').get(session_id);
-  if (!session) return res.status(404).json({ error: 'Session not found' });
-
-  const answers = JSON.parse(session.answers || '{}');
-
-  // Save preferences first (idempotent — safe to call multiple times)
+// ─── Shared completion handler ──────────────────────────────────────────────
+// Called by both /api/onboarding-complete and legacy /wizard/complete.
+// Saves subscriber preferences, sends welcome email (idempotent), and
+// synthesizes onboarding_text from structured wizard fields.
+// Does NOT trigger brief generation — that's the caller's responsibility.
+async function completeWizardOnboarding(db, session, answers) {
+  // Save preferences (idempotent)
   try { applyAnswersToSubscriber(session.email, answers); } catch (e) {
     console.error('[onboarding-complete] applyAnswers error:', e.message);
   }
@@ -3243,19 +3213,28 @@ app.post('/api/onboarding-complete', async (req, res) => {
     console.error('[onboarding-complete] enrich error:', e.message);
   }
 
+  // Build onboarding_text from structured wizard fields
+  const structuredText = buildOnboardingTextFromWizardFields(answers);
+
+  // If Sam free-text was stored in answers (wizard.html stores it as custom_profile_text),
+  // merge it with the structured synthesis so both signals reach brief generation.
+  const samText = answers.custom_profile_text || '';
+  const onboardingText = mergeOnboardingTexts(samText, structuredText);
+
+  // Resolve subscriber
+  const sub = db.prepare('SELECT * FROM subscribers WHERE email = ?').get(session.email);
+  const subscriberId = sub ? sub.id : null;
+
   // Idempotency check — only send the email once per subscriber
-  const sub = db.prepare('SELECT onboarding_email_sent FROM subscribers WHERE email = ?').get(session.email);
   const alreadySent = sub && sub.onboarding_email_sent === 1;
 
   if (!alreadySent) {
-    // Mark sent BEFORE sending to prevent duplicate sends on retry
     db.prepare(`UPDATE subscribers SET
       onboarding_email_sent   = 1,
       onboarding_completed_at = datetime('now'),
       wizard_complete         = 1
       WHERE email = ?`).run(session.email);
 
-    // Gather personalization fields
     const name         = answers.name || 'there';
     const deliveryTime = answers.delivery_time || '07:00';
     const topics       = answers.topics || '';
@@ -3274,18 +3253,70 @@ app.post('/api/onboarding-complete', async (req, res) => {
       console.log(`[onboarding-complete] Email sent to ${session.email}`);
     } catch (sendErr) {
       console.error('[onboarding-complete] Email send failed:', sendErr.message, sendErr.response?.body);
-      // Roll back the flag so a future retry can re-attempt the send
       db.prepare('UPDATE subscribers SET onboarding_email_sent = 0 WHERE email = ?').run(session.email);
     }
   } else {
     console.log(`[onboarding-complete] Already sent for ${session.email} — skipping`);
   }
 
+  return { subscriberId, onboardingText, alreadySent };
+}
+
+// ─── Onboarding Complete (idempotent — new flow endpoint) ────────────────────
+app.post('/api/onboarding-complete', async (req, res) => {
+  const { session_id } = req.body;
+  if (!session_id) return res.status(400).json({ error: 'session_id required' });
+
+  const session = db.prepare('SELECT * FROM wizard_sessions WHERE session_id = ?').get(session_id);
+  if (!session) return res.status(404).json({ error: 'Session not found' });
+
+  const answers = JSON.parse(session.answers || '{}');
+
+  // Run shared completion handler (await — it sends the welcome email)
+  const { subscriberId, onboardingText, alreadySent } = await completeWizardOnboarding(db, session, answers);
+
+  // Determine brief-generation status BEFORE responding — if a brief already
+  // exists from the Sam (#meetSam) path, report the honest status.
+  let briefStatus;
+  let scheduleBrief = false;
+  if (!subscriberId) {
+    briefStatus = 'skipped_no_subscriber';
+  } else if (!onboardingText || onboardingText.length === 0) {
+    briefStatus = 'skipped_no_onboarding_text';
+  } else if (getBrief(db, subscriberId)) {
+    briefStatus = 'skipped_exists';
+  } else {
+    briefStatus = 'queued';
+    scheduleBrief = true;
+  }
+
+  // Respond immediately — do not block on brief generation
   res.json({
-    success:      true,
-    already_sent: alreadySent,
-    message:      alreadySent ? 'Already onboarded.' : 'Onboarding complete. Email sent.',
+    success:              true,
+    already_sent:         alreadySent,
+    has_onboarding_text:  onboardingText.length > 0,
+    brief_generation:     briefStatus,
+    message:              alreadySent ? 'Already onboarded.' : 'Onboarding complete. Email sent.',
   });
+
+  // Fire-and-forget: trigger brief generation from combined onboarding text
+  if (scheduleBrief) {
+    setImmediate(async () => {
+      try {
+        await generateBriefFromOnboarding({
+          subscriberId,
+          onboardingText,
+          db,
+        });
+        console.log(`[onboarding-complete] Brief generated from structured fields for subscriber ${subscriberId}`);
+      } catch (err) {
+        console.error(`[onboarding-complete] Brief generation failed for subscriber ${subscriberId} (non-fatal):`, err.message);
+      }
+    });
+  } else {
+    const cause = subscriberId ? (onboardingText?.length ? 'exists' : 'no_text') : 'no_sub';
+    console.log(`[onboarding-complete] Brief generation skipped for subscriber ${subscriberId || '(none)'} (${cause})`);
+  }
 
 });
 
